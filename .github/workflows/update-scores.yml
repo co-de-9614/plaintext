@@ -1,0 +1,53 @@
+name: Update USC WBB Scores
+
+on:
+  # Manual trigger (always does full update)
+  workflow_dispatch:
+
+  # Every 2 minutes during possible game hours (10am-11pm PT = 6pm-7am UTC)
+  # Script will exit early if no game is live or imminent
+  schedule:
+    - cron: '*/2 18-23 * * *'
+    - cron: '*/2 0-7 * * *'
+
+    # Hourly during off-hours to catch schedule changes
+    - cron: '0 8-17 * * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch and generate
+        id: fetch
+        run: |
+          # Force full update on manual trigger or at the top of each hour
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || [[ "$(date +%M)" == "00" ]]; then
+            python scripts/fetch_games.py --force
+          else
+            python scripts/fetch_games.py
+          fi
+        continue-on-error: true
+
+      - name: Commit and push if changed
+        if: steps.fetch.outcome == 'success'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update scores $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

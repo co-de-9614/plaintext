@@ -1,0 +1,433 @@
+#!/usr/bin/env python3
+"""
+Fetch USC Women's Basketball game data from ESPN API and generate static HTML.
+
+Usage:
+    python fetch_games.py          # Only update if game is live or starting within 60 min
+    python fetch_games.py --force  # Always update (used hourly and for manual triggers)
+"""
+
+import json
+import sys
+import urllib.request
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+
+# USC Women's Basketball team ID on ESPN
+USC_TEAM_ID = "30"
+TEAM_NAME = "USC Trojans"
+SPORT = "basketball"
+LEAGUE = "womens-college-basketball"
+
+BASE_API = f"https://site.api.espn.com/apis/site/v2/sports/{SPORT}/{LEAGUE}"
+
+# How many minutes before game start to begin frequent updates
+PREGAME_WINDOW_MINUTES = 60
+
+
+def fetch_json(url: str) -> dict:
+    """Fetch JSON from URL."""
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.loads(resp.read().decode())
+
+
+def get_team_schedule() -> dict:
+    """Get USC's schedule and recent results."""
+    url = f"{BASE_API}/teams/{USC_TEAM_ID}/schedule"
+    return fetch_json(url)
+
+
+def get_team_info() -> dict:
+    """Get USC team information."""
+    url = f"{BASE_API}/teams/{USC_TEAM_ID}"
+    return fetch_json(url)
+
+
+def get_scoreboard() -> dict:
+    """Get today's scoreboard for all games."""
+    url = f"{BASE_API}/scoreboard"
+    return fetch_json(url)
+
+
+def get_game_summary(event_id: str) -> dict:
+    """Get detailed game summary including play-by-play."""
+    url = f"{BASE_API}/summary?event={event_id}"
+    return fetch_json(url)
+
+
+def format_game_status(competition: dict) -> str:
+    """Format the game status line."""
+    status = competition.get("status", {})
+    status_type = status.get("type", {})
+    state = status_type.get("state", "")
+
+    if state == "pre":
+        # Game hasn't started
+        date_str = status.get("type", {}).get("detail", "")
+        return f"Scheduled: {date_str}"
+    elif state == "in":
+        # Game in progress
+        display_clock = status.get("displayClock", "")
+        period = status.get("period", 0)
+        period_name = f"Q{period}" if period <= 4 else f"OT{period - 4}"
+        return f"LIVE: {period_name} {display_clock}"
+    elif state == "post":
+        # Game finished
+        return "FINAL"
+    else:
+        return status_type.get("detail", "Unknown")
+
+
+def format_score_display(competition: dict) -> str:
+    """Format the main score display like plaintextsports."""
+    competitors = competition.get("competitors", [])
+    if len(competitors) < 2:
+        return "No score data"
+
+    # Sort by home/away
+    home = next((c for c in competitors if c.get("homeAway") == "home"), competitors[0])
+    away = next((c for c in competitors if c.get("homeAway") == "away"), competitors[1])
+
+    home_team = home.get("team", {})
+    away_team = away.get("team", {})
+
+    home_abbrev = home_team.get("abbreviation", "HOME")
+    away_abbrev = away_team.get("abbreviation", "AWAY")
+    home_score = home.get("score", "-")
+    away_score = away.get("score", "-")
+
+    # Get records if available
+    home_record = ""
+    away_record = ""
+    for rec in home.get("records", []):
+        if rec.get("type") == "total":
+            home_record = f" ({rec.get('summary', '')})"
+            break
+    for rec in away.get("records", []):
+        if rec.get("type") == "total":
+            away_record = f" ({rec.get('summary', '')})"
+            break
+
+    lines = []
+    lines.append(f"{'AWAY':<6} {'':>20} {'HOME':<6}")
+    lines.append(f"{away_abbrev:<6} {away_score:>8}  -  {home_score:<8} {home_abbrev:<6}")
+    lines.append(f"{away_record:<20} {home_record:>20}")
+
+    return "\n".join(lines)
+
+
+def format_box_score(game_summary: dict) -> str:
+    """Format a simple box score from game summary."""
+    boxscore = game_summary.get("boxscore", {})
+    players = boxscore.get("players", [])
+
+    if not players:
+        return "No box score available"
+
+    lines = []
+
+    for team_data in players:
+        team = team_data.get("team", {})
+        team_name = team.get("abbreviation", "TEAM")
+        lines.append(f"\n{team_name}")
+        lines.append("-" * 60)
+        lines.append(f"{'PLAYER':<20} {'MIN':>5} {'PTS':>5} {'REB':>5} {'AST':>5} {'FG':>8}")
+        lines.append("-" * 60)
+
+        statistics = team_data.get("statistics", [])
+        if statistics:
+            stat_athletes = statistics[0].get("athletes", [])
+            for athlete in stat_athletes[:10]:  # Top 10 players
+                name = athlete.get("athlete", {}).get("shortName", "Unknown")
+                stats = athlete.get("stats", [])
+                if len(stats) >= 13:
+                    # ESPN stat order: MIN, FG, 3PT, FT, OREB, DREB, REB, AST, STL, BLK, TO, PF, PTS
+                    mins = stats[0] if stats[0] else "0"
+                    fg = stats[1] if stats[1] else "0-0"
+                    pts = stats[12] if len(stats) > 12 and stats[12] else "0"
+                    reb = stats[6] if len(stats) > 6 and stats[6] else "0"
+                    ast = stats[7] if len(stats) > 7 and stats[7] else "0"
+                    lines.append(f"{name:<20} {mins:>5} {pts:>5} {reb:>5} {ast:>5} {fg:>8}")
+
+    return "\n".join(lines)
+
+
+def format_play_by_play(game_summary: dict, last_n: int = 10) -> str:
+    """Format recent plays."""
+    plays = game_summary.get("plays", [])
+
+    if not plays:
+        return "No play-by-play available"
+
+    recent = plays[-last_n:] if len(plays) > last_n else plays
+    recent.reverse()  # Most recent first
+
+    lines = ["RECENT PLAYS", "-" * 50]
+
+    for play in recent:
+        clock = play.get("clock", {}).get("displayValue", "")
+        period = play.get("period", {}).get("number", 0)
+        period_name = f"Q{period}" if period <= 4 else f"OT{period - 4}"
+        text = play.get("text", "")
+        score = play.get("scoreValue", 0)
+
+        if score:
+            lines.append(f"{period_name} {clock:>5} | +{score} {text}")
+        else:
+            lines.append(f"{period_name} {clock:>5} | {text}")
+
+    return "\n".join(lines)
+
+
+def find_usc_game(scoreboard: dict) -> dict | None:
+    """Find USC's game in today's scoreboard."""
+    events = scoreboard.get("events", [])
+
+    for event in events:
+        competitions = event.get("competitions", [])
+        for comp in competitions:
+            competitors = comp.get("competitors", [])
+            for c in competitors:
+                team_id = c.get("team", {}).get("id", "")
+                if team_id == USC_TEAM_ID:
+                    return {"event": event, "competition": comp}
+
+    return None
+
+
+def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, str]:
+    """
+    Check if USC has a game that is:
+    - Currently in progress
+    - Starting within PREGAME_WINDOW_MINUTES
+
+    Returns (should_update, reason)
+    """
+    now = datetime.now(timezone.utc)
+
+    # First check scoreboard for live game
+    usc_game = find_usc_game(scoreboard)
+    if usc_game:
+        state = usc_game["competition"].get("status", {}).get("type", {}).get("state", "")
+        if state == "in":
+            return True, "Game is LIVE"
+        elif state == "post":
+            # Game just ended - update to show final
+            return True, "Game just finished"
+
+    # Check schedule for upcoming games
+    events = schedule.get("events", [])
+    for event in events:
+        comp = event.get("competitions", [{}])[0]
+        status = comp.get("status", {}).get("type", {})
+        state = status.get("state", "")
+
+        if state == "in":
+            return True, "Game is LIVE"
+
+        if state == "pre":
+            date_str = comp.get("date", "")
+            if date_str:
+                try:
+                    game_time = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                    time_until = game_time - now
+                    minutes_until = time_until.total_seconds() / 60
+
+                    if -30 <= minutes_until <= PREGAME_WINDOW_MINUTES:
+                        if minutes_until < 0:
+                            return True, "Game should be starting now"
+                        else:
+                            return True, f"Game starts in {int(minutes_until)} minutes"
+                except Exception:
+                    pass
+
+    return False, "No game live or imminent"
+
+
+def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
+    """Generate the main game page HTML."""
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    content_lines = []
+    content_lines.append(f"USC WOMEN'S BASKETBALL")
+    content_lines.append(f"Updated: {now}")
+    content_lines.append("=" * 60)
+
+    if game_data:
+        event = game_data["event"]
+        competition = game_data["competition"]
+        event_id = event.get("id", "")
+
+        # Game status
+        status_line = format_game_status(competition)
+        content_lines.append(f"\n{status_line}")
+        content_lines.append("")
+
+        # Score display
+        content_lines.append(format_score_display(competition))
+        content_lines.append("")
+
+        # Try to get detailed game summary for live/finished games
+        state = competition.get("status", {}).get("type", {}).get("state", "")
+        if state in ("in", "post") and event_id:
+            try:
+                summary = get_game_summary(event_id)
+
+                # Play by play for live games
+                if state == "in":
+                    content_lines.append("")
+                    content_lines.append(format_play_by_play(summary))
+
+                # Box score
+                content_lines.append("")
+                content_lines.append(format_box_score(summary))
+            except Exception as e:
+                content_lines.append(f"\nCould not load game details: {e}")
+    else:
+        content_lines.append("\nNo game in progress today.")
+
+    # Upcoming schedule
+    content_lines.append("\n")
+    content_lines.append("=" * 60)
+    content_lines.append("UPCOMING SCHEDULE")
+    content_lines.append("-" * 60)
+
+    events = schedule_data.get("events", [])
+    upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "pre"]
+
+    for event in upcoming[:5]:
+        comp = event.get("competitions", [{}])[0]
+        date_raw = comp.get("date", "")
+        if date_raw:
+            try:
+                dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
+                date_str = dt.strftime("%a %b %d %I:%M%p")
+            except:
+                date_str = date_raw[:10]
+        else:
+            date_str = "TBD"
+
+        competitors = comp.get("competitors", [])
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+        if opponent:
+            opp_name = opponent.get("team", {}).get("displayName", "TBD")
+            home_away = "vs" if opponent.get("homeAway") == "away" else "@"
+            content_lines.append(f"{date_str:<20} {home_away} {opp_name}")
+
+    # Recent results
+    content_lines.append("\n")
+    content_lines.append("RECENT RESULTS")
+    content_lines.append("-" * 60)
+
+    completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+
+    for event in completed[-5:]:
+        comp = event.get("competitions", [{}])[0]
+        date_raw = comp.get("date", "")
+        if date_raw:
+            try:
+                dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
+                date_str = dt.strftime("%b %d")
+            except:
+                date_str = date_raw[:10]
+        else:
+            date_str = ""
+
+        competitors = comp.get("competitors", [])
+        usc = next((c for c in competitors if c.get("team", {}).get("id") == USC_TEAM_ID), None)
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+
+        if usc and opponent:
+            usc_score_raw = usc.get("score", "")
+            opp_score_raw = opponent.get("score", "")
+            opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
+
+            # Handle score being a dict or string
+            if isinstance(usc_score_raw, dict):
+                usc_score = usc_score_raw.get("displayValue", str(usc_score_raw.get("value", "")))
+            else:
+                usc_score = str(usc_score_raw)
+
+            if isinstance(opp_score_raw, dict):
+                opp_score = opp_score_raw.get("displayValue", str(opp_score_raw.get("value", "")))
+            else:
+                opp_score = str(opp_score_raw)
+
+            try:
+                result = "W" if float(usc_score) > float(opp_score) else "L"
+            except:
+                result = "-"
+
+            content_lines.append(f"{date_str:<8} {result} {usc_score}-{opp_score} vs {opp_abbrev}")
+
+    content = "\n".join(content_lines)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USC Women's Basketball</title>
+    <style>
+        body {{
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }}
+        pre {{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }}
+        a {{
+            color: #90caf9;
+        }}
+    </style>
+</head>
+<body>
+<pre>
+{content}
+</pre>
+</body>
+</html>
+"""
+    return html
+
+
+def main():
+    force_update = "--force" in sys.argv
+
+    print("Fetching USC Women's Basketball data...")
+
+    # Get schedule and scoreboard (lightweight calls)
+    schedule = get_team_schedule()
+    scoreboard = get_scoreboard()
+
+    # Check if we should update
+    should_update, reason = is_game_live_or_imminent(schedule, scoreboard)
+
+    if not should_update and not force_update:
+        print(f"Skipping update: {reason}")
+        print("Use --force to update anyway")
+        sys.exit(1)  # Non-zero exit tells workflow to skip commit
+
+    print(f"Updating: {reason}" if should_update else "Forced update")
+
+    # Find live game data
+    usc_game = find_usc_game(scoreboard)
+
+    # Generate HTML
+    html = generate_game_html(usc_game, schedule)
+
+    # Write output
+    output_path = Path(__file__).parent.parent / "index.html"
+    output_path.write_text(html)
+    print(f"Written to {output_path}")
+
+
+if __name__ == "__main__":
+    main()
