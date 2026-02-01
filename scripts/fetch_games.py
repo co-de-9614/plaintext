@@ -36,6 +36,60 @@ def fetch_json(url: str) -> dict:
         return json.loads(resp.read().decode())
 
 
+def get_roster_with_stats() -> list:
+    """Get USC roster with season stats for each player."""
+    # Get roster
+    roster_url = f"{BASE_API}/teams/{USC_TEAM_ID}/roster"
+    roster_data = fetch_json(roster_url)
+
+    players = []
+    for athlete in roster_data.get("athletes", []):
+        athlete_id = athlete.get("id")
+        name = athlete.get("displayName", "Unknown")
+        jersey = athlete.get("jersey", "")
+        position = athlete.get("position", {}).get("abbreviation", "")
+
+        # Fetch individual stats
+        stats_url = f"https://sports.core.api.espn.com/v2/sports/basketball/leagues/womens-college-basketball/athletes/{athlete_id}/statistics/0"
+        try:
+            req = urllib.request.Request(stats_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                stats_data = json.loads(resp.read().decode())
+
+            splits = stats_data.get("splits", {})
+            categories = splits.get("categories", [])
+
+            # Extract key stats
+            ppg = rpg = apg = gp = None
+            for cat in categories:
+                for s in cat.get("stats", []):
+                    if s.get("name") == "avgPoints":
+                        ppg = s.get("displayValue")
+                    elif s.get("name") == "avgRebounds":
+                        rpg = s.get("displayValue")
+                    elif s.get("name") == "avgAssists":
+                        apg = s.get("displayValue")
+                    elif s.get("name") == "gamesPlayed":
+                        gp = s.get("displayValue")
+
+            if ppg:  # Only include players with stats
+                players.append({
+                    "name": name,
+                    "jersey": jersey,
+                    "position": position,
+                    "ppg": ppg,
+                    "rpg": rpg,
+                    "apg": apg,
+                    "gp": gp
+                })
+        except Exception:
+            pass  # Skip players without stats
+
+    # Sort by PPG descending
+    players.sort(key=lambda x: float(x.get("ppg", 0)), reverse=True)
+    return players
+
+
 def get_rankings() -> dict:
     """Get current AP Top 25 rankings as a lookup dict {team_abbrev: rank}."""
     url = f"{BASE_API}/rankings"
@@ -268,7 +322,7 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
     return False, "No game live or imminent"
 
 
-def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict) -> str:
+def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict, roster: list) -> str:
     """Generate the main game page HTML."""
     now = datetime.now(PT).strftime("%Y-%m-%d %I:%M %p PT")
 
@@ -309,6 +363,23 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 content_lines.append(f"\nCould not load game details: {e}")
     else:
         content_lines.append("\nNo game in progress today.")
+
+        # Show player stats when no game
+        if roster:
+            content_lines.append("")
+            content_lines.append("=" * 47)
+            content_lines.append("SEASON STATS")
+            content_lines.append("-" * 47)
+            content_lines.append(f"{'PLAYER':<20} {'PPG':>5} {'RPG':>5} {'APG':>5}")
+            content_lines.append("-" * 47)
+            for p in roster[:10]:  # Top 10 players
+                name = p.get("name", "")[:18]
+                jersey = p.get("jersey", "")
+                player_str = f"#{jersey} {name}" if jersey else name
+                ppg = p.get("ppg", "-")
+                rpg = p.get("rpg", "-")
+                apg = p.get("apg", "-")
+                content_lines.append(f"{player_str:<20} {ppg:>5} {rpg:>5} {apg:>5}")
 
     # Upcoming schedule
     content_lines.append("\n")
@@ -466,11 +537,15 @@ def main():
     # Fetch rankings
     rankings = get_rankings()
 
-    # Find live game data
+    # Fetch roster with stats (only if no live game, to save API calls)
     usc_game = find_usc_game(scoreboard)
+    roster = []
+    if not usc_game:
+        print("Fetching player stats...")
+        roster = get_roster_with_stats()
 
     # Generate HTML
-    html = generate_game_html(usc_game, schedule, rankings)
+    html = generate_game_html(usc_game, schedule, rankings, roster)
 
     # Write output
     output_path = Path(__file__).parent.parent / "index.html"
