@@ -336,7 +336,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
         if opponent:
             opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
-            home_away = "vs" if opponent.get("homeAway") == "away" else "@"
+            home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
             # Get rankings from lookup
             opp_rank = rankings.get(opp_abbrev, 0)
@@ -396,7 +396,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
 
             # Home vs away
-            home_away = "vs" if opponent.get("homeAway") == "away" else "@"
+            home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
             content_lines.append(f"{date_str:<8} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
 
