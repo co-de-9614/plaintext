@@ -36,6 +36,25 @@ def fetch_json(url: str) -> dict:
         return json.loads(resp.read().decode())
 
 
+def get_rankings() -> dict:
+    """Get current AP Top 25 rankings as a lookup dict {team_abbrev: rank}."""
+    url = f"{BASE_API}/rankings"
+    try:
+        data = fetch_json(url)
+        rankings = {}
+        for ranking in data.get("rankings", []):
+            if "AP" in ranking.get("name", ""):
+                for team in ranking.get("ranks", []):
+                    abbrev = team.get("team", {}).get("abbreviation", "")
+                    rank = team.get("current", 0)
+                    if abbrev and rank:
+                        rankings[abbrev] = rank
+                break
+        return rankings
+    except Exception:
+        return {}
+
+
 def get_team_schedule() -> dict:
     """Get USC's schedule and recent results."""
     url = f"{BASE_API}/teams/{USC_TEAM_ID}/schedule"
@@ -249,7 +268,7 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
     return False, "No game live or imminent"
 
 
-def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
+def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict) -> str:
     """Generate the main game page HTML."""
     now = datetime.now(PT).strftime("%Y-%m-%d %I:%M %p PT")
 
@@ -316,9 +335,17 @@ def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
         competitors = comp.get("competitors", [])
         opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
         if opponent:
-            opp_name = opponent.get("team", {}).get("displayName", "TBD")
+            opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
             home_away = "vs" if opponent.get("homeAway") == "away" else "@"
-            content_lines.append(f"{date_str:<20} {home_away} {opp_name}")
+
+            # Get rankings from lookup
+            opp_rank = rankings.get(opp_abbrev, 0)
+            usc_rank = rankings.get("USC", 0)
+
+            opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+            usc_str = f"(#{usc_rank})" if usc_rank else ""
+
+            content_lines.append(f"{date_str:<22} {home_away} {opp_str} {usc_str}")
 
     # Recent results
     content_lines.append("\n")
@@ -364,7 +391,11 @@ def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
             except:
                 result = "-"
 
-            content_lines.append(f"{date_str:<8} {result} {usc_score}-{opp_score} vs {opp_abbrev}")
+            # Add ranking if opponent is ranked
+            opp_rank = rankings.get(opp_abbrev, 0)
+            opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+
+            content_lines.append(f"{date_str:<8} {result} {usc_score}-{opp_score} vs {opp_str}")
 
     content = "\n".join(content_lines)
 
@@ -429,11 +460,14 @@ def main():
 
     print(f"Updating: {reason}" if should_update else "Forced update")
 
+    # Fetch rankings
+    rankings = get_rankings()
+
     # Find live game data
     usc_game = find_usc_game(scoreboard)
 
     # Generate HTML
-    html = generate_game_html(usc_game, schedule)
+    html = generate_game_html(usc_game, schedule, rankings)
 
     # Write output
     output_path = Path(__file__).parent.parent / "index.html"
