@@ -345,7 +345,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
             usc_str = f"(#{usc_rank})" if usc_rank else ""
 
-            content_lines.append(f"{date_str:<22} {home_away} {opp_str} {usc_str}")
+            content_lines.append(f"{date_str} {home_away} {opp_str} {usc_str}".rstrip())
 
     # Recent results
     content_lines.append("\n")
@@ -398,7 +398,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             # Home vs away
             home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
-            content_lines.append(f"{date_str:<8} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
+            content_lines.append(f"{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
 
     content = "\n".join(content_lines)
 
