@@ -135,9 +135,9 @@ def format_box_score(game_summary: dict) -> str:
         team = team_data.get("team", {})
         team_name = team.get("abbreviation", "TEAM")
         lines.append(f"\n{team_name}")
-        lines.append("-" * 40)
+        lines.append("-" * 47)
         lines.append(f"{'PLAYER':<20} {'MIN':>5} {'PTS':>5} {'REB':>5} {'AST':>5} {'FG':>8}")
-        lines.append("-" * 40)
+        lines.append("-" * 47)
 
         statistics = team_data.get("statistics", [])
         if statistics:
@@ -167,7 +167,7 @@ def format_play_by_play(game_summary: dict, last_n: int = 10) -> str:
     recent = plays[-last_n:] if len(plays) > last_n else plays
     recent.reverse()  # Most recent first
 
-    lines = ["RECENT PLAYS", "-" * 40]
+    lines = ["RECENT PLAYS", "-" * 47]
 
     for play in recent:
         clock = play.get("clock", {}).get("displayValue", "")
@@ -256,7 +256,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
     content_lines = []
     content_lines.append(f"USC WOMEN'S BASKETBALL")
     content_lines.append(f"Updated: {now}")
-    content_lines.append("=" * 40)
+    content_lines.append("=" * 47)
 
     if game_data:
         event = game_data["event"]
@@ -293,9 +293,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
 
     # Upcoming schedule
     content_lines.append("\n")
-    content_lines.append("=" * 40)
+    content_lines.append("=" * 47)
     content_lines.append("UPCOMING SCHEDULE")
-    content_lines.append("-" * 40)
+    content_lines.append("-" * 47)
 
     events = schedule_data.get("events", [])
     upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "pre"]
@@ -323,7 +323,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
     # Recent results
     content_lines.append("\n")
     content_lines.append("RECENT RESULTS")
-    content_lines.append("-" * 40)
+    content_lines.append("-" * 47)
 
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
 
