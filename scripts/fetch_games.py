@@ -37,77 +37,96 @@ def fetch_json(url: str) -> dict:
 
 
 def get_roster_with_stats() -> list:
-    """Get USC roster with current season stats for each player."""
-    # Get team info to find games played this season
-    team_url = f"{BASE_API}/teams/{USC_TEAM_ID}"
-    team_data = fetch_json(team_url)
-    team_record = team_data.get("team", {}).get("record", {})
-    team_gp = 0
-    for item in team_record.get("items", []):
-        if item.get("type") == "total":
-            for stat in item.get("stats", []):
-                if stat.get("name") == "gamesPlayed":
-                    team_gp = int(stat.get("value", 0))
-                    break
+    """Get USC roster with current season stats aggregated from game box scores."""
+    # Get schedule to find completed games
+    schedule_url = f"{BASE_API}/teams/{USC_TEAM_ID}/schedule"
+    schedule_data = fetch_json(schedule_url)
 
-    # Get roster
-    roster_url = f"{BASE_API}/teams/{USC_TEAM_ID}/roster"
-    roster_data = fetch_json(roster_url)
+    events = schedule_data.get("events", [])
+    completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
 
-    players = []
-    for athlete in roster_data.get("athletes", []):
-        athlete_id = athlete.get("id")
-        name = athlete.get("displayName", "Unknown")
-        jersey = athlete.get("jersey", "")
-        position = athlete.get("position", {}).get("abbreviation", "")
+    # Aggregate stats from each game
+    # Stats indices: 0=MIN, 1=PTS, 5=REB, 6=AST, 8=STL, 9=BLK
+    player_totals = {}  # {athlete_id: {name, jersey, pts, reb, ast, stl, blk, gp}}
 
-        # Fetch individual stats
-        stats_url = f"https://sports.core.api.espn.com/v2/sports/basketball/leagues/womens-college-basketball/athletes/{athlete_id}/statistics/0"
+    for event in completed:
+        event_id = event.get("id")
+        if not event_id:
+            continue
+
         try:
-            req = urllib.request.Request(stats_url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                stats_data = json.loads(resp.read().decode())
+            summary_url = f"{BASE_API}/summary?event={event_id}"
+            game_data = fetch_json(summary_url)
 
-            splits = stats_data.get("splits", {})
-            categories = splits.get("categories", [])
+            boxscore = game_data.get("boxscore", {})
+            players = boxscore.get("players", [])
 
-            # Extract key stats
-            ppg = rpg = apg = spg = bpg = gp = None
-            for cat in categories:
-                for s in cat.get("stats", []):
-                    if s.get("name") == "avgPoints":
-                        ppg = s.get("displayValue")
-                    elif s.get("name") == "avgRebounds":
-                        rpg = s.get("displayValue")
-                    elif s.get("name") == "avgAssists":
-                        apg = s.get("displayValue")
-                    elif s.get("name") == "avgSteals":
-                        spg = s.get("displayValue")
-                    elif s.get("name") == "avgBlocks":
-                        bpg = s.get("displayValue")
-                    elif s.get("name") == "gamesPlayed":
-                        gp = s.get("displayValue")
-
-            # Only include players with current season stats
-            # Filter out career stats by checking if GP is reasonable for current season
-            if ppg and gp:
-                player_gp = int(float(gp))
-                # If player GP is way higher than team GP, it's career stats - skip
-                if team_gp > 0 and player_gp > team_gp + 5:
+            for team in players:
+                if team.get("team", {}).get("id") != USC_TEAM_ID:
                     continue
-                players.append({
-                    "name": name,
-                    "jersey": jersey,
-                    "position": position,
-                    "ppg": ppg,
-                    "rpg": rpg,
-                    "apg": apg,
-                    "spg": spg,
-                    "bpg": bpg,
-                    "gp": gp
-                })
+
+                statistics = team.get("statistics", [])
+                if not statistics:
+                    continue
+
+                athletes = statistics[0].get("athletes", [])
+                for a in athletes:
+                    athlete = a.get("athlete", {})
+                    athlete_id = athlete.get("id")
+                    if not athlete_id:
+                        continue
+
+                    stats = a.get("stats", [])
+                    if len(stats) < 10:
+                        continue
+
+                    # Parse stats (handle DNP)
+                    try:
+                        mins = int(stats[0]) if stats[0] and stats[0] != '--' else 0
+                        pts = int(stats[1]) if stats[1] and stats[1] != '--' else 0
+                        reb = int(stats[5]) if stats[5] and stats[5] != '--' else 0
+                        ast = int(stats[6]) if stats[6] and stats[6] != '--' else 0
+                        stl = int(stats[8]) if stats[8] and stats[8] != '--' else 0
+                        blk = int(stats[9]) if stats[9] and stats[9] != '--' else 0
+                    except (ValueError, IndexError):
+                        continue
+
+                    # Only count if player actually played
+                    if mins == 0:
+                        continue
+
+                    if athlete_id not in player_totals:
+                        player_totals[athlete_id] = {
+                            "name": athlete.get("displayName", "Unknown"),
+                            "jersey": athlete.get("jersey", ""),
+                            "pts": 0, "reb": 0, "ast": 0, "stl": 0, "blk": 0, "gp": 0
+                        }
+
+                    player_totals[athlete_id]["pts"] += pts
+                    player_totals[athlete_id]["reb"] += reb
+                    player_totals[athlete_id]["ast"] += ast
+                    player_totals[athlete_id]["stl"] += stl
+                    player_totals[athlete_id]["blk"] += blk
+                    player_totals[athlete_id]["gp"] += 1
+
         except Exception:
-            pass  # Skip players without stats
+            continue
+
+    # Calculate averages
+    players = []
+    for athlete_id, totals in player_totals.items():
+        gp = totals["gp"]
+        if gp > 0:
+            players.append({
+                "name": totals["name"],
+                "jersey": totals["jersey"],
+                "ppg": f"{totals['pts'] / gp:.1f}",
+                "rpg": f"{totals['reb'] / gp:.1f}",
+                "apg": f"{totals['ast'] / gp:.1f}",
+                "spg": f"{totals['stl'] / gp:.1f}",
+                "bpg": f"{totals['blk'] / gp:.1f}",
+                "gp": str(gp)
+            })
 
     # Sort by PPG descending
     players.sort(key=lambda x: float(x.get("ppg", 0)), reverse=True)
