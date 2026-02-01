@@ -12,6 +12,10 @@ import sys
 import urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+# Pacific Time zone
+PT = ZoneInfo("America/Los_Angeles")
 
 # USC Women's Basketball team ID on ESPN
 USC_TEAM_ID = "30"
@@ -204,7 +208,7 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
 
     Returns (should_update, reason)
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)  # Use UTC for comparison since ESPN uses UTC
 
     # First check scoreboard for live game
     usc_game = find_usc_game(scoreboard)
@@ -247,7 +251,7 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
 
 def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
     """Generate the main game page HTML."""
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    now = datetime.now(PT).strftime("%Y-%m-%d %I:%M %p PT")
 
     content_lines = []
     content_lines.append(f"USC WOMEN'S BASKETBALL")
@@ -302,7 +306,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict) -> str:
         if date_raw:
             try:
                 dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
-                date_str = dt.strftime("%a %b %d %I:%M%p")
+                dt_pt = dt.astimezone(PT)
+                date_str = dt_pt.strftime("%a %b %d %I:%M%p PT")
             except:
                 date_str = date_raw[:10]
         else:
