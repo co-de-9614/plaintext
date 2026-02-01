@@ -37,7 +37,19 @@ def fetch_json(url: str) -> dict:
 
 
 def get_roster_with_stats() -> list:
-    """Get USC roster with season stats for each player."""
+    """Get USC roster with current season stats for each player."""
+    # Get team info to find games played this season
+    team_url = f"{BASE_API}/teams/{USC_TEAM_ID}"
+    team_data = fetch_json(team_url)
+    team_record = team_data.get("team", {}).get("record", {})
+    team_gp = 0
+    for item in team_record.get("items", []):
+        if item.get("type") == "total":
+            for stat in item.get("stats", []):
+                if stat.get("name") == "gamesPlayed":
+                    team_gp = int(stat.get("value", 0))
+                    break
+
     # Get roster
     roster_url = f"{BASE_API}/teams/{USC_TEAM_ID}/roster"
     roster_data = fetch_json(roster_url)
@@ -76,7 +88,13 @@ def get_roster_with_stats() -> list:
                     elif s.get("name") == "gamesPlayed":
                         gp = s.get("displayValue")
 
-            if ppg:  # Only include players with stats
+            # Only include players with current season stats
+            # Filter out career stats by checking if GP is reasonable for current season
+            if ppg and gp:
+                player_gp = int(float(gp))
+                # If player GP is way higher than team GP, it's career stats - skip
+                if team_gp > 0 and player_gp > team_gp + 5:
+                    continue
                 players.append({
                     "name": name,
                     "jersey": jersey,
@@ -379,9 +397,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             content_lines.append(f"{'PLAYER':<18} {'PPG':>5} {'RPG':>4} {'APG':>4} {'STL':>4} {'BLK':>4}")
             content_lines.append("-" * 47)
             for p in roster:  # Full roster
-                name = p.get("name", "")[:16]
+                name = p.get("name", "")[:14]
                 jersey = p.get("jersey", "")
-                player_str = f"#{jersey} {name}" if jersey else name
+                player_str = f"#{jersey:>2} {name}" if jersey else f"    {name}"
                 ppg = p.get("ppg", "-")
                 rpg = p.get("rpg", "-")
                 apg = p.get("apg", "-")
