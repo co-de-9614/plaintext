@@ -60,7 +60,7 @@ def get_roster_with_stats() -> list:
             categories = splits.get("categories", [])
 
             # Extract key stats
-            ppg = rpg = apg = gp = None
+            ppg = rpg = apg = spg = bpg = gp = None
             for cat in categories:
                 for s in cat.get("stats", []):
                     if s.get("name") == "avgPoints":
@@ -69,6 +69,10 @@ def get_roster_with_stats() -> list:
                         rpg = s.get("displayValue")
                     elif s.get("name") == "avgAssists":
                         apg = s.get("displayValue")
+                    elif s.get("name") == "avgSteals":
+                        spg = s.get("displayValue")
+                    elif s.get("name") == "avgBlocks":
+                        bpg = s.get("displayValue")
                     elif s.get("name") == "gamesPlayed":
                         gp = s.get("displayValue")
 
@@ -80,6 +84,8 @@ def get_roster_with_stats() -> list:
                     "ppg": ppg,
                     "rpg": rpg,
                     "apg": apg,
+                    "spg": spg,
+                    "bpg": bpg,
                     "gp": gp
                 })
         except Exception:
@@ -370,16 +376,18 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             content_lines.append("=" * 47)
             content_lines.append("SEASON STATS")
             content_lines.append("-" * 47)
-            content_lines.append(f"{'PLAYER':<20} {'PPG':>5} {'RPG':>5} {'APG':>5}")
+            content_lines.append(f"{'PLAYER':<18} {'PPG':>5} {'RPG':>4} {'APG':>4} {'STL':>4} {'BLK':>4}")
             content_lines.append("-" * 47)
-            for p in roster[:10]:  # Top 10 players
-                name = p.get("name", "")[:18]
+            for p in roster:  # Full roster
+                name = p.get("name", "")[:16]
                 jersey = p.get("jersey", "")
                 player_str = f"#{jersey} {name}" if jersey else name
                 ppg = p.get("ppg", "-")
                 rpg = p.get("rpg", "-")
                 apg = p.get("apg", "-")
-                content_lines.append(f"{player_str:<20} {ppg:>5} {rpg:>5} {apg:>5}")
+                spg = p.get("spg", "-")
+                bpg = p.get("bpg", "-")
+                content_lines.append(f"{player_str:<18} {ppg:>5} {rpg:>4} {apg:>4} {spg:>4} {bpg:>4}")
 
     # Upcoming schedule
     content_lines.append("\n")
