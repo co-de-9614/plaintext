@@ -846,6 +846,7 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(f"{team_name} Starters:")
         content_lines.append(stats_header)
 
+        row_idx = 0
         for a in starters:
             athlete = a.get("athlete", {})
             name = athlete.get("displayName", "Unknown")
@@ -853,13 +854,15 @@ def generate_game_page(event_id: str) -> str:
             position = athlete.get("position", {}).get("abbreviation", "")
             stats = a.get("stats", [])
 
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            row_idx += 1
+
             # Player name line
             player_line = f"{name} {position}" if position else name
-            content_lines.append(player_line)
 
             # Stats line (indices: 0=MIN, 1=PTS, 2=FG, 3=3PT, 4=FT, 5=REB, 6=AST, 7=TO, 8=STL, 9=BLK, 12=PF)
             if not stats or len(stats) < 10:
-                content_lines.append("  Did not play")
+                stats_line = "  Did not play"
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -874,14 +877,17 @@ def generate_game_page(event_id: str) -> str:
                 pf = stats[12] if len(stats) > 12 and stats[12] and stats[12] != '--' else "0"
 
                 if mins == "0" or mins == "0:00":
-                    content_lines.append("  Did not play")
+                    stats_line = "  Did not play"
                 else:
-                    content_lines.append(f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}")
+                    stats_line = f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}"
+
+            content_lines.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
         # Bench section
         content_lines.append(f"{team_name} Bench:")
         content_lines.append(stats_header)
 
+        row_idx = 0
         for a in bench:
             athlete = a.get("athlete", {})
             name = athlete.get("displayName", "Unknown")
@@ -889,13 +895,15 @@ def generate_game_page(event_id: str) -> str:
             position = athlete.get("position", {}).get("abbreviation", "")
             stats = a.get("stats", [])
 
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            row_idx += 1
+
             # Player name line
             player_line = f"{name} {position}" if position else name
-            content_lines.append(player_line)
 
             # Stats line
             if not stats or len(stats) < 10:
-                content_lines.append("  Did not play")
+                stats_line = "  Did not play"
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -910,9 +918,11 @@ def generate_game_page(event_id: str) -> str:
                 pf = stats[12] if len(stats) > 12 and stats[12] and stats[12] != '--' else "0"
 
                 if mins == "0" or mins == "0:00":
-                    content_lines.append("  Did not play")
+                    stats_line = "  Did not play"
                 else:
-                    content_lines.append(f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}")
+                    stats_line = f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}"
+
+            content_lines.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
         content_lines.append("")
 
@@ -951,6 +961,14 @@ def generate_game_page(event_id: str) -> str:
         }}
         a {{
             color: #90caf9;
+        }}
+        .row-even {{
+            background: #252525;
+            display: block;
+        }}
+        .row-odd {{
+            background: transparent;
+            display: block;
         }}
     </style>
 </head>
