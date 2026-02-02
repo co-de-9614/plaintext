@@ -861,8 +861,8 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append("")
         content_lines.append('<span class="game-flow">')
 
-        # USC label at top
-        content_lines.append("USC")
+        # USC label at top (aligned with dots)
+        content_lines.append("     USC")
 
         # USC rows (dots going up when USC is leading) - cardinal color
         for row in range(usc_height, 0, -1):
@@ -897,8 +897,8 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             content_lines.append(f'<span style="color: #{opp_color};">     {line}</span>')
 
-        # Opponent label at bottom
-        content_lines.append(f"{opp_abbrev}")
+        # Opponent label at bottom (aligned with dots)
+        content_lines.append(f"     {opp_abbrev}")
 
         content_lines.append('</span>')
         content_lines.append("")
