@@ -792,7 +792,7 @@ def generate_game_page(event_id: str) -> str:
     content_lines.append(home_row)
     content_lines.append("")
 
-    # Game Flow visualization
+    # Game Flow visualization (based on game lead)
     plays = game.get("plays", [])
     scoring_plays = [p for p in plays if p.get("scoringPlay")]
 
@@ -802,19 +802,15 @@ def generate_game_page(event_id: str) -> str:
         total_width = quarter_width * num_periods
         max_height = 6  # max dots up or down
 
-        # Track scoring at each column position
-        # away_dots[col] = number of dots above timeline
-        # home_dots[col] = number of dots below timeline
-        away_dots = {}
-        home_dots = {}
-
-        home_team_id = home_team.get("id", "")
+        # Track lead at each column position
+        # Positive = away team leading, negative = home team leading
+        lead_at_col = {}
 
         for play in scoring_plays:
             period = play.get("period", {}).get("number", 1)
             clock_str = play.get("clock", {}).get("displayValue", "10:00")
-            score_val = play.get("scoreValue", 0)
-            play_team_id = str(play.get("team", {}).get("id", ""))
+            away_sc = play.get("awayScore", 0)
+            home_sc = play.get("homeScore", 0)
 
             # Parse clock to get position within quarter (10:00 = start, 0:00 = end)
             try:
@@ -831,23 +827,28 @@ def generate_game_page(event_id: str) -> str:
             col = int((period - 1) * quarter_width + quarter_pos * (quarter_width - 1))
             col = max(0, min(col, total_width - 1))
 
-            # Calculate dots (2 dots = 3 points, so 1 dot ≈ 1.5 points)
-            dots = max(1, round(score_val / 1.5))
+            # Lead: positive = away leading, negative = home leading
+            lead = away_sc - home_sc
+            lead_at_col[col] = lead
 
-            if play_team_id == home_team_id:
-                home_dots[col] = home_dots.get(col, 0) + dots
-            else:
-                away_dots[col] = away_dots.get(col, 0) + dots
+        # Fill in gaps by carrying forward the last known lead
+        last_lead = 0
+        filled_lead = []
+        for col in range(total_width):
+            if col in lead_at_col:
+                last_lead = lead_at_col[col]
+            filled_lead.append(last_lead)
 
         # Build the visualization
-        content_lines.append(f"<b>Game Flow:</b>                     (2 dots = 3 points)")
+        content_lines.append(f"<b>Game Flow:</b>                     (1 dot = 3 points)")
         content_lines.append("")
 
-        # Away team rows (dots going up)
+        # Away team rows (dots going up when away is leading)
         for row in range(max_height, 0, -1):
             line = "     "  # padding for team abbrev
+            threshold = row * 3  # 1 dot = 3 points
             for col in range(total_width):
-                if away_dots.get(col, 0) >= row:
+                if filled_lead[col] >= threshold:
                     line += ":"
                 else:
                     line += " "
@@ -863,11 +864,12 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(f"{away_abbrev:<5}{timeline}")
         content_lines.append(f"{home_abbrev:<5}")
 
-        # Home team rows (dots going down)
+        # Home team rows (dots going down when home is leading)
         for row in range(1, max_height + 1):
             line = "     "  # padding
+            threshold = row * 3  # 1 dot = 3 points
             for col in range(total_width):
-                if home_dots.get(col, 0) >= row:
+                if filled_lead[col] <= -threshold:
                     line += ":"
                 else:
                     line += " "
