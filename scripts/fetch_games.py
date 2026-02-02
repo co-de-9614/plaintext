@@ -862,18 +862,21 @@ def generate_game_page(event_id: str) -> str:
             timeline += "=" * (quarter_width - 1) + "+"
 
         content_lines.append(f"{away_abbrev:<5}{timeline}")
-        content_lines.append(f"{home_abbrev:<5}")
 
         # Home team rows (dots going down when home is leading)
         for row in range(1, max_height + 1):
-            line = "     "  # padding
             threshold = row * 3  # 1 dot = 3 points
+            line = ""
             for col in range(total_width):
                 if filled_lead[col] <= -threshold:
                     line += ":"
                 else:
                     line += " "
-            content_lines.append(line)
+            # Put home team abbrev on first row
+            if row == 1:
+                content_lines.append(f"{home_abbrev:<5}{line}")
+            else:
+                content_lines.append(f"     {line}")
 
         content_lines.append("")
 
