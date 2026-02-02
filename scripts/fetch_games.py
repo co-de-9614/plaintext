@@ -887,6 +887,9 @@ def generate_game_page(event_id: str) -> str:
             timeline += "=" * (quarter_width - 1) + "+"
         content_lines.append(f"     {timeline}")
 
+        # Blank line after timeline (to match spacing above)
+        content_lines.append("")
+
         # Opponent rows (dots going down when opponent is leading)
         for row in range(1, opp_height + 1):
             threshold = row * 3
@@ -896,8 +899,8 @@ def generate_game_page(event_id: str) -> str:
                     line += "."
                 else:
                     line += " "
-            # Put opponent label on the last row of opponent dots
-            if row == opp_height:
+            # Put opponent label on the first row of opponent dots
+            if row == 1:
                 content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<5}{line}</span>')
             else:
                 content_lines.append(f'<span style="color: #{opp_color};">     {line}</span>')
