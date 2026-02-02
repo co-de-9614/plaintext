@@ -896,8 +896,8 @@ def generate_game_page(event_id: str) -> str:
                     line += "."
                 else:
                     line += " "
-            # Put opponent label on the first row of opponent dots
-            if row == 1:
+            # Put opponent label on the last row of opponent dots
+            if row == opp_height:
                 content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<5}{line}</span>')
             else:
                 content_lines.append(f'<span style="color: #{opp_color};">     {line}</span>')
