@@ -863,6 +863,7 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(f"{team_name} Starters:")
         content_lines.append(stats_header)
 
+        player_spans = []
         row_idx = 0
         for a in starters_sorted:
             athlete = a.get("athlete", {})
@@ -899,12 +900,15 @@ def generate_game_page(event_id: str) -> str:
                 else:
                     stats_line = f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}"
 
-            content_lines.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+            player_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+
+        content_lines.append("".join(player_spans))
 
         # Bench section
         content_lines.append(f"{team_name} Bench:")
         content_lines.append(stats_header)
 
+        player_spans = []
         row_idx = 0
         for a in bench_sorted:
             athlete = a.get("athlete", {})
@@ -941,7 +945,9 @@ def generate_game_page(event_id: str) -> str:
                 else:
                     stats_line = f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}"
 
-            content_lines.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+            player_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+
+        content_lines.append("".join(player_spans))
 
         content_lines.append("")
 
@@ -984,10 +990,14 @@ def generate_game_page(event_id: str) -> str:
         .row-even {{
             background: #252525;
             display: block;
+            margin: 0;
+            padding: 0;
         }}
         .row-odd {{
             background: transparent;
             display: block;
+            margin: 0;
+            padding: 0;
         }}
     </style>
 </head>
