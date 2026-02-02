@@ -826,37 +826,92 @@ def generate_game_page(event_id: str) -> str:
 
     for team_data in players_data:
         team = team_data.get("team", {})
-        team_abbrev = team.get("abbreviation", "TEAM")
-        is_usc = team.get("id") == USC_TEAM_ID
-
-        content_lines.append(f"{team.get('displayName', team_abbrev)}:")
-        content_lines.append(f"{'PLAYER':<18} {'MIN':>4} {'PTS':>4} {'FG':>6} {'3PT':>5} {'REB':>4} {'AST':>4}")
-        content_lines.append("-" * 50)
+        team_name = team.get("shortDisplayName", team.get("abbreviation", "TEAM"))
 
         statistics = team_data.get("statistics", [])
-        if statistics:
-            athletes = statistics[0].get("athletes", [])
+        if not statistics:
+            continue
 
-            # Separate starters and bench
-            starters = [a for a in athletes if a.get("starter")]
-            bench = [a for a in athletes if not a.get("starter")]
+        athletes = statistics[0].get("athletes", [])
 
-            for a in starters + bench:
-                athlete = a.get("athlete", {})
-                name = athlete.get("shortName", athlete.get("displayName", "Unknown"))[:16]
-                jersey = athlete.get("jersey", "")
-                stats = a.get("stats", [])
+        # Separate starters and bench
+        starters = [a for a in athletes if a.get("starter")]
+        bench = [a for a in athletes if not a.get("starter")]
 
-                if len(stats) >= 6:
-                    mins = stats[0] if stats[0] else "0"
-                    pts = stats[1] if stats[1] else "0"
-                    fg = stats[2] if stats[2] else "-"
-                    threept = stats[3] if stats[3] else "-"
-                    reb = stats[5] if stats[5] else "0"
-                    ast = stats[6] if len(stats) > 6 and stats[6] else "0"
+        # Stats header line
+        stats_header = " MIN    FG   3PT    FT  R  A  S  B TO PF PTS"
 
-                    player_name = f"#{jersey} {name}" if jersey else name
-                    content_lines.append(f"{player_name:<18} {mins:>4} {pts:>4} {fg:>6} {threept:>5} {reb:>4} {ast:>4}")
+        # Starters section
+        content_lines.append(f"{team_name} Starters:")
+        content_lines.append(stats_header)
+
+        for a in starters:
+            athlete = a.get("athlete", {})
+            name = athlete.get("displayName", "Unknown")
+            jersey = athlete.get("jersey", "")
+            position = athlete.get("position", {}).get("abbreviation", "")
+            stats = a.get("stats", [])
+
+            # Player name line
+            player_line = f"{name} {position}" if position else name
+            content_lines.append(player_line)
+
+            # Stats line (indices: 0=MIN, 1=PTS, 2=FG, 3=3PT, 4=FT, 5=REB, 6=AST, 7=TO, 8=STL, 9=BLK, 12=PF)
+            if not stats or len(stats) < 10:
+                content_lines.append("  Did not play")
+            else:
+                mins = stats[0] if stats[0] and stats[0] != '--' else "0"
+                pts = stats[1] if stats[1] and stats[1] != '--' else "0"
+                fg = stats[2] if stats[2] and stats[2] != '--' else "0-0"
+                threept = stats[3] if stats[3] and stats[3] != '--' else "0-0"
+                ft = stats[4] if stats[4] and stats[4] != '--' else "0-0"
+                reb = stats[5] if stats[5] and stats[5] != '--' else "0"
+                ast = stats[6] if stats[6] and stats[6] != '--' else "0"
+                to = stats[7] if stats[7] and stats[7] != '--' else "0"
+                stl = stats[8] if stats[8] and stats[8] != '--' else "0"
+                blk = stats[9] if stats[9] and stats[9] != '--' else "0"
+                pf = stats[12] if len(stats) > 12 and stats[12] and stats[12] != '--' else "0"
+
+                if mins == "0" or mins == "0:00":
+                    content_lines.append("  Did not play")
+                else:
+                    content_lines.append(f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}")
+
+        # Bench section
+        content_lines.append(f"{team_name} Bench:")
+        content_lines.append(stats_header)
+
+        for a in bench:
+            athlete = a.get("athlete", {})
+            name = athlete.get("displayName", "Unknown")
+            jersey = athlete.get("jersey", "")
+            position = athlete.get("position", {}).get("abbreviation", "")
+            stats = a.get("stats", [])
+
+            # Player name line
+            player_line = f"{name} {position}" if position else name
+            content_lines.append(player_line)
+
+            # Stats line
+            if not stats or len(stats) < 10:
+                content_lines.append("  Did not play")
+            else:
+                mins = stats[0] if stats[0] and stats[0] != '--' else "0"
+                pts = stats[1] if stats[1] and stats[1] != '--' else "0"
+                fg = stats[2] if stats[2] and stats[2] != '--' else "0-0"
+                threept = stats[3] if stats[3] and stats[3] != '--' else "0-0"
+                ft = stats[4] if stats[4] and stats[4] != '--' else "0-0"
+                reb = stats[5] if stats[5] and stats[5] != '--' else "0"
+                ast = stats[6] if stats[6] and stats[6] != '--' else "0"
+                to = stats[7] if stats[7] and stats[7] != '--' else "0"
+                stl = stats[8] if stats[8] and stats[8] != '--' else "0"
+                blk = stats[9] if stats[9] and stats[9] != '--' else "0"
+                pf = stats[12] if len(stats) > 12 and stats[12] and stats[12] != '--' else "0"
+
+                if mins == "0" or mins == "0:00":
+                    content_lines.append("  Did not play")
+                else:
+                    content_lines.append(f"{mins:>5} {fg:>5} {threept:>5} {ft:>5} {reb:>2} {ast:>2} {stl:>2} {blk:>2} {to:>2} {pf:>2} {pts:>3}")
 
         content_lines.append("")
 
@@ -883,7 +938,7 @@ def generate_game_page(event_id: str) -> str:
             padding: 16px;
             max-width: 100%;
             margin: 0 auto;
-            line-height: 1.4;
+            line-height: 1.3;
             overflow-x: hidden;
         }}
         pre {{
@@ -891,7 +946,7 @@ def generate_game_page(event_id: str) -> str:
             word-wrap: break-word;
             overflow-wrap: break-word;
             margin: 0;
-            font-size: 14px;
+            font-size: 12px;
         }}
         a {{
             color: #90caf9;
