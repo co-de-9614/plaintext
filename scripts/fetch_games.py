@@ -830,21 +830,29 @@ def generate_game_page(event_id: str) -> str:
             lead = away_sc - home_sc
             lead_at_col[col] = lead
 
+        # Fill in gaps by carrying forward the last known lead
+        last_lead = 0
+        filled_lead = []
+        for col in range(total_width):
+            if col in lead_at_col:
+                last_lead = lead_at_col[col]
+            filled_lead.append(last_lead)
+
         # Calculate max height needed based on max lead (3 points per dot)
-        max_lead = max(abs(v) for v in lead_at_col.values()) if lead_at_col else 0
-        max_height = max(6, (max_lead + 2) // 3)  # At least 6 rows, more if needed
+        max_lead = max(abs(min(filled_lead)), abs(max(filled_lead)))
+        max_height = max(1, (max_lead + 2) // 3)
 
         # Build the visualization
-        content_lines.append(f"<b>Game Flow:</b>                     (1 dot = 3 points)")
+        content_lines.append(f"<b>Game Flow:</b>                    (1 dot = 3 pts)")
         content_lines.append("")
+        content_lines.append('<span class="game-flow">')
 
         # Away team rows (dots going up when away is leading)
         for row in range(max_height, 0, -1):
             line = "     "  # padding for team abbrev
-            threshold = row * 3  # 1 dot = 3 points
+            threshold = row * 3
             for col in range(total_width):
-                lead = lead_at_col.get(col, None)
-                if lead is not None and lead >= threshold:
+                if filled_lead[col] >= threshold:
                     line += "."
                 else:
                     line += " "
@@ -861,11 +869,10 @@ def generate_game_page(event_id: str) -> str:
 
         # Home team rows (dots going down when home is leading)
         for row in range(1, max_height + 1):
-            threshold = row * 3  # 1 dot = 3 points
+            threshold = row * 3
             line = ""
             for col in range(total_width):
-                lead = lead_at_col.get(col, None)
-                if lead is not None and lead <= -threshold:
+                if filled_lead[col] <= -threshold:
                     line += "."
                 else:
                     line += " "
@@ -875,6 +882,7 @@ def generate_game_page(event_id: str) -> str:
             else:
                 content_lines.append(f"     {line}")
 
+        content_lines.append('</span>')
         content_lines.append("")
 
     # Game info
@@ -1147,6 +1155,10 @@ def generate_game_page(event_id: str) -> str:
             display: block;
             margin: 0;
             padding: 0;
+        }}
+        .game-flow {{
+            line-height: 0.5;
+            display: block;
         }}
     </style>
 </head>
