@@ -845,7 +845,7 @@ def generate_game_page(event_id: str) -> str:
             for col in range(total_width):
                 lead = lead_at_col.get(col, None)
                 if lead is not None and lead >= threshold:
-                    line += ":"
+                    line += "."
                 else:
                     line += " "
             content_lines.append(line)
@@ -866,7 +866,7 @@ def generate_game_page(event_id: str) -> str:
             for col in range(total_width):
                 lead = lead_at_col.get(col, None)
                 if lead is not None and lead <= -threshold:
-                    line += ":"
+                    line += "."
                 else:
                     line += " "
             # Put home team abbrev on first row
