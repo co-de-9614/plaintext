@@ -866,7 +866,7 @@ def generate_game_page(event_id: str) -> str:
         }
 
         # Starters section
-        content_lines.append(f"{team_abbrev} STARTERS")
+        content_lines.append(f"<b>{team_abbrev} STARTERS</b>")
         content_lines.append(stats_header)
 
         player_spans = []
@@ -876,7 +876,7 @@ def generate_game_page(event_id: str) -> str:
             if a == bench_sorted[0] if bench_sorted else None:
                 content_lines.append("".join(player_spans))
                 content_lines.append("")
-                content_lines.append(f"{team_abbrev} BENCH")
+                content_lines.append(f"<b>{team_abbrev} BENCH</b>")
                 content_lines.append(stats_header)
                 player_spans = []
                 row_idx = 0
@@ -945,7 +945,7 @@ def generate_game_page(event_id: str) -> str:
 
         # Team totals
         content_lines.append("")
-        content_lines.append(f"{team_abbrev} TOTALS")
+        content_lines.append(f"<b>{team_abbrev} TOTALS</b>")
         content_lines.append(stats_header)
         fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
         three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
