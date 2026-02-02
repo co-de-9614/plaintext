@@ -541,8 +541,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         }}
         body {{
             font-family: monospace;
-            background: #1a1a1a;
-            color: #e0e0e0;
+            background: #ffffff;
+            color: #1a1a1a;
             padding: 16px;
             max-width: 100%;
             margin: 0 auto;
@@ -557,7 +557,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             font-size: 12px;
         }}
         a {{
-            color: #90caf9;
+            color: #0066cc;
         }}
     </style>
 </head>
@@ -706,8 +706,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         }}
         body {{
             font-family: monospace;
-            background: #1a1a1a;
-            color: #e0e0e0;
+            background: #ffffff;
+            color: #1a1a1a;
             padding: 16px;
             max-width: 100%;
             margin: 0 auto;
@@ -722,7 +722,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
             font-size: 12px;
         }}
         a {{
-            color: #90caf9;
+            color: #0066cc;
         }}
     </style>
 </head>
@@ -1169,8 +1169,8 @@ def generate_game_page(event_id: str) -> str:
         }}
         body {{
             font-family: monospace;
-            background: #1a1a1a;
-            color: #e0e0e0;
+            background: #ffffff;
+            color: #1a1a1a;
             padding: 16px;
             max-width: 100%;
             margin: 0 auto;
@@ -1185,10 +1185,10 @@ def generate_game_page(event_id: str) -> str:
             font-size: 12px;
         }}
         a {{
-            color: #90caf9;
+            color: #0066cc;
         }}
         .row-even {{
-            background: #252525;
+            background: #f0f0f0;
             display: block;
             margin: 0;
             padding: 0;
