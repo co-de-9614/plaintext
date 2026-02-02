@@ -792,6 +792,89 @@ def generate_game_page(event_id: str) -> str:
     content_lines.append(home_row)
     content_lines.append("")
 
+    # Game Flow visualization
+    plays = game.get("plays", [])
+    scoring_plays = [p for p in plays if p.get("scoringPlay")]
+
+    if scoring_plays:
+        # Settings
+        quarter_width = 12  # columns per quarter
+        total_width = quarter_width * num_periods
+        max_height = 6  # max dots up or down
+
+        # Track scoring at each column position
+        # away_dots[col] = number of dots above timeline
+        # home_dots[col] = number of dots below timeline
+        away_dots = {}
+        home_dots = {}
+
+        home_team_id = home_team.get("id", "")
+
+        for play in scoring_plays:
+            period = play.get("period", {}).get("number", 1)
+            clock_str = play.get("clock", {}).get("displayValue", "10:00")
+            score_val = play.get("scoreValue", 0)
+            play_team_id = str(play.get("team", {}).get("id", ""))
+
+            # Parse clock to get position within quarter (10:00 = start, 0:00 = end)
+            try:
+                parts = clock_str.split(":")
+                minutes = int(parts[0])
+                seconds = int(parts[1]) if len(parts) > 1 else 0
+                total_seconds = minutes * 60 + seconds
+                # Position within quarter (0 = end, 600 = start for 10-min quarters)
+                quarter_pos = 1 - (total_seconds / 600)  # 0 to 1
+            except:
+                quarter_pos = 0.5
+
+            # Calculate column position
+            col = int((period - 1) * quarter_width + quarter_pos * (quarter_width - 1))
+            col = max(0, min(col, total_width - 1))
+
+            # Calculate dots (2 dots = 3 points, so 1 dot ≈ 1.5 points)
+            dots = max(1, round(score_val / 1.5))
+
+            if play_team_id == home_team_id:
+                home_dots[col] = home_dots.get(col, 0) + dots
+            else:
+                away_dots[col] = away_dots.get(col, 0) + dots
+
+        # Build the visualization
+        content_lines.append(f"<b>Game Flow:</b>                     (2 dots = 3 points)")
+        content_lines.append("")
+
+        # Away team rows (dots going up)
+        for row in range(max_height, 0, -1):
+            line = "     "  # padding for team abbrev
+            for col in range(total_width):
+                if away_dots.get(col, 0) >= row:
+                    line += ":"
+                else:
+                    line += " "
+            content_lines.append(line)
+
+        # Timeline with team abbreviations
+        timeline = ""
+        for q in range(num_periods):
+            if q == 0:
+                timeline += "+"
+            timeline += "=" * (quarter_width - 1) + "+"
+
+        content_lines.append(f"{away_abbrev:<5}{timeline}")
+        content_lines.append(f"{home_abbrev:<5}")
+
+        # Home team rows (dots going down)
+        for row in range(1, max_height + 1):
+            line = "     "  # padding
+            for col in range(total_width):
+                if home_dots.get(col, 0) >= row:
+                    line += ":"
+                else:
+                    line += " "
+            content_lines.append(line)
+
+        content_lines.append("")
+
     # Game info
     venue = gameInfo.get("venue", {})
     venue_name = venue.get("fullName", "")
