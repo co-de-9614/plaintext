@@ -644,7 +644,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         except:
             result = "-"
 
-        content_lines.append(f"{date_str:<12} {result} {usc_score:>3}-{opp_score:<3} {home_away} {opp_str}")
+        content_lines.append(f"{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
 
     # Upcoming section
     content_lines.append("")
@@ -682,9 +682,9 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
 
         if state == "in":
-            content_lines.append(f"{date_str:<16} LIVE {home_away} {opp_str}")
+            content_lines.append(f"{date_str} LIVE {home_away} {opp_str}")
         else:
-            content_lines.append(f"{date_str:<16} {home_away} {opp_str}")
+            content_lines.append(f"{date_str} {home_away} {opp_str}")
 
     # Link back to main page
     content_lines.append("")
