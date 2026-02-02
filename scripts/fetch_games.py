@@ -523,6 +523,10 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
             content_lines.append(f"{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
 
+    # Link to full schedule
+    content_lines.append("")
+    content_lines.append('<a href="schedule.html">Full Schedule/Results</a>')
+
     content = "\n".join(content_lines)
 
     html = f"""<!DOCTYPE html>
@@ -531,6 +535,130 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USC Women's Basketball</title>
+    <style>
+        * {{
+            box-sizing: border-box;
+        }}
+        body {{
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 16px;
+            max-width: 100%;
+            margin: 0 auto;
+            line-height: 1.4;
+            overflow-x: hidden;
+        }}
+        pre {{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            margin: 0;
+            font-size: 14px;
+        }}
+        a {{
+            color: #90caf9;
+        }}
+    </style>
+</head>
+<body>
+<pre>
+{content}
+</pre>
+</body>
+</html>
+"""
+    return html
+
+
+def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
+    """Generate the full schedule/results page."""
+    now = datetime.now(PT).strftime("%Y-%m-%d %I:%M %p PT")
+
+    content_lines = []
+    content_lines.append("USC WOMEN'S BASKETBALL")
+    content_lines.append("Full Schedule/Results")
+    content_lines.append(f"Updated: {now}")
+    content_lines.append("=" * 47)
+
+    events = schedule_data.get("events", [])
+
+    for event in events:
+        comp = event.get("competitions", [{}])[0]
+        status = comp.get("status", {}).get("type", {})
+        state = status.get("state", "")
+
+        # Date
+        date_raw = comp.get("date", "")
+        if date_raw:
+            try:
+                dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
+                dt_pt = dt.astimezone(PT)
+                if state == "pre":
+                    date_str = dt_pt.strftime("%b %d %I:%M%p")
+                else:
+                    date_str = dt_pt.strftime("%b %d")
+            except:
+                date_str = date_raw[:10]
+        else:
+            date_str = "TBD"
+
+        competitors = comp.get("competitors", [])
+        usc = next((c for c in competitors if c.get("team", {}).get("id") == USC_TEAM_ID), None)
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+
+        if not opponent:
+            continue
+
+        opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
+        home_away = "vs" if opponent.get("homeAway") == "away" else "at"
+
+        # Ranking
+        opp_rank = rankings.get(opp_abbrev, 0)
+        opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+
+        if state == "post":
+            # Completed game
+            usc_score_raw = usc.get("score", "") if usc else ""
+            opp_score_raw = opponent.get("score", "")
+
+            if isinstance(usc_score_raw, dict):
+                usc_score = usc_score_raw.get("displayValue", str(usc_score_raw.get("value", "")))
+            else:
+                usc_score = str(usc_score_raw)
+
+            if isinstance(opp_score_raw, dict):
+                opp_score = opp_score_raw.get("displayValue", str(opp_score_raw.get("value", "")))
+            else:
+                opp_score = str(opp_score_raw)
+
+            try:
+                result = "W" if float(usc_score) > float(opp_score) else "L"
+            except:
+                result = "-"
+
+            content_lines.append(f"{date_str:<12} {result} {usc_score:>3}-{opp_score:<3} {home_away} {opp_str}")
+
+        elif state == "in":
+            # Live game
+            content_lines.append(f"{date_str:<12} LIVE        {home_away} {opp_str}")
+
+        else:
+            # Upcoming game
+            content_lines.append(f"{date_str:<12}             {home_away} {opp_str}")
+
+    # Link back to main page
+    content_lines.append("")
+    content_lines.append('<a href="index.html">Back to Home</a>')
+
+    content = "\n".join(content_lines)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USC WBB Schedule</title>
     <style>
         * {{
             box-sizing: border-box;
@@ -603,6 +731,12 @@ def main():
     output_path = Path(__file__).parent.parent / "index.html"
     output_path.write_text(html)
     print(f"Written to {output_path}")
+
+    # Generate full schedule page
+    schedule_html = generate_schedule_html(schedule, rankings)
+    schedule_path = Path(__file__).parent.parent / "schedule.html"
+    schedule_path.write_text(schedule_html)
+    print(f"Written to {schedule_path}")
 
 
 if __name__ == "__main__":
