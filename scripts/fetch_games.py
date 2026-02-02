@@ -870,9 +870,6 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(f"{away_abbrev:<5}{timeline}")
         content_lines.append(f"{home_abbrev}")
 
-        # Blank line after timeline
-        content_lines.append("")
-
         # Home team rows (dots going down when home is leading)
         for row in range(1, max_height + 1):
             threshold = row * 3
