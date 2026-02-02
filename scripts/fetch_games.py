@@ -850,9 +850,11 @@ def generate_game_page(event_id: str) -> str:
                 last_lead = lead_at_col[col]
             filled_lead.append(last_lead)
 
-        # Calculate max height needed based on max lead (3 points per dot)
-        max_lead = max(abs(min(filled_lead)), abs(max(filled_lead)))
-        max_height = max(1, (max_lead + 2) // 3)
+        # Calculate separate heights for USC (positive leads) and opponent (negative leads)
+        max_usc_lead = max(0, max(filled_lead))
+        max_opp_lead = abs(min(0, min(filled_lead)))
+        usc_height = max(1, (max_usc_lead + 2) // 3) if max_usc_lead > 0 else 0
+        opp_height = max(1, (max_opp_lead + 2) // 3) if max_opp_lead > 0 else 0
 
         # Build the visualization
         content_lines.append(f"<b>Game Flow:</b>                    (1 dot = 3 pts)")
@@ -860,7 +862,7 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append('<span class="game-flow">')
 
         # USC rows (dots going up when USC is leading) - cardinal color
-        for row in range(max_height, 0, -1):
+        for row in range(usc_height, 0, -1):
             line = "     "  # padding for team abbrev
             threshold = row * 3
             for col in range(total_width):
@@ -885,7 +887,7 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(f"{opp_abbrev}")
 
         # Opponent rows (dots going down when opponent is leading)
-        for row in range(1, max_height + 1):
+        for row in range(1, opp_height + 1):
             threshold = row * 3
             line = ""
             for col in range(total_width):
