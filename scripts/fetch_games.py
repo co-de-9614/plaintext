@@ -858,21 +858,20 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             content_lines.append(line)
 
-        # Away team label
-        content_lines.append(f"{away_abbrev}")
+        # Blank line before timeline
         content_lines.append("")
 
-        # Timeline
+        # Timeline with team abbreviations
         timeline = ""
         for q in range(num_periods):
             if q == 0:
                 timeline += "+"
             timeline += "=" * (quarter_width - 1) + "+"
-        content_lines.append(f"     {timeline}")
-
-        # Blank line and home team label
-        content_lines.append("")
+        content_lines.append(f"{away_abbrev:<5}{timeline}")
         content_lines.append(f"{home_abbrev}")
+
+        # Blank line after timeline
+        content_lines.append("")
 
         # Home team rows (dots going down when home is leading)
         for row in range(1, max_height + 1):
