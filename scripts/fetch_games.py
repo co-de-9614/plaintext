@@ -806,12 +806,12 @@ def generate_game_page(event_id: str) -> str:
         opp_color = home_team.get("color", "888888")
 
     if scoring_plays:
-        # Settings: 10 minutes per quarter, plus breaks between quarters
-        minutes_per_quarter = 10
-        cols_per_quarter = 11  # 1 "+" break + 10 "=" minute columns
+        # Settings: 11 columns per quarter (start + 10 minutes), plus breaks
+        # Col layout per quarter: "+" (break) then "=" (start) then 10 "=" (minutes 1-10)
+        cols_per_quarter = 12  # 1 "+" break + 11 "=" columns (1 start + 10 minutes)
         total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
 
-        # Track USC lead at each minute column
+        # Track USC lead at each column
         # Positive = USC leading, negative = opponent leading
         lead_at_col = {}
 
@@ -837,8 +837,9 @@ def generate_game_page(event_id: str) -> str:
             except:
                 minute = 5  # default to middle
 
-            # Calculate column: skip break columns (at positions 0, 11, 22, 33, 44)
-            col = (period - 1) * cols_per_quarter + minute
+            # Calculate column: break at 0, start at 1, minutes 1-10 at cols 2-11
+            # For quarter q: break at (q-1)*12, start at (q-1)*12+1, minutes at (q-1)*12+2 to +11
+            col = (period - 1) * cols_per_quarter + minute + 1  # +1 for start column
 
             # Lead from USC perspective: positive = USC leading
             if usc_is_home:
@@ -849,6 +850,7 @@ def generate_game_page(event_id: str) -> str:
 
         # Fill in gaps by carrying forward the last known lead
         # Break columns (multiples of cols_per_quarter) get None - no dots there
+        # Start columns show the lead carried from previous quarter
         last_lead = 0
         filled_lead = []
         for col in range(total_cols):
