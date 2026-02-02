@@ -842,12 +842,29 @@ def generate_game_page(event_id: str) -> str:
         # Stats header line
         stats_header = " MIN    FG   3PT    FT  R  A  S  B TO PF PTS"
 
+        # Helper to get sort key for player (pts desc, mins desc, reb desc)
+        def player_sort_key(a):
+            stats = a.get("stats", [])
+            if not stats or len(stats) < 10:
+                return (0, 0, 0)
+            try:
+                pts = int(stats[1]) if stats[1] and stats[1] != '--' else 0
+                mins = int(stats[0]) if stats[0] and stats[0] != '--' else 0
+                reb = int(stats[5]) if stats[5] and stats[5] != '--' else 0
+                return (-pts, -mins, -reb)
+            except:
+                return (0, 0, 0)
+
+        # Sort starters and bench by points
+        starters_sorted = sorted(starters, key=player_sort_key)
+        bench_sorted = sorted(bench, key=player_sort_key)
+
         # Starters section
         content_lines.append(f"{team_name} Starters:")
         content_lines.append(stats_header)
 
         row_idx = 0
-        for a in starters:
+        for a in starters_sorted:
             athlete = a.get("athlete", {})
             name = athlete.get("displayName", "Unknown")
             jersey = athlete.get("jersey", "")
@@ -857,8 +874,9 @@ def generate_game_page(event_id: str) -> str:
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
             row_idx += 1
 
-            # Player name line
-            player_line = f"{name} {position}" if position else name
+            # Player name line with number
+            jersey_str = f"{int(jersey):>2}" if jersey else "  "
+            player_line = f"#{jersey_str} {name} {position}" if position else f"#{jersey_str} {name}"
 
             # Stats line (indices: 0=MIN, 1=PTS, 2=FG, 3=3PT, 4=FT, 5=REB, 6=AST, 7=TO, 8=STL, 9=BLK, 12=PF)
             if not stats or len(stats) < 10:
@@ -888,7 +906,7 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(stats_header)
 
         row_idx = 0
-        for a in bench:
+        for a in bench_sorted:
             athlete = a.get("athlete", {})
             name = athlete.get("displayName", "Unknown")
             jersey = athlete.get("jersey", "")
@@ -898,8 +916,9 @@ def generate_game_page(event_id: str) -> str:
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
             row_idx += 1
 
-            # Player name line
-            player_line = f"{name} {position}" if position else name
+            # Player name line with number
+            jersey_str = f"{int(jersey):>2}" if jersey else "  "
+            player_line = f"#{jersey_str} {name} {position}" if position else f"#{jersey_str} {name}"
 
             # Stats line
             if not stats or len(stats) < 10:
