@@ -300,11 +300,10 @@ def format_play_by_play(game_summary: dict, last_n: int = 10) -> str:
     return "\n".join(lines)
 
 
-def find_usc_game(scoreboard: dict) -> dict | None:
-    """Find USC's game in today's scoreboard."""
-    events = scoreboard.get("events", [])
-
-    for event in events:
+def find_usc_game(scoreboard: dict, schedule: dict) -> dict | None:
+    """Find USC's live or recent game from scoreboard or schedule."""
+    # First check scoreboard
+    for event in scoreboard.get("events", []):
         competitions = event.get("competitions", [])
         for comp in competitions:
             competitors = comp.get("competitors", [])
@@ -312,6 +311,14 @@ def find_usc_game(scoreboard: dict) -> dict | None:
                 team_id = c.get("team", {}).get("id", "")
                 if team_id == USC_TEAM_ID:
                     return {"event": event, "competition": comp}
+
+    # Also check schedule for live game (not always on scoreboard)
+    for event in schedule.get("events", []):
+        comp = event.get("competitions", [{}])[0]
+        status = comp.get("status", {}).get("type", {})
+        state = status.get("state", "")
+        if state == "in":  # Game in progress
+            return {"event": event, "competition": comp}
 
     return None
 
@@ -326,8 +333,8 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
     """
     now = datetime.now(timezone.utc)  # Use UTC for comparison since ESPN uses UTC
 
-    # First check scoreboard for live game
-    usc_game = find_usc_game(scoreboard)
+    # First check scoreboard and schedule for live game
+    usc_game = find_usc_game(scoreboard, schedule)
     if usc_game:
         state = usc_game["competition"].get("status", {}).get("type", {}).get("state", "")
         if state == "in":
@@ -583,7 +590,7 @@ def main():
     rankings = get_rankings()
 
     # Fetch roster with stats (only if no live game, to save API calls)
-    usc_game = find_usc_game(scoreboard)
+    usc_game = find_usc_game(scoreboard, schedule)
     roster = []
     if not usc_game:
         print("Fetching player stats...")
