@@ -877,6 +877,7 @@ def generate_game_page(event_id: str) -> str:
                 content_lines.append("".join(player_spans))
                 content_lines.append("")
                 content_lines.append(f"{team_abbrev} BENCH")
+                content_lines.append(stats_header)
                 player_spans = []
                 row_idx = 0
 
@@ -944,7 +945,8 @@ def generate_game_page(event_id: str) -> str:
 
         # Team totals
         content_lines.append("")
-        content_lines.append(f"{team_abbrev} TEAM")
+        content_lines.append(f"{team_abbrev} TOTALS")
+        content_lines.append(stats_header)
         fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
         three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
         ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
