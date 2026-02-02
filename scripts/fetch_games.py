@@ -554,7 +554,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             word-wrap: break-word;
             overflow-wrap: break-word;
             margin: 0;
-            font-size: 14px;
+            font-size: 12px;
         }}
         a {{
             color: #90caf9;
@@ -719,7 +719,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
             word-wrap: break-word;
             overflow-wrap: break-word;
             margin: 0;
-            font-size: 14px;
+            font-size: 12px;
         }}
         a {{
             color: #90caf9;
