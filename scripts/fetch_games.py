@@ -872,19 +872,13 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             content_lines.append(f'<span class="usc-dots">{line}</span>')
 
-        # USC label (acts as spacer before timeline)
-        content_lines.append("USC")
-
-        # Timeline
+        # Timeline with both team labels
         timeline = ""
         for q in range(num_periods):
             if q == 0:
                 timeline += "+"
             timeline += "=" * (quarter_width - 1) + "+"
-        content_lines.append(f"     {timeline}")
-
-        # Opponent label
-        content_lines.append(f"{opp_abbrev}")
+        content_lines.append(f"USC  {timeline}  {opp_abbrev}")
 
         # Opponent rows (dots going down when opponent is leading)
         for row in range(1, opp_height + 1):
