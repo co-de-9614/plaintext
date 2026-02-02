@@ -861,19 +861,20 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append("")
         content_lines.append('<span class="game-flow">')
 
-        # USC label at top (aligned with dots)
-        content_lines.append("     USC")
-
         # USC rows (dots going up when USC is leading) - cardinal color
         for row in range(usc_height, 0, -1):
-            line = "     "  # padding for team abbrev
             threshold = row * 3
+            line = ""
             for col in range(total_width):
                 if filled_lead[col] >= threshold:
                     line += "."
                 else:
                     line += " "
-            content_lines.append(f'<span class="usc-dots">{line}</span>')
+            # Put USC label on the bottom row (row 1) of USC dots
+            if row == 1:
+                content_lines.append(f'<span class="usc-dots">USC  {line}</span>')
+            else:
+                content_lines.append(f'<span class="usc-dots">     {line}</span>')
 
         # Blank line before timeline
         content_lines.append("")
@@ -895,10 +896,11 @@ def generate_game_page(event_id: str) -> str:
                     line += "."
                 else:
                     line += " "
-            content_lines.append(f'<span style="color: #{opp_color};">     {line}</span>')
-
-        # Opponent label at bottom (aligned with dots)
-        content_lines.append(f"     {opp_abbrev}")
+            # Put opponent label on the first row of opponent dots
+            if row == 1:
+                content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<5}{line}</span>')
+            else:
+                content_lines.append(f'<span style="color: #{opp_color};">     {line}</span>')
 
         content_lines.append('</span>')
         content_lines.append("")
