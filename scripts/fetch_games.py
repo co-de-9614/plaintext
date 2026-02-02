@@ -592,6 +592,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     content_lines.append("-" * 47)
 
     for event in completed:
+        event_id = event.get("id", "")
         comp = event.get("competitions", [{}])[0]
         status = comp.get("status", {}).get("type", {})
         state = status.get("state", "")
@@ -644,7 +645,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         except:
             result = "-"
 
-        content_lines.append(f"{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
+        game_link = f'<a href="games/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
+        content_lines.append(game_link)
 
     # Upcoming section
     content_lines.append("")
@@ -734,6 +736,178 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     return html
 
 
+def generate_game_page(event_id: str) -> str:
+    """Generate a detailed game report page."""
+    summary_url = f"{BASE_API}/summary?event={event_id}"
+    game = fetch_json(summary_url)
+
+    header = game.get("header", {})
+    competitions = header.get("competitions", [{}])
+    comp = competitions[0] if competitions else {}
+
+    boxscore = game.get("boxscore", {})
+    gameInfo = game.get("gameInfo", {})
+
+    # Get teams and scores
+    competitors = comp.get("competitors", [])
+    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
+    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
+
+    home_team = home.get("team", {})
+    away_team = away.get("team", {})
+    home_abbrev = home_team.get("abbreviation", "HOME")
+    away_abbrev = away_team.get("abbreviation", "AWAY")
+    home_score = home.get("score", "0")
+    away_score = away.get("score", "0")
+    home_record = home.get("record", [{}])[0].get("displayValue", "") if home.get("record") else ""
+    away_record = away.get("record", [{}])[0].get("displayValue", "") if away.get("record") else ""
+
+    # Quarter scores
+    home_quarters = [q.get("displayValue", "0") for q in home.get("linescores", [])]
+    away_quarters = [q.get("displayValue", "0") for q in away.get("linescores", [])]
+
+    # Game status
+    status = comp.get("status", {}).get("type", {})
+    status_detail = status.get("detail", "Final")
+
+    content_lines = []
+
+    # Header
+    content_lines.append(f"{away_team.get('displayName', away_abbrev):<24} {status_detail:^10} {home_team.get('displayName', home_abbrev):>24}")
+    content_lines.append(f"{away_record:<24} {away_score:>4} - {home_score:<4} {home_record:>24}")
+    content_lines.append("")
+
+    # Quarter by quarter
+    num_periods = max(len(home_quarters), len(away_quarters), 4)
+    period_labels = ["1", "2", "3", "4"] + [f"OT{i}" for i in range(1, num_periods - 3)]
+    period_labels = period_labels[:num_periods]
+
+    header_row = "     " + "".join(f"{p:>4}" for p in period_labels) + "    T"
+    content_lines.append(header_row)
+    content_lines.append("-" * len(header_row))
+
+    away_row = f"{away_abbrev:<5}" + "".join(f"{q:>4}" for q in away_quarters) + f"  {away_score:>3}"
+    home_row = f"{home_abbrev:<5}" + "".join(f"{q:>4}" for q in home_quarters) + f"  {home_score:>3}"
+    content_lines.append(away_row)
+    content_lines.append(home_row)
+    content_lines.append("")
+
+    # Game info
+    venue = gameInfo.get("venue", {})
+    venue_name = venue.get("fullName", "")
+    attendance = gameInfo.get("attendance", 0)
+    if venue_name:
+        content_lines.append(f"Venue: {venue_name}")
+    if attendance:
+        content_lines.append(f"Attendance: {attendance:,}")
+    content_lines.append("")
+
+    # Team stats comparison
+    content_lines.append("Team Stats:")
+    content_lines.append("-" * 40)
+
+    teams_stats = boxscore.get("teams", [])
+    away_stats = next((t for t in teams_stats if t.get("homeAway") == "away"), {})
+    home_stats = next((t for t in teams_stats if t.get("homeAway") == "home"), {})
+
+    away_stat_dict = {s.get("label"): s.get("displayValue") for s in away_stats.get("statistics", [])}
+    home_stat_dict = {s.get("label"): s.get("displayValue") for s in home_stats.get("statistics", [])}
+
+    stat_labels = ["FG", "3PT", "FT", "REB", "AST", "TO", "STL", "BLK"]
+    content_lines.append(f"{'':>12} {away_abbrev:>10} {home_abbrev:>10}")
+    for label in stat_labels:
+        away_val = away_stat_dict.get(label, "-")
+        home_val = home_stat_dict.get(label, "-")
+        content_lines.append(f"{label:>12} {away_val:>10} {home_val:>10}")
+    content_lines.append("")
+
+    # Player stats for each team
+    players_data = boxscore.get("players", [])
+
+    for team_data in players_data:
+        team = team_data.get("team", {})
+        team_abbrev = team.get("abbreviation", "TEAM")
+        is_usc = team.get("id") == USC_TEAM_ID
+
+        content_lines.append(f"{team.get('displayName', team_abbrev)}:")
+        content_lines.append(f"{'PLAYER':<18} {'MIN':>4} {'PTS':>4} {'FG':>6} {'3PT':>5} {'REB':>4} {'AST':>4}")
+        content_lines.append("-" * 50)
+
+        statistics = team_data.get("statistics", [])
+        if statistics:
+            athletes = statistics[0].get("athletes", [])
+
+            # Separate starters and bench
+            starters = [a for a in athletes if a.get("starter")]
+            bench = [a for a in athletes if not a.get("starter")]
+
+            for a in starters + bench:
+                athlete = a.get("athlete", {})
+                name = athlete.get("shortName", athlete.get("displayName", "Unknown"))[:16]
+                jersey = athlete.get("jersey", "")
+                stats = a.get("stats", [])
+
+                if len(stats) >= 6:
+                    mins = stats[0] if stats[0] else "0"
+                    pts = stats[1] if stats[1] else "0"
+                    fg = stats[2] if stats[2] else "-"
+                    threept = stats[3] if stats[3] else "-"
+                    reb = stats[5] if stats[5] else "0"
+                    ast = stats[6] if len(stats) > 6 and stats[6] else "0"
+
+                    player_name = f"#{jersey} {name}" if jersey else name
+                    content_lines.append(f"{player_name:<18} {mins:>4} {pts:>4} {fg:>6} {threept:>5} {reb:>4} {ast:>4}")
+
+        content_lines.append("")
+
+    # Link back
+    content_lines.append('<a href="../schedule.html">Back to Schedule</a>')
+    content_lines.append('<a href="../index.html">Back to Home</a>')
+
+    content = "\n".join(content_lines)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{away_abbrev} vs {home_abbrev} - USC WBB</title>
+    <style>
+        * {{
+            box-sizing: border-box;
+        }}
+        body {{
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 16px;
+            max-width: 100%;
+            margin: 0 auto;
+            line-height: 1.4;
+            overflow-x: hidden;
+        }}
+        pre {{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            margin: 0;
+            font-size: 14px;
+        }}
+        a {{
+            color: #90caf9;
+        }}
+    </style>
+</head>
+<body>
+<pre>
+{content}
+</pre>
+</body>
+</html>
+"""
+    return html
+
+
 def main():
     force_update = "--force" in sys.argv
 
@@ -776,6 +950,25 @@ def main():
     schedule_path = Path(__file__).parent.parent / "schedule.html"
     schedule_path.write_text(schedule_html)
     print(f"Written to {schedule_path}")
+
+    # Generate individual game pages for completed games
+    games_dir = Path(__file__).parent.parent / "games"
+    games_dir.mkdir(exist_ok=True)
+
+    events = schedule.get("events", [])
+    completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+
+    print(f"Generating {len(completed)} game pages...")
+    for event in completed:
+        event_id = event.get("id", "")
+        if event_id:
+            try:
+                game_html = generate_game_page(event_id)
+                game_path = games_dir / f"{event_id}.html"
+                game_path.write_text(game_html)
+            except Exception as e:
+                print(f"  Error generating game {event_id}: {e}")
+    print(f"Written game pages to {games_dir}")
 
 
 if __name__ == "__main__":
