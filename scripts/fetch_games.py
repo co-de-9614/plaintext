@@ -830,16 +830,8 @@ def generate_game_page(event_id: str) -> str:
             lead = away_sc - home_sc
             lead_at_col[col] = lead
 
-        # Fill in gaps by carrying forward the last known lead
-        last_lead = 0
-        filled_lead = []
-        for col in range(total_width):
-            if col in lead_at_col:
-                last_lead = lead_at_col[col]
-            filled_lead.append(last_lead)
-
         # Calculate max height needed based on max lead (3 points per dot)
-        max_lead = max(abs(min(filled_lead)), abs(max(filled_lead)))
+        max_lead = max(abs(v) for v in lead_at_col.values()) if lead_at_col else 0
         max_height = max(6, (max_lead + 2) // 3)  # At least 6 rows, more if needed
 
         # Build the visualization
@@ -851,7 +843,8 @@ def generate_game_page(event_id: str) -> str:
             line = "     "  # padding for team abbrev
             threshold = row * 3  # 1 dot = 3 points
             for col in range(total_width):
-                if filled_lead[col] >= threshold:
+                lead = lead_at_col.get(col, None)
+                if lead is not None and lead >= threshold:
                     line += ":"
                 else:
                     line += " "
@@ -871,7 +864,8 @@ def generate_game_page(event_id: str) -> str:
             threshold = row * 3  # 1 dot = 3 points
             line = ""
             for col in range(total_width):
-                if filled_lead[col] <= -threshold:
+                lead = lead_at_col.get(col, None)
+                if lead is not None and lead <= -threshold:
                     line += ":"
                 else:
                     line += " "
