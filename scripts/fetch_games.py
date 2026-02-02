@@ -821,10 +821,11 @@ def generate_game_page(event_id: str) -> str:
         content_lines.append(f"{label:>12} {away_val:>10} {home_val:>10}")
     content_lines.append("")
 
-    # Player stats for each team
+    # Player stats for each team (USC first)
     players_data = boxscore.get("players", [])
+    players_data_sorted = sorted(players_data, key=lambda t: t.get("team", {}).get("id") != USC_TEAM_ID)
 
-    for team_data in players_data:
+    for team_data in players_data_sorted:
         team = team_data.get("team", {})
         team_name = team.get("shortDisplayName", team.get("abbreviation", "TEAM"))
 
