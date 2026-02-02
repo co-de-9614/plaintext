@@ -971,6 +971,13 @@ def generate_game_page(event_id: str) -> str:
     for team_data in players_data_sorted:
         team = team_data.get("team", {})
         team_abbrev = team.get("abbreviation", "TEAM")
+        team_id = team.get("id", "")
+
+        # Get team color - use cardinal for USC, team color for opponents
+        if team_id == USC_TEAM_ID:
+            team_color = "990000"  # USC cardinal
+        else:
+            team_color = team.get("color", "888888")
 
         statistics = team_data.get("statistics", [])
         if not statistics:
@@ -998,9 +1005,9 @@ def generate_game_page(event_id: str) -> str:
         all_spans = []
         row_idx = 0
 
-        # Starters header
+        # Starters header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}"><b>{team_abbrev} STARTERS</b>\n{stats_header}</span>')
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} STARTERS</b>\n{stats_header}</span>')
         row_idx += 1
 
         # Starters
@@ -1060,9 +1067,9 @@ def generate_game_page(event_id: str) -> str:
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
-        # Bench header
+        # Bench header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}"><b>{team_abbrev} BENCH</b>\n{stats_header}</span>')
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} BENCH</b>\n{stats_header}</span>')
         row_idx += 1
 
         # Bench
@@ -1122,9 +1129,9 @@ def generate_game_page(event_id: str) -> str:
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
-        # Totals header
+        # Totals header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}"><b>{team_abbrev} TOTALS</b>\n{stats_header}</span>')
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} TOTALS</b>\n{stats_header}</span>')
         row_idx += 1
 
         # Totals data
