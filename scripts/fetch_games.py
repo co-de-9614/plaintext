@@ -865,21 +865,17 @@ def generate_game_page(event_id: str) -> str:
             "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0
         }
 
-        # Starters section
-        content_lines.append(f"<b>{team_abbrev} STARTERS</b>")
-        content_lines.append(stats_header)
-
-        player_spans = []
+        # Build all spans with continuous zebra striping
+        all_spans = []
         row_idx = 0
-        for a in starters_sorted + bench_sorted:
-            # Add bench header when transitioning
-            if a == bench_sorted[0] if bench_sorted else None:
-                content_lines.append("".join(player_spans))
-                content_lines.append(f"<b>{team_abbrev} BENCH</b>")
-                content_lines.append(stats_header)
-                player_spans = []
-                row_idx = 0
 
+        # Starters header
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        all_spans.append(f'<span class="{row_class}"><b>{team_abbrev} STARTERS</b>\n{stats_header}</span>')
+        row_idx += 1
+
+        # Starters
+        for a in starters_sorted:
             athlete = a.get("athlete", {})
             name = athlete.get("displayName", "Unknown")
             jersey = athlete.get("jersey", "")
@@ -888,11 +884,9 @@ def generate_game_page(event_id: str) -> str:
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
             row_idx += 1
 
-            # Player name line: Name #Number
             jersey_str = f"#{jersey}" if jersey else ""
             player_line = f"{name} {jersey_str}"
 
-            # Stats line (ESPN indices: 0=MIN, 1=PTS, 2=FG, 3=3PT, 4=FT, 5=REB, 6=AST, 7=TO, 8=STL, 9=BLK, 10=OREB, 11=DREB, 12=PF)
             if not stats or len(stats) < 13:
                 stats_line = "  Did not play"
             else:
@@ -912,7 +906,6 @@ def generate_game_page(event_id: str) -> str:
                 if mins == "0" or mins == "0:00":
                     stats_line = "  Did not play"
                 else:
-                    # Accumulate totals
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
                     ft_m, ft_a = parse_shooting(ft)
@@ -931,31 +924,95 @@ def generate_game_page(event_id: str) -> str:
                     team_totals["to"] += int(to) if to else 0
                     team_totals["fls"] += int(fls) if fls else 0
 
-                    # Convert to slash notation
                     fg_slash = to_slash(fg)
                     three_slash = to_slash(threept)
                     ft_slash = to_slash(ft)
-
                     stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {pts:>4} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3}"
 
-            player_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+            all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
-        content_lines.append("".join(player_spans))
+        # Bench header
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        all_spans.append(f'<span class="{row_class}"><b>{team_abbrev} BENCH</b>\n{stats_header}</span>')
+        row_idx += 1
 
-        # Team totals
-        content_lines.append(f"<b>{team_abbrev} TOTALS</b>")
-        content_lines.append(stats_header)
+        # Bench
+        for a in bench_sorted:
+            athlete = a.get("athlete", {})
+            name = athlete.get("displayName", "Unknown")
+            jersey = athlete.get("jersey", "")
+            stats = a.get("stats", [])
+
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            row_idx += 1
+
+            jersey_str = f"#{jersey}" if jersey else ""
+            player_line = f"{name} {jersey_str}"
+
+            if not stats or len(stats) < 13:
+                stats_line = "  Did not play"
+            else:
+                mins = stats[0] if stats[0] and stats[0] != '--' else "0"
+                pts = stats[1] if stats[1] and stats[1] != '--' else "0"
+                fg = stats[2] if stats[2] and stats[2] != '--' else "0-0"
+                threept = stats[3] if stats[3] and stats[3] != '--' else "0-0"
+                ft = stats[4] if stats[4] and stats[4] != '--' else "0-0"
+                orb = stats[10] if stats[10] and stats[10] != '--' else "0"
+                drb = stats[11] if stats[11] and stats[11] != '--' else "0"
+                ast = stats[6] if stats[6] and stats[6] != '--' else "0"
+                stl = stats[8] if stats[8] and stats[8] != '--' else "0"
+                blk = stats[9] if stats[9] and stats[9] != '--' else "0"
+                to = stats[7] if stats[7] and stats[7] != '--' else "0"
+                fls = stats[12] if stats[12] and stats[12] != '--' else "0"
+
+                if mins == "0" or mins == "0:00":
+                    stats_line = "  Did not play"
+                else:
+                    fg_m, fg_a = parse_shooting(fg)
+                    three_m, three_a = parse_shooting(threept)
+                    ft_m, ft_a = parse_shooting(ft)
+                    team_totals["fg_made"] += fg_m
+                    team_totals["fg_att"] += fg_a
+                    team_totals["three_made"] += three_m
+                    team_totals["three_att"] += three_a
+                    team_totals["ft_made"] += ft_m
+                    team_totals["ft_att"] += ft_a
+                    team_totals["pts"] += int(pts) if pts else 0
+                    team_totals["orb"] += int(orb) if orb else 0
+                    team_totals["drb"] += int(drb) if drb else 0
+                    team_totals["ast"] += int(ast) if ast else 0
+                    team_totals["stl"] += int(stl) if stl else 0
+                    team_totals["blk"] += int(blk) if blk else 0
+                    team_totals["to"] += int(to) if to else 0
+                    team_totals["fls"] += int(fls) if fls else 0
+
+                    fg_slash = to_slash(fg)
+                    three_slash = to_slash(threept)
+                    ft_slash = to_slash(ft)
+                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {pts:>4} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3}"
+
+            all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+
+        # Totals header
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        all_spans.append(f'<span class="{row_class}"><b>{team_abbrev} TOTALS</b>\n{stats_header}</span>')
+        row_idx += 1
+
+        # Totals data
         fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
         three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
         ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
-        content_lines.append(f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['pts']:>4} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3}")
-
+        totals_line = f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['pts']:>4} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3}"
         # Percentages
         fg_pct = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.0f}%" if team_totals['fg_att'] > 0 else "0%"
         three_pct = f"{100 * team_totals['three_made'] / team_totals['three_att']:.0f}%" if team_totals['three_att'] > 0 else "0%"
         ft_pct = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.0f}%" if team_totals['ft_att'] > 0 else "0%"
-        content_lines.append(f"    {fg_pct:>6} {three_pct:>5} {ft_pct:>5}")
+        pct_line = f"    {fg_pct:>6} {three_pct:>5} {ft_pct:>5}"
 
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        all_spans.append(f'<span class="{row_class}">{totals_line}\n{pct_line}</span>')
+
+        content_lines.append("".join(all_spans))
         content_lines.append("")
 
     # Link back
