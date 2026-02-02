@@ -803,7 +803,7 @@ def generate_game_page(event_id: str) -> str:
     content_lines.append("")
 
     # Stats header line for player stats
-    stats_header = "MIN      FG   3PT    FT  PTS ORB DRB AST STL BLK  TO FLS"
+    stats_header = "MIN    FG   3PT    FT  PTS ORB DRB AST STL BLK  TO FLS"
 
     # Helper to convert dash to slash in shooting stats
     def to_slash(stat):
