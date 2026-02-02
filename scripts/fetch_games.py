@@ -889,6 +889,9 @@ def generate_game_page(event_id: str) -> str:
             else:
                 content_lines.append(f'<span class="usc-dots">     {line}</span>')
 
+        # Blank line before timeline to prevent overlap with compact line-height
+        content_lines.append("")
+
         # Timeline: + at breaks, = for minutes
         timeline = ""
         for col in range(total_cols):
