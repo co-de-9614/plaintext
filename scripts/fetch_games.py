@@ -877,7 +877,6 @@ def generate_game_page(event_id: str) -> str:
                 content_lines.append("".join(player_spans))
                 content_lines.append("")
                 content_lines.append(f"{team_abbrev} BENCH")
-                content_lines.append(stats_header)
                 player_spans = []
                 row_idx = 0
 
