@@ -858,14 +858,21 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             content_lines.append(line)
 
-        # Timeline with team abbreviations
+        # Away team label
+        content_lines.append(f"{away_abbrev}")
+        content_lines.append("")
+
+        # Timeline
         timeline = ""
         for q in range(num_periods):
             if q == 0:
                 timeline += "+"
             timeline += "=" * (quarter_width - 1) + "+"
+        content_lines.append(f"     {timeline}")
 
-        content_lines.append(f"{away_abbrev:<5}{timeline}")
+        # Blank line and home team label
+        content_lines.append("")
+        content_lines.append(f"{home_abbrev}")
 
         # Home team rows (dots going down when home is leading)
         for row in range(1, max_height + 1):
@@ -876,11 +883,7 @@ def generate_game_page(event_id: str) -> str:
                     line += "."
                 else:
                     line += " "
-            # Put home team abbrev on first row
-            if row == 1:
-                content_lines.append(f"{home_abbrev:<5}{line}")
-            else:
-                content_lines.append(f"     {line}")
+            content_lines.append(f"     {line}")
 
         content_lines.append('</span>')
         content_lines.append("")
