@@ -806,11 +806,12 @@ def generate_game_page(event_id: str) -> str:
         opp_color = home_team.get("color", "888888")
 
     if scoring_plays:
-        # Settings
-        quarter_width = 12  # columns per quarter
-        total_width = quarter_width * num_periods
+        # Settings: 10 minutes per quarter, plus breaks between quarters
+        minutes_per_quarter = 10
+        cols_per_quarter = 11  # 1 "+" break + 10 "=" minute columns
+        total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
 
-        # Track USC lead at each column position
+        # Track USC lead at each minute column
         # Positive = USC leading, negative = opponent leading
         lead_at_col = {}
 
@@ -820,20 +821,24 @@ def generate_game_page(event_id: str) -> str:
             away_sc = play.get("awayScore", 0)
             home_sc = play.get("homeScore", 0)
 
-            # Parse clock to get position within quarter (10:00 = start, 0:00 = end)
+            # Parse clock to determine which minute we're in
             try:
                 parts = clock_str.split(":")
-                minutes = int(parts[0])
-                seconds = int(parts[1]) if len(parts) > 1 else 0
-                total_seconds = minutes * 60 + seconds
-                # Position within quarter (0 = end, 600 = start for 10-min quarters)
-                quarter_pos = 1 - (total_seconds / 600)  # 0 to 1
-            except:
-                quarter_pos = 0.5
+                minutes_left = int(parts[0])
+                seconds_left = int(parts[1]) if len(parts) > 1 else 0
+                seconds_remaining = minutes_left * 60 + seconds_left
+                seconds_elapsed = 600 - seconds_remaining  # 10-min quarters
 
-            # Calculate column position
-            col = int((period - 1) * quarter_width + quarter_pos * (quarter_width - 1))
-            col = max(0, min(col, total_width - 1))
+                # Calculate which minute (1-10) - dot represents score at end of that minute
+                if seconds_elapsed <= 0:
+                    minute = 1
+                else:
+                    minute = min(10, max(1, (seconds_elapsed + 59) // 60))  # ceil division
+            except:
+                minute = 5  # default to middle
+
+            # Calculate column: skip break columns (at positions 0, 11, 22, 33, 44)
+            col = (period - 1) * cols_per_quarter + minute
 
             # Lead from USC perspective: positive = USC leading
             if usc_is_home:
@@ -843,16 +848,22 @@ def generate_game_page(event_id: str) -> str:
             lead_at_col[col] = lead
 
         # Fill in gaps by carrying forward the last known lead
+        # Break columns (multiples of cols_per_quarter) get None - no dots there
         last_lead = 0
         filled_lead = []
-        for col in range(total_width):
+        for col in range(total_cols):
+            is_break = (col % cols_per_quarter == 0)
             if col in lead_at_col:
                 last_lead = lead_at_col[col]
-            filled_lead.append(last_lead)
+            if is_break:
+                filled_lead.append(None)  # No dots at break positions
+            else:
+                filled_lead.append(last_lead)
 
         # Calculate separate heights for USC (positive leads) and opponent (negative leads)
-        max_usc_lead = max(0, max(filled_lead))
-        max_opp_lead = abs(min(0, min(filled_lead)))
+        valid_leads = [l for l in filled_lead if l is not None]
+        max_usc_lead = max(0, max(valid_leads)) if valid_leads else 0
+        max_opp_lead = abs(min(0, min(valid_leads))) if valid_leads else 0
         usc_height = max(1, (max_usc_lead + 2) // 3) if max_usc_lead > 0 else 0
         opp_height = max(1, (max_opp_lead + 2) // 3) if max_opp_lead > 0 else 0
 
@@ -865,8 +876,10 @@ def generate_game_page(event_id: str) -> str:
         for row in range(usc_height, 0, -1):
             threshold = row * 3
             line = ""
-            for col in range(total_width):
-                if filled_lead[col] >= threshold:
+            for col in range(total_cols):
+                if filled_lead[col] is None:
+                    line += " "  # No dot at break positions
+                elif filled_lead[col] >= threshold:
                     line += "."
                 else:
                     line += " "
@@ -876,23 +889,23 @@ def generate_game_page(event_id: str) -> str:
             else:
                 content_lines.append(f'<span class="usc-dots">     {line}</span>')
 
-        # Blank line before timeline
-        content_lines.append("")
-
-        # Timeline
+        # Timeline: + at breaks, = for minutes
         timeline = ""
-        for q in range(num_periods):
-            if q == 0:
+        for col in range(total_cols):
+            if col % cols_per_quarter == 0:
                 timeline += "+"
-            timeline += "=" * (quarter_width - 1) + "+"
+            else:
+                timeline += "="
         content_lines.append(f"     {timeline}")
 
         # Opponent rows (dots going down when opponent is leading)
         for row in range(1, opp_height + 1):
             threshold = row * 3
             line = ""
-            for col in range(total_width):
-                if filled_lead[col] <= -threshold:
+            for col in range(total_cols):
+                if filled_lead[col] is None:
+                    line += " "  # No dot at break positions
+                elif filled_lead[col] <= -threshold:
                     line += "."
                 else:
                     line += " "
