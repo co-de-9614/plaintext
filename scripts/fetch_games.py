@@ -583,7 +583,15 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
 
     events = schedule_data.get("events", [])
 
-    for event in events:
+    # Split into completed and upcoming
+    completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+    upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") in ("pre", "in")]
+
+    # Results section
+    content_lines.append("RESULTS")
+    content_lines.append("-" * 47)
+
+    for event in completed:
         comp = event.get("competitions", [{}])[0]
         status = comp.get("status", {}).get("type", {})
         state = status.get("state", "")
@@ -617,35 +625,66 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         opp_rank = rankings.get(opp_abbrev, 0)
         opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
 
-        if state == "post":
-            # Completed game
-            usc_score_raw = usc.get("score", "") if usc else ""
-            opp_score_raw = opponent.get("score", "")
+        # Completed game
+        usc_score_raw = usc.get("score", "") if usc else ""
+        opp_score_raw = opponent.get("score", "")
 
-            if isinstance(usc_score_raw, dict):
-                usc_score = usc_score_raw.get("displayValue", str(usc_score_raw.get("value", "")))
-            else:
-                usc_score = str(usc_score_raw)
-
-            if isinstance(opp_score_raw, dict):
-                opp_score = opp_score_raw.get("displayValue", str(opp_score_raw.get("value", "")))
-            else:
-                opp_score = str(opp_score_raw)
-
-            try:
-                result = "W" if float(usc_score) > float(opp_score) else "L"
-            except:
-                result = "-"
-
-            content_lines.append(f"{date_str:<12} {result} {usc_score:>3}-{opp_score:<3} {home_away} {opp_str}")
-
-        elif state == "in":
-            # Live game
-            content_lines.append(f"{date_str:<12} LIVE        {home_away} {opp_str}")
-
+        if isinstance(usc_score_raw, dict):
+            usc_score = usc_score_raw.get("displayValue", str(usc_score_raw.get("value", "")))
         else:
-            # Upcoming game
-            content_lines.append(f"{date_str:<12}             {home_away} {opp_str}")
+            usc_score = str(usc_score_raw)
+
+        if isinstance(opp_score_raw, dict):
+            opp_score = opp_score_raw.get("displayValue", str(opp_score_raw.get("value", "")))
+        else:
+            opp_score = str(opp_score_raw)
+
+        try:
+            result = "W" if float(usc_score) > float(opp_score) else "L"
+        except:
+            result = "-"
+
+        content_lines.append(f"{date_str:<12} {result} {usc_score:>3}-{opp_score:<3} {home_away} {opp_str}")
+
+    # Upcoming section
+    content_lines.append("")
+    content_lines.append("UPCOMING SCHEDULE")
+    content_lines.append("-" * 47)
+
+    for event in upcoming:
+        comp = event.get("competitions", [{}])[0]
+        status = comp.get("status", {}).get("type", {})
+        state = status.get("state", "")
+
+        # Date
+        date_raw = comp.get("date", "")
+        if date_raw:
+            try:
+                dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
+                dt_pt = dt.astimezone(PT)
+                date_str = dt_pt.strftime("%b %d %I:%M%p")
+            except:
+                date_str = date_raw[:10]
+        else:
+            date_str = "TBD"
+
+        competitors = comp.get("competitors", [])
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+
+        if not opponent:
+            continue
+
+        opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
+        home_away = "vs" if opponent.get("homeAway") == "away" else "at"
+
+        # Ranking
+        opp_rank = rankings.get(opp_abbrev, 0)
+        opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+
+        if state == "in":
+            content_lines.append(f"{date_str:<16} LIVE {home_away} {opp_str}")
+        else:
+            content_lines.append(f"{date_str:<16} {home_away} {opp_str}")
 
     # Link back to main page
     content_lines.append("")
