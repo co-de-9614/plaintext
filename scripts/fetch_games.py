@@ -875,6 +875,9 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             content_lines.append(f'<span class="usc-dots">{line}</span>')
 
+        # Blank line before timeline
+        content_lines.append("")
+
         # Timeline
         timeline = ""
         for q in range(num_periods):
