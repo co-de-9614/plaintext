@@ -800,7 +800,6 @@ def generate_game_page(event_id: str) -> str:
         # Settings
         quarter_width = 12  # columns per quarter
         total_width = quarter_width * num_periods
-        max_height = 6  # max dots up or down
 
         # Track lead at each column position
         # Positive = away team leading, negative = home team leading
@@ -838,6 +837,10 @@ def generate_game_page(event_id: str) -> str:
             if col in lead_at_col:
                 last_lead = lead_at_col[col]
             filled_lead.append(last_lead)
+
+        # Calculate max height needed based on max lead (3 points per dot)
+        max_lead = max(abs(min(filled_lead)), abs(max(filled_lead)))
+        max_height = max(6, (max_lead + 2) // 3)  # At least 6 rows, more if needed
 
         # Build the visualization
         content_lines.append(f"<b>Game Flow:</b>                     (1 dot = 3 points)")
