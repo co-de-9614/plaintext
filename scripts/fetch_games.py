@@ -374,11 +374,13 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
 
 def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict, roster: list) -> str:
     """Generate the main game page HTML."""
-    now = datetime.now(PT).strftime("%Y-%m-%d %I:%M %p PT")
+    now = datetime.now(PT)
+    now_str = now.strftime("%I:%M:%S %p")
+    now_iso = now.isoformat()
 
     content_lines = []
     content_lines.append(f"USC WOMEN'S BASKETBALL")
-    content_lines.append(f"Updated: {now}")
+    content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("=" * 47)
 
     if game_data:
@@ -535,6 +537,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USC Women's Basketball</title>
+    <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
             box-sizing: border-box;
@@ -565,6 +568,32 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 <pre>
 {content}
 </pre>
+<script>
+(function() {{
+    const dataLoaded = new Date(document.querySelector('meta[name="data-loaded"]').content);
+    const pageLoaded = new Date();
+
+    function formatTime(date) {{
+        return date.toLocaleTimeString('en-US', {{ hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }});
+    }}
+
+    function timeAgo(date) {{
+        const seconds = Math.floor((new Date() - date) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + ' min ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + ' hr ago';
+        const days = Math.floor(hours / 24);
+        return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+    }}
+
+    const el = document.getElementById('timestamps');
+    if (el) {{
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n(' + timeAgo(dataLoaded) + ')\\nData loaded: ' + formatTime(dataLoaded);
+    }}
+}})();
+</script>
 </body>
 </html>
 """
