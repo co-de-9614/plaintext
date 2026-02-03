@@ -588,15 +588,25 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
-    const el = document.getElementById('timestamps');
-    if (el) {{
-        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
-        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
-        const ago = '(' + timeAgo(dataLoaded) + ')';
-        const padding = 55 - dataLoadedStr.length - ago.length;
-        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
-        el.innerHTML = pageLoadedStr + '\\n' + dataLoadedStr + spaces + ago;
+    function updateTimestamps() {{
+        const el = document.getElementById('timestamps');
+        if (el) {{
+            const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+            const pageAgo = '(' + timeAgo(pageLoaded) + ')';
+            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
+
+            const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
+            const dataAgo = '(' + timeAgo(dataLoaded) + ')';
+            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
+
+            el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
+        }}
     }}
+
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Update every minute
 }})();
 </script>
 </body>
@@ -787,15 +797,25 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
-    const el = document.getElementById('timestamps');
-    if (el) {{
-        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
-        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
-        const ago = '(' + timeAgo(dataLoaded) + ')';
-        const padding = 55 - dataLoadedStr.length - ago.length;
-        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
-        el.innerHTML = pageLoadedStr + '\\n' + dataLoadedStr + spaces + ago;
+    function updateTimestamps() {{
+        const el = document.getElementById('timestamps');
+        if (el) {{
+            const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+            const pageAgo = '(' + timeAgo(pageLoaded) + ')';
+            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
+
+            const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
+            const dataAgo = '(' + timeAgo(dataLoaded) + ')';
+            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
+
+            el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
+        }}
     }}
+
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Update every minute
 }})();
 </script>
 </body>
@@ -857,39 +877,127 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     status = comp.get("status", {}).get("type", {})
     status_detail = status.get("detail", "Final")
 
-    # Page width is 55 characters, center at position 28
+    # Page width is 55 characters
     PAGE_WIDTH = 55
+    # Team centers: USC at 14, opponent at 42 (1-indexed), center at 28
+    LEFT_CENTER = 13   # 0-indexed position 14
+    RIGHT_CENTER = 41  # 0-indexed position 42
+    PAGE_CENTER = 27   # 0-indexed position 28
 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
+    content_lines.append('<a href="../schedule.html">&lt; USC Schedule</a>')
     content_lines.append("")
 
-    # Header with abbreviations, rankings, and current records
-    away_rank_str = f"#{away_rank} " if away_rank else ""
-    home_rank_str = f"#{home_rank} " if home_rank else ""
-    away_header = f"{away_rank_str}{away_abbrev}"
-    home_header = f"{home_rank_str}{home_abbrev}"
+    # Determine USC and opponent - always show USC first (left side)
+    usc_is_home = home_team.get("id") == USC_TEAM_ID
+    if usc_is_home:
+        usc_team = home_team
+        usc_score = home_score
+        usc_record = home_record
+        usc_rank = home_rank
+        usc_quarters = home_quarters
+        opp_team = away_team
+        opp_score = away_score
+        opp_record = away_record
+        opp_rank = away_rank
+        opp_quarters = away_quarters
+    else:
+        usc_team = away_team
+        usc_score = away_score
+        usc_record = away_record
+        usc_rank = away_rank
+        usc_quarters = away_quarters
+        opp_team = home_team
+        opp_score = home_score
+        opp_record = home_record
+        opp_rank = home_rank
+        opp_quarters = home_quarters
 
-    # Center tightly with dash at position 28 (0-indexed: 27)
-    CENTER = 27  # dash/center position (0-indexed)
+    # Get full team names
+    usc_school = "USC"
+    usc_name = "Trojans"
+    opp_school = opp_team.get("location", opp_team.get("abbreviation", "OPP"))
+    opp_name = opp_team.get("name", "")
+    opp_abbrev_display = opp_team.get("abbreviation", "OPP")
 
-    # Header line: away_team  status  home_team, centered around position 28
-    left_header = f"{away_header}  "
-    right_header = f"  {home_header}"
-    header_left_pad = CENTER - len(left_header) - len(status_detail) // 2
-    header_line = " " * header_left_pad + left_header + status_detail + right_header
+    # Add ranking prefix if applicable
+    usc_rank_str = f"#{usc_rank} " if usc_rank else ""
+    opp_rank_str = f"#{opp_rank} " if opp_rank else ""
 
-    # Score line: away_record  score - score  home_record, with dash at position 28
-    left_score = f"{away_record}  {away_score} "
-    right_score = f" {home_score}  {home_record}"
-    score_line = left_score.rjust(CENTER) + "-" + right_score
+    # Helper to center text at a position within PAGE_WIDTH
+    def center_at(text, pos):
+        start = pos - len(text) // 2
+        return " " * max(0, start) + text
 
-    content_lines.append(header_line)
-    content_lines.append(score_line)
+    # Build header lines
+    # Line 1: School names and status
+    line1 = [" "] * PAGE_WIDTH
+    usc_school_full = f"{usc_rank_str}{usc_school}"
+    opp_school_full = f"{opp_rank_str}{opp_school}"
+
+    # Place USC school at LEFT_CENTER
+    usc_start = LEFT_CENTER - len(usc_school_full) // 2
+    for i, c in enumerate(usc_school_full):
+        if 0 <= usc_start + i < PAGE_WIDTH:
+            line1[usc_start + i] = c
+
+    # Place status at PAGE_CENTER
+    status_start = PAGE_CENTER - len(status_detail) // 2
+    for i, c in enumerate(status_detail):
+        if 0 <= status_start + i < PAGE_WIDTH:
+            line1[status_start + i] = c
+
+    # Place opponent school at RIGHT_CENTER
+    opp_start = RIGHT_CENTER - len(opp_school_full) // 2
+    for i, c in enumerate(opp_school_full):
+        if 0 <= opp_start + i < PAGE_WIDTH:
+            line1[opp_start + i] = c
+
+    # Line 2: Team names and score
+    line2 = [" "] * PAGE_WIDTH
+    score_str = f"{usc_score} - {opp_score}"
+
+    # Place USC team name at LEFT_CENTER
+    usc_name_start = LEFT_CENTER - len(usc_name) // 2
+    for i, c in enumerate(usc_name):
+        if 0 <= usc_name_start + i < PAGE_WIDTH:
+            line2[usc_name_start + i] = c
+
+    # Place score at PAGE_CENTER
+    score_start = PAGE_CENTER - len(score_str) // 2
+    for i, c in enumerate(score_str):
+        if 0 <= score_start + i < PAGE_WIDTH:
+            line2[score_start + i] = c
+
+    # Place opponent team name at RIGHT_CENTER
+    opp_name_start = RIGHT_CENTER - len(opp_name) // 2
+    for i, c in enumerate(opp_name):
+        if 0 <= opp_name_start + i < PAGE_WIDTH:
+            line2[opp_name_start + i] = c
+
+    # Line 3: Records
+    line3 = [" "] * PAGE_WIDTH
+
+    # Place USC record at LEFT_CENTER
+    usc_rec_start = LEFT_CENTER - len(usc_record) // 2
+    for i, c in enumerate(usc_record):
+        if 0 <= usc_rec_start + i < PAGE_WIDTH:
+            line3[usc_rec_start + i] = c
+
+    # Place opponent record at RIGHT_CENTER
+    opp_rec_start = RIGHT_CENTER - len(opp_record) // 2
+    for i, c in enumerate(opp_record):
+        if 0 <= opp_rec_start + i < PAGE_WIDTH:
+            line3[opp_rec_start + i] = c
+
+    content_lines.append("".join(line1).rstrip())
+    content_lines.append("".join(line2).rstrip())
+    content_lines.append("".join(line3).rstrip())
     content_lines.append("")
 
-    # Quarter by quarter box score - centered within 55 chars
-    num_periods = max(len(home_quarters), len(away_quarters), 4)
+    # Quarter by quarter box score - centered within 55 chars, USC first
+    num_periods = max(len(usc_quarters), len(opp_quarters), 4)
     period_labels = ["1", "2", "3", "4"] + [f"OT{i}" for i in range(1, num_periods - 3)]
     period_labels = period_labels[:num_periods]
 
@@ -902,24 +1010,20 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines.append(pad + box_header)
     content_lines.append(pad + "-" * box_width)
 
-    away_row = f"{away_abbrev:<5}" + "".join(f"{q:>4}" for q in away_quarters) + f"  {away_score:>3}"
-    home_row = f"{home_abbrev:<5}" + "".join(f"{q:>4}" for q in home_quarters) + f"  {home_score:>3}"
-    content_lines.append(pad + away_row)
-    content_lines.append(pad + home_row)
+    # USC first, then opponent
+    usc_row = f"{'USC':<5}" + "".join(f"{q:>4}" for q in usc_quarters) + f"  {usc_score:>3}"
+    opp_row = f"{opp_abbrev_display:<5}" + "".join(f"{q:>4}" for q in opp_quarters) + f"  {opp_score:>3}"
+    content_lines.append(pad + usc_row)
+    content_lines.append(pad + opp_row)
     content_lines.append("")
 
     # Game Flow visualization (based on game lead)
     plays = game.get("plays", [])
     scoring_plays = [p for p in plays if p.get("scoringPlay")]
 
-    # Determine if USC is home or away
-    usc_is_home = home_team.get("id") == USC_TEAM_ID
-    if usc_is_home:
-        opp_abbrev = away_abbrev
-        opp_color = away_team.get("color", "888888")
-    else:
-        opp_abbrev = home_abbrev
-        opp_color = home_team.get("color", "888888")
+    # Get opponent color for game flow
+    opp_color = opp_team.get("color", "888888")
+    opp_abbrev = opp_abbrev_display
 
     if scoring_plays:
         # Settings: 11 columns per quarter (start + 10 minutes), plus breaks
@@ -1074,19 +1178,23 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 pass
         return (0, 0)
 
-    # Helper to get sort key for player (pts desc, mins desc, reb desc)
+    # Helper to get sort key for player (mins desc, pts desc, then alphabetical by last name)
     # ESPN indices: 0=MIN, 1=PTS, 2=FG, 3=3PT, 4=FT, 5=REB, 6=AST, 7=TO, 8=STL, 9=BLK, 10=OREB, 11=DREB, 12=PF
     def player_sort_key(a):
         stats = a.get("stats", [])
+        athlete = a.get("athlete", {})
+        name = athlete.get("displayName", "Unknown")
+        # Get last name for alphabetical sort
+        last_name = name.split()[-1] if name else "ZZZ"
+
         if not stats or len(stats) < 6:
-            return (0, 0, 0)
+            return (0, 0, last_name)
         try:
-            pts = int(stats[1]) if stats[1] and stats[1] != '--' else 0
             mins = int(stats[0]) if stats[0] and stats[0] != '--' else 0
-            reb = int(stats[5]) if stats[5] and stats[5] != '--' else 0
-            return (-pts, -mins, -reb)
+            pts = int(stats[1]) if stats[1] and stats[1] != '--' else 0
+            return (-mins, -pts, last_name)
         except:
-            return (0, 0, 0)
+            return (0, 0, last_name)
 
     # Player stats for each team (USC first)
     players_data = boxscore.get("players", [])
@@ -1148,7 +1256,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             player_line = f"{name} {jersey_str}"
 
             if not stats or len(stats) < 13:
-                stats_line = "  Did not play"
+                stats_line = '<span class="dnp">  Did not play</span>'
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -1164,7 +1272,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 fls = stats[12] if stats[12] and stats[12] != '--' else "0"
 
                 if mins == "0" or mins == "0:00":
-                    stats_line = "  Did not play"
+                    stats_line = '<span class="dnp">  Did not play</span>'
                 else:
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
@@ -1210,7 +1318,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             player_line = f"{name} {jersey_str}"
 
             if not stats or len(stats) < 13:
-                stats_line = "  Did not play"
+                stats_line = '<span class="dnp">  Did not play</span>'
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -1226,7 +1334,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 fls = stats[12] if stats[12] and stats[12] != '--' else "0"
 
                 if mins == "0" or mins == "0:00":
-                    stats_line = "  Did not play"
+                    stats_line = '<span class="dnp">  Did not play</span>'
                 else:
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
@@ -1275,9 +1383,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append("".join(all_spans))
         content_lines.append("")
 
-    # Link back
-    content_lines.append('<a href="../schedule.html">Back to Schedule</a>')
-    content_lines.append('<a href="../index.html">Back to Home</a>')
+    # No bottom links - navigation is at top
 
     content = "\n".join(content_lines)
 
@@ -1331,6 +1437,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         .usc-dots {{
             color: #990000;
         }}
+        .dnp {{
+            color: #999999;
+        }}
     </style>
 </head>
 <body>
@@ -1357,15 +1466,25 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
-    const el = document.getElementById('timestamps');
-    if (el) {{
-        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
-        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
-        const ago = '(' + timeAgo(dataLoaded) + ')';
-        const padding = 55 - dataLoadedStr.length - ago.length;
-        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
-        el.innerHTML = pageLoadedStr + '\\n' + dataLoadedStr + spaces + ago;
+    function updateTimestamps() {{
+        const el = document.getElementById('timestamps');
+        if (el) {{
+            const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+            const pageAgo = '(' + timeAgo(pageLoaded) + ')';
+            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
+
+            const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
+            const dataAgo = '(' + timeAgo(dataLoaded) + ')';
+            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
+
+            el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
+        }}
     }}
+
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Update every minute
 }})();
 </script>
 </body>

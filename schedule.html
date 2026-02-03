@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USC WBB Schedule</title>
-    <meta name="data-loaded" content="2026-02-02T17:32:13.047046-08:00">
+    <meta name="data-loaded" content="2026-02-02T21:04:01.120148-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -35,7 +35,7 @@
 <pre>
 USC WOMEN'S BASKETBALL
 Full Schedule/Results
-<span id="timestamps">Data loaded: 05:32:13 PM</span>
+<span id="timestamps">Data loaded: 09:04:01 PM</span>
 ===============================================
 RESULTS
 -----------------------------------------------
@@ -94,15 +94,25 @@ Mar 01 03:00PM vs #2 UCLA
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }
 
-    const el = document.getElementById('timestamps');
-    if (el) {
-        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
-        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
-        const ago = '(' + timeAgo(dataLoaded) + ')';
-        const padding = 55 - dataLoadedStr.length - ago.length;
-        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
-        el.innerHTML = pageLoadedStr + '\n' + dataLoadedStr + spaces + ago;
+    function updateTimestamps() {
+        const el = document.getElementById('timestamps');
+        if (el) {
+            const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+            const pageAgo = '(' + timeAgo(pageLoaded) + ')';
+            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
+
+            const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
+            const dataAgo = '(' + timeAgo(dataLoaded) + ')';
+            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
+
+            el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\n' + dataLoadedStr + dataSpaces + dataAgo;
+        }
     }
+
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Update every minute
 })();
 </script>
 </body>
