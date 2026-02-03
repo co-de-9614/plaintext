@@ -870,11 +870,22 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     away_header = f"{away_rank_str}{away_abbrev}"
     home_header = f"{home_rank_str}{home_abbrev}"
 
-    # Center the header within 55 chars: away on left, status center, home on right
-    header_line = f"{away_header:<17}{status_detail:^21}{home_header:>17}"
-    record_line = f"{away_record:<17}{away_score:>7} - {home_score:<7}{home_record:>17}"
+    # Center tightly with dash at position 28 (0-indexed: 27)
+    CENTER = 27  # dash/center position (0-indexed)
+
+    # Header line: away_team  status  home_team, centered around position 28
+    left_header = f"{away_header}  "
+    right_header = f"  {home_header}"
+    header_left_pad = CENTER - len(left_header) - len(status_detail) // 2
+    header_line = " " * header_left_pad + left_header + status_detail + right_header
+
+    # Score line: away_record  score - score  home_record, with dash at position 28
+    left_score = f"{away_record}  {away_score} "
+    right_score = f" {home_score}  {home_record}"
+    score_line = left_score.rjust(CENTER) + "-" + right_score
+
     content_lines.append(header_line)
-    content_lines.append(record_line)
+    content_lines.append(score_line)
     content_lines.append("")
 
     # Quarter by quarter box score - centered within 55 chars
