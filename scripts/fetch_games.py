@@ -875,7 +875,26 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
     # Game status
     status = comp.get("status", {}).get("type", {})
+    status_state = status.get("state", "post")
     status_detail = status.get("detail", "Final")
+
+    # Get live game data if in progress
+    is_live = status_state == "in"
+    game_clock = comp.get("status", {}).get("displayClock", "")
+    game_period = comp.get("status", {}).get("period", 0)
+
+    # Get team fouls and timeouts from situation if available
+    situation = game.get("situation", {})
+    home_fouls = ""
+    away_fouls = ""
+    home_timeouts = ""
+    away_timeouts = ""
+
+    if situation:
+        home_fouls = str(situation.get("homeTeamFouls", ""))
+        away_fouls = str(situation.get("awayTeamFouls", ""))
+        home_timeouts = str(situation.get("homeTimeouts", ""))
+        away_timeouts = str(situation.get("awayTimeouts", ""))
 
     # Page width is 55 characters
     PAGE_WIDTH = 55
@@ -931,70 +950,110 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         return " " * max(0, start) + text
 
     # Build header lines
-    # Line 1: School names and status
-    line1 = [" "] * PAGE_WIDTH
-    usc_school_full = f"{usc_rank_str}{usc_school}"
-    opp_school_full = f"{opp_rank_str}{opp_school}"
+    if is_live:
+        # Live game format: centered clock in red, score, fouls, timeouts
+        period_name = f"Q{game_period}" if game_period <= 4 else f"OT{game_period - 4}"
+        clock_str = f"{period_name} {game_clock}"
 
-    # Place USC school at LEFT_CENTER
-    usc_start = LEFT_CENTER - len(usc_school_full) // 2
-    for i, c in enumerate(usc_school_full):
-        if 0 <= usc_start + i < PAGE_WIDTH:
-            line1[usc_start + i] = c
+        # Line 1: Period and clock in red, centered
+        clock_padding = " " * (PAGE_CENTER - len(clock_str) // 2)
+        content_lines.append(f'{clock_padding}<span class="live-clock">{clock_str}</span>')
 
-    # Place status at PAGE_CENTER
-    status_start = PAGE_CENTER - len(status_detail) // 2
-    for i, c in enumerate(status_detail):
-        if 0 <= status_start + i < PAGE_WIDTH:
-            line1[status_start + i] = c
+        # Line 2: Score centered
+        score_str = f"{usc_score} - {opp_score}"
+        score_padding = " " * (PAGE_CENTER - len(score_str) // 2)
+        content_lines.append(f"{score_padding}{score_str}")
 
-    # Place opponent school at RIGHT_CENTER
-    opp_start = RIGHT_CENTER - len(opp_school_full) // 2
-    for i, c in enumerate(opp_school_full):
-        if 0 <= opp_start + i < PAGE_WIDTH:
-            line1[opp_start + i] = c
+        # Line 3: Team fouls (if available)
+        if usc_is_home:
+            usc_fouls = home_fouls
+            opp_fouls = away_fouls
+            usc_timeouts = home_timeouts
+            opp_timeouts = away_timeouts
+        else:
+            usc_fouls = away_fouls
+            opp_fouls = home_fouls
+            usc_timeouts = away_timeouts
+            opp_timeouts = home_timeouts
 
-    # Line 2: Team names and score
-    line2 = [" "] * PAGE_WIDTH
-    score_str = f"{usc_score} - {opp_score}"
+        if usc_fouls and opp_fouls:
+            fouls_str = f"{usc_fouls} TF {opp_fouls}"
+            fouls_padding = " " * (PAGE_CENTER - len(fouls_str) // 2)
+            content_lines.append(f"{fouls_padding}{fouls_str}")
 
-    # Place USC team name at LEFT_CENTER
-    usc_name_start = LEFT_CENTER - len(usc_name) // 2
-    for i, c in enumerate(usc_name):
-        if 0 <= usc_name_start + i < PAGE_WIDTH:
-            line2[usc_name_start + i] = c
+        # Line 4: Timeouts remaining (if available)
+        if usc_timeouts and opp_timeouts:
+            timeouts_str = f"{usc_timeouts} TOL {opp_timeouts}"
+            timeouts_padding = " " * (PAGE_CENTER - len(timeouts_str) // 2)
+            content_lines.append(f"{timeouts_padding}{timeouts_str}")
 
-    # Place score at PAGE_CENTER
-    score_start = PAGE_CENTER - len(score_str) // 2
-    for i, c in enumerate(score_str):
-        if 0 <= score_start + i < PAGE_WIDTH:
-            line2[score_start + i] = c
+        content_lines.append("")
+    else:
+        # Final/scheduled game format: standard three-line header
+        # Line 1: School names and status
+        line1 = [" "] * PAGE_WIDTH
+        usc_school_full = f"{usc_rank_str}{usc_school}"
+        opp_school_full = f"{opp_rank_str}{opp_school}"
 
-    # Place opponent team name at RIGHT_CENTER
-    opp_name_start = RIGHT_CENTER - len(opp_name) // 2
-    for i, c in enumerate(opp_name):
-        if 0 <= opp_name_start + i < PAGE_WIDTH:
-            line2[opp_name_start + i] = c
+        # Place USC school at LEFT_CENTER
+        usc_start = LEFT_CENTER - len(usc_school_full) // 2
+        for i, c in enumerate(usc_school_full):
+            if 0 <= usc_start + i < PAGE_WIDTH:
+                line1[usc_start + i] = c
 
-    # Line 3: Records
-    line3 = [" "] * PAGE_WIDTH
+        # Place status at PAGE_CENTER
+        status_start = PAGE_CENTER - len(status_detail) // 2
+        for i, c in enumerate(status_detail):
+            if 0 <= status_start + i < PAGE_WIDTH:
+                line1[status_start + i] = c
 
-    # Place USC record at LEFT_CENTER
-    usc_rec_start = LEFT_CENTER - len(usc_record) // 2
-    for i, c in enumerate(usc_record):
-        if 0 <= usc_rec_start + i < PAGE_WIDTH:
-            line3[usc_rec_start + i] = c
+        # Place opponent school at RIGHT_CENTER
+        opp_start = RIGHT_CENTER - len(opp_school_full) // 2
+        for i, c in enumerate(opp_school_full):
+            if 0 <= opp_start + i < PAGE_WIDTH:
+                line1[opp_start + i] = c
 
-    # Place opponent record at RIGHT_CENTER
-    opp_rec_start = RIGHT_CENTER - len(opp_record) // 2
-    for i, c in enumerate(opp_record):
-        if 0 <= opp_rec_start + i < PAGE_WIDTH:
-            line3[opp_rec_start + i] = c
+        # Line 2: Team names and score
+        line2 = [" "] * PAGE_WIDTH
+        score_str = f"{usc_score} - {opp_score}"
 
-    content_lines.append("".join(line1).rstrip())
-    content_lines.append("".join(line2).rstrip())
-    content_lines.append("".join(line3).rstrip())
-    content_lines.append("")
+        # Place USC team name at LEFT_CENTER
+        usc_name_start = LEFT_CENTER - len(usc_name) // 2
+        for i, c in enumerate(usc_name):
+            if 0 <= usc_name_start + i < PAGE_WIDTH:
+                line2[usc_name_start + i] = c
+
+        # Place score at PAGE_CENTER
+        score_start = PAGE_CENTER - len(score_str) // 2
+        for i, c in enumerate(score_str):
+            if 0 <= score_start + i < PAGE_WIDTH:
+                line2[score_start + i] = c
+
+        # Place opponent team name at RIGHT_CENTER
+        opp_name_start = RIGHT_CENTER - len(opp_name) // 2
+        for i, c in enumerate(opp_name):
+            if 0 <= opp_name_start + i < PAGE_WIDTH:
+                line2[opp_name_start + i] = c
+
+        # Line 3: Records
+        line3 = [" "] * PAGE_WIDTH
+
+        # Place USC record at LEFT_CENTER
+        usc_rec_start = LEFT_CENTER - len(usc_record) // 2
+        for i, c in enumerate(usc_record):
+            if 0 <= usc_rec_start + i < PAGE_WIDTH:
+                line3[usc_rec_start + i] = c
+
+        # Place opponent record at RIGHT_CENTER
+        opp_rec_start = RIGHT_CENTER - len(opp_record) // 2
+        for i, c in enumerate(opp_record):
+            if 0 <= opp_rec_start + i < PAGE_WIDTH:
+                line3[opp_rec_start + i] = c
+
+        content_lines.append("".join(line1).rstrip())
+        content_lines.append("".join(line2).rstrip())
+        content_lines.append("".join(line3).rstrip())
+        content_lines.append("")
 
     # Quarter by quarter box score - centered within 55 chars, USC first
     num_periods = max(len(usc_quarters), len(opp_quarters), 4)
@@ -1439,6 +1498,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         }}
         .dnp {{
             color: #999999;
+        }}
+        .live-clock {{
+            color: #cc0000;
+            font-weight: bold;
         }}
     </style>
 </head>
