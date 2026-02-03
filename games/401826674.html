@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMC vs USC - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-02T16:26:06.310239-08:00">
+    <meta name="data-loaded" content="2026-02-02T17:27:50.824721-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -52,15 +52,15 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 04:26:06 PM</span>
+<span id="timestamps">Data loaded: 05:27:50 PM</span>
 
-SMC            Final             USC
-5-4            33 - 79            6-2
+SMC                      Final                      USC
+5-4                   33 - 79                   6-2
 
-        1   2   3   4    T
---------------------------
-SMC    14   4   8   7   33
-USC    18  24  13  24   79
+                      1   2   3   4    T
+              --------------------------
+              SMC    14   4   8   7   33
+              USC    18  24  13  24   79
 
 <b>Game Flow:</b>                              (1 dot = 3 pts)
 
@@ -150,9 +150,15 @@ MIN     FG   3PT    FT  PTS ORB DRB AST STL BLK  TO FLS</span><span class="row-o
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }
 
+    function padLeft(str, len) {
+        while (str.length < len) str = ' ' + str;
+        return str;
+    }
+
     const el = document.getElementById('timestamps');
     if (el) {
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\n(' + timeAgo(dataLoaded) + ')\nData loaded: ' + formatTime(dataLoaded);
+        const ago = '(' + timeAgo(dataLoaded) + ')';
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\n' + padLeft(ago, 55) + '\nData loaded: ' + formatTime(dataLoaded);
     }
 })();
 </script>

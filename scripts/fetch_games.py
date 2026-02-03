@@ -588,9 +588,15 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
+    function padLeft(str, len) {{
+        while (str.length < len) str = ' ' + str;
+        return str;
+    }}
+
     const el = document.getElementById('timestamps');
     if (el) {{
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n(' + timeAgo(dataLoaded) + ')\\nData loaded: ' + formatTime(dataLoaded);
+        const ago = '(' + timeAgo(dataLoaded) + ')';
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n' + padLeft(ago, 55) + '\\nData loaded: ' + formatTime(dataLoaded);
     }}
 }})();
 </script>
@@ -782,9 +788,15 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
+    function padLeft(str, len) {{
+        while (str.length < len) str = ' ' + str;
+        return str;
+    }}
+
     const el = document.getElementById('timestamps');
     if (el) {{
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n(' + timeAgo(dataLoaded) + ')\\nData loaded: ' + formatTime(dataLoaded);
+        const ago = '(' + timeAgo(dataLoaded) + ')';
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n' + padLeft(ago, 55) + '\\nData loaded: ' + formatTime(dataLoaded);
     }}
 }})();
 </script>
@@ -847,6 +859,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     status = comp.get("status", {}).get("type", {})
     status_detail = status.get("detail", "Final")
 
+    # Page width is 55 characters, center at position 28
+    PAGE_WIDTH = 55
+
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("")
@@ -857,26 +872,31 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     away_header = f"{away_rank_str}{away_abbrev}"
     home_header = f"{home_rank_str}{home_abbrev}"
 
-    # Center the header
-    header_line = f"{away_header:<12} {status_detail:^10} {home_header:>12}"
-    record_line = f"{away_record:<12} {away_score:>4} - {home_score:<4} {home_record:>12}"
+    # Center the header within 55 chars: away on left, status center, home on right
+    header_line = f"{away_header:<17}{status_detail:^21}{home_header:>17}"
+    record_line = f"{away_record:<17}{away_score:>7} - {home_score:<7}{home_record:>17}"
     content_lines.append(header_line)
     content_lines.append(record_line)
     content_lines.append("")
 
-    # Quarter by quarter
+    # Quarter by quarter box score - centered within 55 chars
     num_periods = max(len(home_quarters), len(away_quarters), 4)
     period_labels = ["1", "2", "3", "4"] + [f"OT{i}" for i in range(1, num_periods - 3)]
     period_labels = period_labels[:num_periods]
 
-    header_row = "     " + "".join(f"{p:>4}" for p in period_labels) + "    T"
-    content_lines.append(header_row)
-    content_lines.append("-" * len(header_row))
+    # Build box score rows
+    box_header = "     " + "".join(f"{p:>4}" for p in period_labels) + "    T"
+    box_width = len(box_header)
+    box_padding = (PAGE_WIDTH - box_width) // 2
+    pad = " " * box_padding
+
+    content_lines.append(pad + box_header)
+    content_lines.append(pad + "-" * box_width)
 
     away_row = f"{away_abbrev:<5}" + "".join(f"{q:>4}" for q in away_quarters) + f"  {away_score:>3}"
     home_row = f"{home_abbrev:<5}" + "".join(f"{q:>4}" for q in home_quarters) + f"  {home_score:>3}"
-    content_lines.append(away_row)
-    content_lines.append(home_row)
+    content_lines.append(pad + away_row)
+    content_lines.append(pad + home_row)
     content_lines.append("")
 
     # Game Flow visualization (based on game lead)
@@ -1328,9 +1348,15 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
+    function padLeft(str, len) {{
+        while (str.length < len) str = ' ' + str;
+        return str;
+    }}
+
     const el = document.getElementById('timestamps');
     if (el) {{
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n(' + timeAgo(dataLoaded) + ')\\nData loaded: ' + formatTime(dataLoaded);
+        const ago = '(' + timeAgo(dataLoaded) + ')';
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n' + padLeft(ago, 55) + '\\nData loaded: ' + formatTime(dataLoaded);
     }}
 }})();
 </script>
