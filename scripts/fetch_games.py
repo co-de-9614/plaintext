@@ -588,15 +588,14 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
-    function padLeft(str, len) {{
-        while (str.length < len) str = ' ' + str;
-        return str;
-    }}
-
     const el = document.getElementById('timestamps');
     if (el) {{
+        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
         const ago = '(' + timeAgo(dataLoaded) + ')';
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n' + padLeft(ago, 55) + '\\nData loaded: ' + formatTime(dataLoaded);
+        const padding = 55 - dataLoadedStr.length - ago.length;
+        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
+        el.innerHTML = pageLoadedStr + '\\n' + dataLoadedStr + spaces + ago;
     }}
 }})();
 </script>
@@ -788,15 +787,14 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
-    function padLeft(str, len) {{
-        while (str.length < len) str = ' ' + str;
-        return str;
-    }}
-
     const el = document.getElementById('timestamps');
     if (el) {{
+        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
         const ago = '(' + timeAgo(dataLoaded) + ')';
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n' + padLeft(ago, 55) + '\\nData loaded: ' + formatTime(dataLoaded);
+        const padding = 55 - dataLoadedStr.length - ago.length;
+        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
+        el.innerHTML = pageLoadedStr + '\\n' + dataLoadedStr + spaces + ago;
     }}
 }})();
 </script>
@@ -1348,15 +1346,14 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }}
 
-    function padLeft(str, len) {{
-        while (str.length < len) str = ' ' + str;
-        return str;
-    }}
-
     const el = document.getElementById('timestamps');
     if (el) {{
+        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
         const ago = '(' + timeAgo(dataLoaded) + ')';
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n' + padLeft(ago, 55) + '\\nData loaded: ' + formatTime(dataLoaded);
+        const padding = 55 - dataLoadedStr.length - ago.length;
+        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
+        el.innerHTML = pageLoadedStr + '\\n' + dataLoadedStr + spaces + ago;
     }}
 }})();
 </script>

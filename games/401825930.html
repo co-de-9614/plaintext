@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PEPP vs USC - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-02T17:27:50.667019-08:00">
+    <meta name="data-loaded" content="2026-02-02T17:30:17.222795-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -52,7 +52,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 05:27:50 PM</span>
+<span id="timestamps">Data loaded: 05:30:17 PM</span>
 
 PEPP                     Final                      USC
 4-2                   52 - 82                   5-2
@@ -142,15 +142,14 @@ MIN     FG   3PT    FT  PTS ORB DRB AST STL BLK  TO FLS</span><span class="row-o
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }
 
-    function padLeft(str, len) {
-        while (str.length < len) str = ' ' + str;
-        return str;
-    }
-
     const el = document.getElementById('timestamps');
     if (el) {
+        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
         const ago = '(' + timeAgo(dataLoaded) + ')';
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\n' + padLeft(ago, 55) + '\nData loaded: ' + formatTime(dataLoaded);
+        const padding = 55 - dataLoadedStr.length - ago.length;
+        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
+        el.innerHTML = pageLoadedStr + '\n' + dataLoadedStr + spaces + ago;
     }
 })();
 </script>

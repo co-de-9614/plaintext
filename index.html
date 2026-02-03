@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USC Women's Basketball</title>
-    <meta name="data-loaded" content="2026-02-02T17:27:49.457385-08:00">
+    <meta name="data-loaded" content="2026-02-02T17:30:15.954343-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -34,7 +34,7 @@
 <body>
 <pre>
 USC WOMEN'S BASKETBALL
-<span id="timestamps">Data loaded: 05:27:49 PM</span>
+<span id="timestamps">Data loaded: 05:30:15 PM</span>
 ===============================================
 
 No game in progress today.
@@ -98,15 +98,14 @@ Feb 01 W 71-39 vs RUTG
         return days + ' day' + (days > 1 ? 's' : '') + ' ago';
     }
 
-    function padLeft(str, len) {
-        while (str.length < len) str = ' ' + str;
-        return str;
-    }
-
     const el = document.getElementById('timestamps');
     if (el) {
+        const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+        const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
         const ago = '(' + timeAgo(dataLoaded) + ')';
-        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\n' + padLeft(ago, 55) + '\nData loaded: ' + formatTime(dataLoaded);
+        const padding = 55 - dataLoadedStr.length - ago.length;
+        const spaces = padding > 0 ? ' '.repeat(padding) : ' ';
+        el.innerHTML = pageLoadedStr + '\n' + dataLoadedStr + spaces + ago;
     }
 })();
 </script>
