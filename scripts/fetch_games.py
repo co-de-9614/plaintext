@@ -736,8 +736,13 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     return html
 
 
-def generate_game_page(event_id: str) -> str:
+def generate_game_page(event_id: str, rankings: dict = None, team_records: dict = None) -> str:
     """Generate a detailed game report page."""
+    if rankings is None:
+        rankings = {}
+    if team_records is None:
+        team_records = {}
+
     summary_url = f"{BASE_API}/summary?event={event_id}"
     game = fetch_json(summary_url)
 
@@ -759,8 +764,18 @@ def generate_game_page(event_id: str) -> str:
     away_abbrev = away_team.get("abbreviation", "AWAY")
     home_score = home.get("score", "0")
     away_score = away.get("score", "0")
-    home_record = home.get("record", [{}])[0].get("displayValue", "") if home.get("record") else ""
-    away_record = away.get("record", [{}])[0].get("displayValue", "") if away.get("record") else ""
+
+    # Get current records from team_records dict, fallback to game-time record
+    home_record = team_records.get(home_abbrev, "")
+    away_record = team_records.get(away_abbrev, "")
+    if not home_record:
+        home_record = home.get("record", [{}])[0].get("displayValue", "") if home.get("record") else ""
+    if not away_record:
+        away_record = away.get("record", [{}])[0].get("displayValue", "") if away.get("record") else ""
+
+    # Get rankings
+    home_rank = rankings.get(home_abbrev, 0)
+    away_rank = rankings.get(away_abbrev, 0)
 
     # Quarter scores
     home_quarters = [q.get("displayValue", "0") for q in home.get("linescores", [])]
@@ -772,9 +787,17 @@ def generate_game_page(event_id: str) -> str:
 
     content_lines = []
 
-    # Header
-    content_lines.append(f"{away_team.get('displayName', away_abbrev):<24} {status_detail:^10} {home_team.get('displayName', home_abbrev):>24}")
-    content_lines.append(f"{away_record:<24} {away_score:>4} - {home_score:<4} {home_record:>24}")
+    # Header with abbreviations, rankings, and current records
+    away_rank_str = f"#{away_rank} " if away_rank else ""
+    home_rank_str = f"#{home_rank} " if home_rank else ""
+    away_header = f"{away_rank_str}{away_abbrev}"
+    home_header = f"{home_rank_str}{home_abbrev}"
+
+    # Center the header
+    header_line = f"{away_header:<12} {status_detail:^10} {home_header:>12}"
+    record_line = f"{away_record:<12} {away_score:>4} - {home_score:<4} {home_record:>12}"
+    content_lines.append(header_line)
+    content_lines.append(record_line)
     content_lines.append("")
 
     # Quarter by quarter
@@ -870,7 +893,13 @@ def generate_game_page(event_id: str) -> str:
         opp_height = max(1, (max_opp_lead + 2) // 3) if max_opp_lead > 0 else 0
 
         # Build the visualization
-        content_lines.append(f"<b>Game Flow:</b>                    (1 dot = 3 pts)")
+        # Total chart width = 6 (padding) + total_cols
+        chart_width = 6 + total_cols
+        legend = "(1 dot = 3 pts)"
+        game_flow_label = "<b>Game Flow:</b>"
+        # Right-justify the legend to align with the final "+"
+        spacing = chart_width - 10 - len(legend)  # 10 = len("Game Flow:")
+        content_lines.append(f"{game_flow_label}{' ' * spacing}{legend}")
         content_lines.append("")
         content_lines.append('<span class="game-flow">')
 
@@ -1270,12 +1299,25 @@ def main():
     events = schedule.get("events", [])
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
 
+    # Get current team records from schedule (most recent game has current records)
+    team_records = {}
+    if completed:
+        # Get records from the most recent completed game
+        latest_comp = completed[-1].get("competitions", [{}])[0]
+        for competitor in latest_comp.get("competitors", []):
+            abbrev = competitor.get("team", {}).get("abbreviation", "")
+            records = competitor.get("records", [])
+            for rec in records:
+                if rec.get("type") == "total":
+                    team_records[abbrev] = rec.get("summary", "")
+                    break
+
     print(f"Generating {len(completed)} game pages...")
     for event in completed:
         event_id = event.get("id", "")
         if event_id:
             try:
-                game_html = generate_game_page(event_id)
+                game_html = generate_game_page(event_id, rankings, team_records)
                 game_path = games_dir / f"{event_id}.html"
                 game_path.write_text(game_html)
             except Exception as e:
