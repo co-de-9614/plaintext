@@ -602,12 +602,14 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
 def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     """Generate the full schedule/results page."""
-    now = datetime.now(PT).strftime("%Y-%m-%d %I:%M %p PT")
+    now = datetime.now(PT)
+    now_str = now.strftime("%I:%M:%S %p")
+    now_iso = now.isoformat()
 
     content_lines = []
     content_lines.append("USC WOMEN'S BASKETBALL")
     content_lines.append("Full Schedule/Results")
-    content_lines.append(f"Updated: {now}")
+    content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("=" * 47)
 
     events = schedule_data.get("events", [])
@@ -729,6 +731,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USC WBB Schedule</title>
+    <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
             box-sizing: border-box;
@@ -759,6 +762,32 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
 <pre>
 {content}
 </pre>
+<script>
+(function() {{
+    const dataLoaded = new Date(document.querySelector('meta[name="data-loaded"]').content);
+    const pageLoaded = new Date();
+
+    function formatTime(date) {{
+        return date.toLocaleTimeString('en-US', {{ hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }});
+    }}
+
+    function timeAgo(date) {{
+        const seconds = Math.floor((new Date() - date) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + ' min ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + ' hr ago';
+        const days = Math.floor(hours / 24);
+        return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+    }}
+
+    const el = document.getElementById('timestamps');
+    if (el) {{
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n(' + timeAgo(dataLoaded) + ')\\nData loaded: ' + formatTime(dataLoaded);
+    }}
+}})();
+</script>
 </body>
 </html>
 """
@@ -771,6 +800,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         rankings = {}
     if team_records is None:
         team_records = {}
+
+    now = datetime.now(PT)
+    now_str = now.strftime("%I:%M:%S %p")
+    now_iso = now.isoformat()
 
     summary_url = f"{BASE_API}/summary?event={event_id}"
     game = fetch_json(summary_url)
@@ -815,6 +848,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     status_detail = status.get("detail", "Final")
 
     content_lines = []
+    content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
+    content_lines.append("")
 
     # Header with abbreviations, rankings, and current records
     away_rank_str = f"#{away_rank} " if away_rank else ""
@@ -1223,6 +1258,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{away_abbrev} vs {home_abbrev} - USC WBB</title>
+    <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
             box-sizing: border-box;
@@ -1272,6 +1308,32 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 <pre>
 {content}
 </pre>
+<script>
+(function() {{
+    const dataLoaded = new Date(document.querySelector('meta[name="data-loaded"]').content);
+    const pageLoaded = new Date();
+
+    function formatTime(date) {{
+        return date.toLocaleTimeString('en-US', {{ hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }});
+    }}
+
+    function timeAgo(date) {{
+        const seconds = Math.floor((new Date() - date) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + ' min ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + ' hr ago';
+        const days = Math.floor(hours / 24);
+        return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+    }}
+
+    const el = document.getElementById('timestamps');
+    if (el) {{
+        el.innerHTML = 'Page loaded: ' + formatTime(pageLoaded) + '\\n(' + timeAgo(dataLoaded) + ')\\nData loaded: ' + formatTime(dataLoaded);
+    }}
+}})();
+</script>
 </body>
 </html>
 """
