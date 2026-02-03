@@ -887,9 +887,9 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             # Put USC label on the bottom row (row 1) of USC dots
             if row == 1:
-                content_lines.append(f'<span class="usc-dots">USC  {line}</span>')
+                content_lines.append(f'<span class="usc-dots">USC   {line}</span>')
             else:
-                content_lines.append(f'<span class="usc-dots">     {line}</span>')
+                content_lines.append(f'<span class="usc-dots">      {line}</span>')
 
         # Blank line before timeline to prevent overlap with compact line-height
         content_lines.append("")
@@ -901,7 +901,7 @@ def generate_game_page(event_id: str) -> str:
                 timeline += "+"
             else:
                 timeline += "="
-        content_lines.append(f"     {timeline}")
+        content_lines.append(f"      {timeline}")
 
         # Opponent rows (dots going down when opponent is leading)
         for row in range(1, opp_height + 1):
@@ -916,9 +916,9 @@ def generate_game_page(event_id: str) -> str:
                     line += " "
             # Put opponent label on the first row of opponent dots
             if row == 1:
-                content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<5}{line}</span>')
+                content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<6}{line}</span>')
             else:
-                content_lines.append(f'<span style="color: #{opp_color};">     {line}</span>')
+                content_lines.append(f'<span style="color: #{opp_color};">      {line}</span>')
 
         content_lines.append('</span>')
         content_lines.append("")
