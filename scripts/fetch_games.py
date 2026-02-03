@@ -622,9 +622,9 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     now_iso = now.isoformat()
 
     content_lines = []
+    content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("USC WOMEN'S BASKETBALL")
     content_lines.append("Full Schedule/Results")
-    content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("=" * 47)
 
     events = schedule_data.get("events", [])
@@ -640,8 +640,6 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     for event in completed:
         event_id = event.get("id", "")
         comp = event.get("competitions", [{}])[0]
-        status = comp.get("status", {}).get("type", {})
-        state = status.get("state", "")
 
         # Date
         date_raw = comp.get("date", "")
@@ -649,10 +647,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
             try:
                 dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
                 dt_pt = dt.astimezone(PT)
-                if state == "pre":
-                    date_str = dt_pt.strftime("%b %d %I:%M%p")
-                else:
-                    date_str = dt_pt.strftime("%b %d")
+                date_str = dt_pt.strftime("%b %d")
             except:
                 date_str = date_raw[:10]
         else:
@@ -665,12 +660,14 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         if not opponent:
             continue
 
-        opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
+        opp_team = opponent.get("team", {})
+        opp_abbrev = opp_team.get("abbreviation", "OPP")
+        opp_school = opp_team.get("location", opp_abbrev)
         home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
         # Ranking
         opp_rank = rankings.get(opp_abbrev, 0)
-        opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+        opp_str = f"#{opp_rank} {opp_school}" if opp_rank else opp_school
 
         # Completed game
         usc_score_raw = usc.get("score", "") if usc else ""
@@ -722,12 +719,14 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         if not opponent:
             continue
 
-        opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
+        opp_team = opponent.get("team", {})
+        opp_abbrev = opp_team.get("abbreviation", "OPP")
+        opp_school = opp_team.get("location", opp_abbrev)
         home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
         # Ranking
         opp_rank = rankings.get(opp_abbrev, 0)
-        opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+        opp_str = f"#{opp_rank} {opp_school}" if opp_rank else opp_school
 
         if state == "in":
             content_lines.append(f"{date_str} LIVE {home_away} {opp_str}")
