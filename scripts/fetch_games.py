@@ -1435,8 +1435,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             # Get plus/minus for this player
             pm_val = player_plus_minus.get(athlete_id, 0)
             pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-            # Pad player line to align +/- at position 52 (before PTS column)
-            padding = 52 - len(name_part)
+            # Pad player line to align +/- to end at position 55 (page width)
+            padding = 51 - len(name_part)
             player_line = f'{name_part}{" " * padding}<span class="plusminus">{pm_str:>4}</span>'
 
             if not stats or len(stats) < 13:
@@ -1507,8 +1507,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             # Get plus/minus for this player
             pm_val = player_plus_minus.get(athlete_id, 0)
             pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-            # Pad player line to align +/- at position 52 (before PTS column)
-            padding = 52 - len(name_part)
+            # Pad player line to align +/- to end at position 55 (page width)
+            padding = 51 - len(name_part)
             player_line = f'{name_part}{" " * padding}<span class="plusminus">{pm_str:>4}</span>'
 
             if not stats or len(stats) < 13:
