@@ -1058,7 +1058,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     period_labels = period_labels[:num_periods]
 
     # Build box score rows
-    box_header = "     " + "".join(f"{p:>4}" for p in period_labels) + "    T"
+    box_header = "    " + "".join(f"{p:>3}" for p in period_labels) + "   T"
     box_width = len(box_header)
     box_padding = (PAGE_WIDTH - box_width) // 2
     pad = " " * box_padding
@@ -1067,8 +1067,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines.append(pad + "-" * box_width)
 
     # USC first, then opponent
-    usc_row = f"{'USC':<5}" + "".join(f"{q:>4}" for q in usc_quarters) + f"  {usc_score:>3}"
-    opp_row = f"{opp_abbrev_display:<5}" + "".join(f"{q:>4}" for q in opp_quarters) + f"  {opp_score:>3}"
+    usc_row = f"{'USC':<4}" + "".join(f"{q:>3}" for q in usc_quarters) + f"  {usc_score:>3}"
+    opp_row = f"{opp_abbrev_display:<4}" + "".join(f"{q:>3}" for q in opp_quarters) + f"  {opp_score:>3}"
     content_lines.append(pad + usc_row)
     content_lines.append(pad + opp_row)
     content_lines.append("")
