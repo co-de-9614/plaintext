@@ -1267,6 +1267,74 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append(f"Attendance: {attendance:,}")
     content_lines.append("")
 
+    # Calculate plus/minus for each player from play-by-play
+    def calculate_plus_minus(plays, boxscore):
+        """Calculate plus/minus for each player by tracking who's on court during scoring."""
+        plus_minus = {}  # athlete_id -> +/- value
+
+        # Get starters for each team from boxscore
+        on_court = {}  # team_id -> set of athlete_ids currently on court
+
+        players_data = boxscore.get("players", [])
+        for team_data in players_data:
+            team_id = team_data.get("team", {}).get("id", "")
+            statistics = team_data.get("statistics", [])
+            if statistics:
+                athletes = statistics[0].get("athletes", [])
+                starters = [a.get("athlete", {}).get("id") for a in athletes if a.get("starter")]
+                on_court[team_id] = set(starters)
+                # Initialize plus/minus for all players
+                for a in athletes:
+                    athlete_id = a.get("athlete", {}).get("id")
+                    if athlete_id:
+                        plus_minus[athlete_id] = 0
+
+        prev_home_score = 0
+        prev_away_score = 0
+
+        for play in plays:
+            play_type = play.get("type", {}).get("text", "").lower()
+            play_text = play.get("text", "").lower()
+            home_score = play.get("homeScore", prev_home_score)
+            away_score = play.get("awayScore", prev_away_score)
+
+            # Handle substitutions - parse from play text
+            if "substitution" in play_type:
+                participants = play.get("participants", [])
+                team_id = play.get("team", {}).get("id", "")
+                if participants and team_id in on_court:
+                    athlete_id = participants[0].get("athlete", {}).get("id")
+                    if athlete_id:
+                        if "subbing out" in play_text or "exits" in play_text:
+                            on_court[team_id].discard(athlete_id)
+                        elif "subbing in" in play_text or "enters" in play_text:
+                            on_court[team_id].add(athlete_id)
+
+            # Calculate score change and attribute to players on court
+            home_diff = home_score - prev_home_score
+            away_diff = away_score - prev_away_score
+
+            if home_diff != 0 or away_diff != 0:
+                # For each team's players on court, add/subtract the differential
+                for team_id, players_on in on_court.items():
+                    for athlete_id in players_on:
+                        if athlete_id in plus_minus:
+                            # Home team: +home_diff - away_diff
+                            # Away team: +away_diff - home_diff
+                            is_home = team_id == home.get("team", {}).get("id", "")
+                            if is_home:
+                                plus_minus[athlete_id] += home_diff - away_diff
+                            else:
+                                plus_minus[athlete_id] += away_diff - home_diff
+
+            prev_home_score = home_score
+            prev_away_score = away_score
+
+        return plus_minus
+
+    # Calculate plus/minus from plays
+    player_plus_minus = calculate_plus_minus(plays, boxscore) if plays else {}
+
     # Stats header line for player stats
     stats_header = "MIN     FG   3PT    FT ORB DRB AST STL BLK  TO FLS  PTS"
 
@@ -1353,6 +1421,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         # Starters
         for a in starters_sorted:
             athlete = a.get("athlete", {})
+            athlete_id = athlete.get("id", "")
             name = athlete.get("displayName", "Unknown")
             jersey = athlete.get("jersey", "")
             stats = a.get("stats", [])
@@ -1361,10 +1430,18 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             row_idx += 1
 
             jersey_str = f"#{jersey}" if jersey else ""
-            player_line = f"{name} {jersey_str}"
+            name_part = f"{name} {jersey_str}"
+
+            # Get plus/minus for this player
+            pm_val = player_plus_minus.get(athlete_id, 0)
+            pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+            # Pad player line to align +/- at position 52 (before PTS column)
+            padding = 52 - len(name_part)
+            player_line = f'{name_part}{" " * padding}<span class="plusminus">{pm_str:>4}</span>'
 
             if not stats or len(stats) < 13:
                 stats_line = '<span class="dnp">  Did not play</span>'
+                player_line = name_part  # No +/- for DNP
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -1381,6 +1458,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
                 if mins == "0" or mins == "0:00":
                     stats_line = '<span class="dnp">  Did not play</span>'
+                    player_line = name_part  # No +/- for DNP
                 else:
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
@@ -1415,6 +1493,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         # Bench
         for a in bench_sorted:
             athlete = a.get("athlete", {})
+            athlete_id = athlete.get("id", "")
             name = athlete.get("displayName", "Unknown")
             jersey = athlete.get("jersey", "")
             stats = a.get("stats", [])
@@ -1423,10 +1502,18 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             row_idx += 1
 
             jersey_str = f"#{jersey}" if jersey else ""
-            player_line = f"{name} {jersey_str}"
+            name_part = f"{name} {jersey_str}"
+
+            # Get plus/minus for this player
+            pm_val = player_plus_minus.get(athlete_id, 0)
+            pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+            # Pad player line to align +/- at position 52 (before PTS column)
+            padding = 52 - len(name_part)
+            player_line = f'{name_part}{" " * padding}<span class="plusminus">{pm_str:>4}</span>'
 
             if not stats or len(stats) < 13:
                 stats_line = '<span class="dnp">  Did not play</span>'
+                player_line = name_part  # No +/- for DNP
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -1443,6 +1530,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
                 if mins == "0" or mins == "0:00":
                     stats_line = '<span class="dnp">  Did not play</span>'
+                    player_line = name_part  # No +/- for DNP
                 else:
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
@@ -1548,6 +1636,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             color: #990000;
         }}
         .dnp {{
+            color: #999999;
+        }}
+        .plusminus {{
             color: #999999;
         }}
         .live-clock {{
