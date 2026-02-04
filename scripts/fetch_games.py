@@ -1268,7 +1268,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines.append("")
 
     # Stats header line for player stats
-    stats_header = "MIN     FG   3PT    FT ORB DRB AST STL BLK  TO FLS PTS"
+    stats_header = "MIN     FG   3PT    FT ORB DRB AST STL BLK  TO FLS  PTS"
 
     # Helper to convert dash to slash in shooting stats
     def to_slash(stat):
@@ -1403,7 +1403,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     fg_slash = to_slash(fg)
                     three_slash = to_slash(threept)
                     ft_slash = to_slash(ft)
-                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>3}"
+                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>4}"
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
@@ -1465,7 +1465,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     fg_slash = to_slash(fg)
                     three_slash = to_slash(threept)
                     ft_slash = to_slash(ft)
-                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>3}"
+                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>4}"
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
@@ -1478,7 +1478,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
         three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
         ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
-        totals_line = f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3} {team_totals['pts']:>3}"
+        totals_line = f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3} {team_totals['pts']:>4}"
         # Percentages
         fg_pct = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.0f}%" if team_totals['fg_att'] > 0 else "0%"
         three_pct = f"{100 * team_totals['three_made'] / team_totals['three_att']:.0f}%" if team_totals['three_att'] > 0 else "0%"
