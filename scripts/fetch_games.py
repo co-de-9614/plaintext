@@ -1067,8 +1067,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines.append(pad + "-" * box_width)
 
     # USC first, then opponent
-    usc_row = f"{'USC':<4}" + "".join(f"{q:>3}" for q in usc_quarters) + f"  {usc_score:>3}"
-    opp_row = f"{opp_abbrev_display:<4}" + "".join(f"{q:>3}" for q in opp_quarters) + f"  {opp_score:>3}"
+    usc_row = f"{'USC':<4}" + "".join(f"{q:>3}" for q in usc_quarters) + f" {usc_score:>3}"
+    opp_row = f"{opp_abbrev_display:<4}" + "".join(f"{q:>3}" for q in opp_quarters) + f" {opp_score:>3}"
     content_lines.append(pad + usc_row)
     content_lines.append(pad + opp_row)
     content_lines.append("")
