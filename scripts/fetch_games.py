@@ -1248,11 +1248,11 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             prev_leader = current_leader
 
         # Display lead stats
-        content_lines.append(f"Lead Changes: {lead_changes}")
-        content_lines.append(f"Times Tied: {times_tied}")
+        content_lines.append(f"<b>Lead Changes:</b> {lead_changes}")
+        content_lines.append(f"<b>Times Tied:</b> {times_tied}")
         usc_lead_str = str(usc_biggest_lead) if usc_biggest_lead > 0 else "N/A"
         opp_lead_str = str(opp_biggest_lead) if opp_biggest_lead > 0 else "N/A"
-        content_lines.append(f"Biggest Lead: USC: {usc_lead_str}, {opp_abbrev}: {opp_lead_str}")
+        content_lines.append(f"<b>Biggest Lead:</b> USC: {usc_lead_str}, {opp_abbrev}: {opp_lead_str}")
         content_lines.append("")
 
     # Game info
@@ -1260,9 +1260,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     venue_name = venue.get("fullName", "")
     attendance = gameInfo.get("attendance", 0)
     if venue_name:
-        content_lines.append(f"Venue: {venue_name}")
+        content_lines.append(f"<b>Venue:</b> {venue_name}")
     if attendance:
-        content_lines.append(f"Attendance: {attendance:,}")
+        content_lines.append(f"<b>Attendance:</b> {attendance:,}")
     content_lines.append("")
 
     # Calculate plus/minus for each player from play-by-play
