@@ -550,12 +550,11 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             max-width: 100%;
             margin: 0 auto;
             line-height: 1.4;
-            overflow-x: hidden;
+            overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            white-space: pre;
+            min-width: 55ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -758,12 +757,11 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
             max-width: 100%;
             margin: 0 auto;
             line-height: 1.4;
-            overflow-x: hidden;
+            overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            white-space: pre;
+            min-width: 55ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -1602,12 +1600,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             max-width: 100%;
             margin: 0 auto;
             line-height: 1.3;
-            overflow-x: hidden;
+            overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            white-space: pre;
             margin: 0;
             font-size: 12px;
         }}
@@ -1616,15 +1612,15 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         }}
         .row-even {{
             background: #f0f0f0;
-            display: block;
-            width: 55ch;
+            display: inline-block;
+            min-width: 55ch;
             margin: 0;
             padding: 0;
         }}
         .row-odd {{
             background: transparent;
-            display: block;
-            width: 55ch;
+            display: inline-block;
+            min-width: 55ch;
             margin: 0;
             padding: 0;
         }}
