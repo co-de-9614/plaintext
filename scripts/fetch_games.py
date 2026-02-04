@@ -1479,12 +1479,14 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         .row-even {{
             background: #f0f0f0;
             display: block;
+            width: 55ch;
             margin: 0;
             padding: 0;
         }}
         .row-odd {{
             background: transparent;
             display: block;
+            width: 55ch;
             margin: 0;
             padding: 0;
         }}
