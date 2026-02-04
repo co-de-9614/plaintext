@@ -1612,15 +1612,13 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         }}
         .row-even {{
             background: #f0f0f0;
-            display: inline-block;
-            min-width: 55ch;
+            display: block;
             margin: 0;
             padding: 0;
         }}
         .row-odd {{
             background: transparent;
-            display: inline-block;
-            min-width: 55ch;
+            display: block;
             margin: 0;
             padding: 0;
         }}
