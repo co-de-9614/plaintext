@@ -1207,6 +1207,56 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append('</span>')
         content_lines.append("")
 
+    # Calculate lead changes, times tied, and biggest leads from scoring plays
+    if scoring_plays:
+        lead_changes = 0
+        times_tied = 0
+        usc_biggest_lead = 0
+        opp_biggest_lead = 0
+        prev_leader = None  # None = tied, "usc" = USC leading, "opp" = opponent leading
+
+        for play in scoring_plays:
+            away_sc = play.get("awayScore", 0)
+            home_sc = play.get("homeScore", 0)
+
+            # Calculate lead from USC perspective
+            if usc_is_home:
+                lead = home_sc - away_sc
+            else:
+                lead = away_sc - home_sc
+
+            # Track biggest leads
+            if lead > 0:
+                usc_biggest_lead = max(usc_biggest_lead, lead)
+            elif lead < 0:
+                opp_biggest_lead = max(opp_biggest_lead, abs(lead))
+
+            # Determine current leader
+            if lead > 0:
+                current_leader = "usc"
+            elif lead < 0:
+                current_leader = "opp"
+            else:
+                current_leader = None
+
+            # Count lead changes (when lead switches from one team to the other)
+            if prev_leader is not None and current_leader is not None and prev_leader != current_leader:
+                lead_changes += 1
+
+            # Count times tied (when score becomes tied after not being tied)
+            if current_leader is None and prev_leader is not None:
+                times_tied += 1
+
+            prev_leader = current_leader
+
+        # Display lead stats
+        content_lines.append(f"Lead Changes: {lead_changes}")
+        content_lines.append(f"Times Tied: {times_tied}")
+        usc_lead_str = str(usc_biggest_lead) if usc_biggest_lead > 0 else "N/A"
+        opp_lead_str = str(opp_biggest_lead) if opp_biggest_lead > 0 else "N/A"
+        content_lines.append(f"Biggest Lead: USC: {usc_lead_str}, {opp_abbrev}: {opp_lead_str}")
+        content_lines.append("")
+
     # Game info
     venue = gameInfo.get("venue", {})
     venue_name = venue.get("fullName", "")
