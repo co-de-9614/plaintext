@@ -902,6 +902,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
+    content_lines.append("")
     content_lines.append('<a href="../schedule.html">&lt; USC Schedule</a>')
     content_lines.append("")
 
@@ -987,69 +988,40 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append("")
     else:
         # Final/scheduled game format: standard three-line header
-        # Line 1: School names and status
-        line1 = [" "] * PAGE_WIDTH
+        # Use string building with HTML bold tags
         usc_school_full = f"{usc_rank_str}{usc_school}"
         opp_school_full = f"{opp_rank_str}{opp_school}"
 
-        # Place USC school at LEFT_CENTER
-        usc_start = LEFT_CENTER - len(usc_school_full) // 2
-        for i, c in enumerate(usc_school_full):
-            if 0 <= usc_start + i < PAGE_WIDTH:
-                line1[usc_start + i] = c
+        # Line 1: School names (bold) and status (bold)
+        # Calculate positions based on text length (without HTML tags)
+        usc_school_pad = LEFT_CENTER - len(usc_school_full) // 2
+        status_pad = PAGE_CENTER - len(status_detail) // 2 - (usc_school_pad + len(usc_school_full))
+        opp_school_pad = RIGHT_CENTER - len(opp_school_full) // 2 - (usc_school_pad + len(usc_school_full) + status_pad + len(status_detail))
 
-        # Place status at PAGE_CENTER
-        status_start = PAGE_CENTER - len(status_detail) // 2
-        for i, c in enumerate(status_detail):
-            if 0 <= status_start + i < PAGE_WIDTH:
-                line1[status_start + i] = c
+        line1 = " " * usc_school_pad + f"<b>{usc_school_full}</b>"
+        line1 += " " * max(1, status_pad) + f"<b>{status_detail}</b>"
+        line1 += " " * max(1, opp_school_pad) + f"<b>{opp_school_full}</b>"
 
-        # Place opponent school at RIGHT_CENTER
-        opp_start = RIGHT_CENTER - len(opp_school_full) // 2
-        for i, c in enumerate(opp_school_full):
-            if 0 <= opp_start + i < PAGE_WIDTH:
-                line1[opp_start + i] = c
-
-        # Line 2: Team names and score
-        line2 = [" "] * PAGE_WIDTH
+        # Line 2: Team names (bold) and score
         score_str = f"{usc_score} - {opp_score}"
+        usc_name_pad = LEFT_CENTER - len(usc_name) // 2
+        score_pad = PAGE_CENTER - len(score_str) // 2 - (usc_name_pad + len(usc_name))
+        opp_name_pad = RIGHT_CENTER - len(opp_name) // 2 - (usc_name_pad + len(usc_name) + score_pad + len(score_str))
 
-        # Place USC team name at LEFT_CENTER
-        usc_name_start = LEFT_CENTER - len(usc_name) // 2
-        for i, c in enumerate(usc_name):
-            if 0 <= usc_name_start + i < PAGE_WIDTH:
-                line2[usc_name_start + i] = c
+        line2 = " " * usc_name_pad + f"<b>{usc_name}</b>"
+        line2 += " " * max(1, score_pad) + score_str
+        line2 += " " * max(1, opp_name_pad) + f"<b>{opp_name}</b>"
 
-        # Place score at PAGE_CENTER
-        score_start = PAGE_CENTER - len(score_str) // 2
-        for i, c in enumerate(score_str):
-            if 0 <= score_start + i < PAGE_WIDTH:
-                line2[score_start + i] = c
+        # Line 3: Records (not bold)
+        usc_rec_pad = LEFT_CENTER - len(usc_record) // 2
+        opp_rec_pad = RIGHT_CENTER - len(opp_record) // 2 - (usc_rec_pad + len(usc_record))
 
-        # Place opponent team name at RIGHT_CENTER
-        opp_name_start = RIGHT_CENTER - len(opp_name) // 2
-        for i, c in enumerate(opp_name):
-            if 0 <= opp_name_start + i < PAGE_WIDTH:
-                line2[opp_name_start + i] = c
+        line3 = " " * usc_rec_pad + usc_record
+        line3 += " " * max(1, opp_rec_pad) + opp_record
 
-        # Line 3: Records
-        line3 = [" "] * PAGE_WIDTH
-
-        # Place USC record at LEFT_CENTER
-        usc_rec_start = LEFT_CENTER - len(usc_record) // 2
-        for i, c in enumerate(usc_record):
-            if 0 <= usc_rec_start + i < PAGE_WIDTH:
-                line3[usc_rec_start + i] = c
-
-        # Place opponent record at RIGHT_CENTER
-        opp_rec_start = RIGHT_CENTER - len(opp_record) // 2
-        for i, c in enumerate(opp_record):
-            if 0 <= opp_rec_start + i < PAGE_WIDTH:
-                line3[opp_rec_start + i] = c
-
-        content_lines.append("".join(line1).rstrip())
-        content_lines.append("".join(line2).rstrip())
-        content_lines.append("".join(line3).rstrip())
+        content_lines.append(line1.rstrip())
+        content_lines.append(line2.rstrip())
+        content_lines.append(line3.rstrip())
         content_lines.append("")
 
     # Quarter by quarter box score - centered within 55 chars, USC first
