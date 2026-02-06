@@ -897,8 +897,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         home_id = home_team.get("id", "")
         away_id = away_team.get("id", "")
 
-        # Count fouls in current half (fouls reset each half in college basketball)
-        current_half_start = 3 if game_period >= 3 else 1
+        # Count fouls in current quarter (fouls reset each quarter in NCAA WBB)
         home_foul_count = 0
         away_foul_count = 0
         # Count team timeouts used in the game (4 per game in NCAA WBB)
@@ -910,8 +909,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             period = p.get("period", {}).get("number", 0)
             play_team_id = p.get("team", {}).get("id", "") if p.get("team") else ""
 
-            # Fouls in current half
-            if "Foul" in ptype and play_team_id and period >= current_half_start:
+            # Fouls in current quarter
+            if "Foul" in ptype and play_team_id and period == game_period:
                 if play_team_id == home_id:
                     home_foul_count += 1
                 elif play_team_id == away_id:
