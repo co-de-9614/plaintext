@@ -733,7 +733,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         opp_str = f"#{opp_rank} {opp_school}" if opp_rank else opp_school
 
         if state == "in":
-            content_lines.append(f"{date_str} LIVE {home_away} {opp_str}")
+            event_id = event.get("id", "")
+            content_lines.append(f'<a href="games/{event_id}.html">{date_str} LIVE {home_away} {opp_str}</a>')
         else:
             content_lines.append(f"{date_str} {home_away} {opp_str}")
 
@@ -1810,6 +1811,7 @@ def main():
 
     events = schedule.get("events", [])
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+    live = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "in"]
 
     # Get current team records from schedule (most recent game has current records)
     team_records = {}
@@ -1824,8 +1826,9 @@ def main():
                     team_records[abbrev] = rec.get("summary", "")
                     break
 
-    print(f"Generating {len(completed)} game pages...")
-    for event in completed:
+    games_to_generate = completed + live
+    print(f"Generating {len(games_to_generate)} game pages...")
+    for event in games_to_generate:
         event_id = event.get("id", "")
         if event_id:
             try:
