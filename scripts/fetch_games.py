@@ -886,18 +886,37 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     game_clock = comp.get("status", {}).get("displayClock", "")
     game_period = comp.get("status", {}).get("period", 0)
 
-    # Get team fouls and timeouts from situation if available
-    situation = game.get("situation", {})
+    # Get team fouls and timeouts from header competitors or boxscore
     home_fouls = ""
     away_fouls = ""
     home_timeouts = ""
     away_timeouts = ""
 
-    if situation:
-        home_fouls = str(situation.get("homeTeamFouls", ""))
-        away_fouls = str(situation.get("awayTeamFouls", ""))
-        home_timeouts = str(situation.get("homeTimeouts", ""))
-        away_timeouts = str(situation.get("awayTimeouts", ""))
+    # Header competitors have fouls and timeoutsRemaining for live games
+    home_fouls_data = home.get("fouls", {})
+    away_fouls_data = away.get("fouls", {})
+    if home_fouls_data.get("teamFouls"):
+        home_fouls = str(home_fouls_data["teamFouls"])
+    if away_fouls_data.get("teamFouls"):
+        away_fouls = str(away_fouls_data["teamFouls"])
+
+    home_tol = home.get("timeoutsRemaining")
+    away_tol = away.get("timeoutsRemaining")
+    if home_tol is not None:
+        home_timeouts = str(home_tol)
+    if away_tol is not None:
+        away_timeouts = str(away_tol)
+
+    # Fall back to boxscore team stats for fouls if header had none
+    if not home_fouls or not away_fouls:
+        for td in boxscore.get("teams", []):
+            tid = td.get("team", {}).get("id", "")
+            for stat in td.get("statistics", []):
+                if stat.get("name") == "fouls":
+                    if tid == home_team.get("id"):
+                        home_fouls = stat.get("displayValue", "")
+                    elif tid == away_team.get("id"):
+                        away_fouls = stat.get("displayValue", "")
 
     # Page width is 55 characters
     PAGE_WIDTH = 55
@@ -953,22 +972,51 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         start = pos - len(text) // 2
         return " " * max(0, start) + text
 
-    # Build header lines
+    # Build header lines - same layout for live and final
+    usc_school_full = f"{usc_rank_str}{usc_school}"
+    opp_school_full = f"{opp_rank_str}{opp_school}"
+
+    # For live games, use red clock as the center status
     if is_live:
-        # Live game format: centered clock in red, score, fouls, timeouts
         period_name = f"Q{game_period}" if game_period <= 4 else f"OT{game_period - 4}"
-        clock_str = f"{period_name} {game_clock}"
+        center_text = f"{period_name} {game_clock}"
+        center_html = f'<span class="live-clock">{center_text}</span>'
+    else:
+        center_text = status_detail
+        center_html = f"<b>{center_text}</b>"
 
-        # Line 1: Period and clock in red, centered
-        clock_padding = " " * (PAGE_CENTER - len(clock_str) // 2)
-        content_lines.append(f'{clock_padding}<span class="live-clock">{clock_str}</span>')
+    # Line 1: School names and status
+    usc_school_pad = LEFT_CENTER - len(usc_school_full) // 2
+    status_pad = PAGE_CENTER - len(center_text) // 2 - (usc_school_pad + len(usc_school_full))
+    opp_school_pad = RIGHT_CENTER - len(opp_school_full) // 2 - (usc_school_pad + len(usc_school_full) + status_pad + len(center_text))
 
-        # Line 2: Score centered
-        score_str = f"{usc_score} - {opp_score}"
-        score_padding = " " * (PAGE_CENTER - len(score_str) // 2)
-        content_lines.append(f"{score_padding}{score_str}")
+    line1 = " " * usc_school_pad + f"<b>{usc_school_full}</b>"
+    line1 += " " * max(1, status_pad) + center_html
+    line1 += " " * max(1, opp_school_pad) + f"<b>{opp_school_full}</b>"
 
-        # Line 3: Team fouls (if available)
+    # Line 2: Team names (bold) and score
+    score_str = f"{usc_score} - {opp_score}"
+    usc_name_pad = LEFT_CENTER - len(usc_name) // 2
+    score_pad = PAGE_CENTER - len(score_str) // 2 - (usc_name_pad + len(usc_name))
+    opp_name_pad = RIGHT_CENTER - len(opp_name) // 2 - (usc_name_pad + len(usc_name) + score_pad + len(score_str))
+
+    line2 = " " * usc_name_pad + f"<b>{usc_name}</b>"
+    line2 += " " * max(1, score_pad) + score_str
+    line2 += " " * max(1, opp_name_pad) + f"<b>{opp_name}</b>"
+
+    # Line 3: Records
+    usc_rec_pad = LEFT_CENTER - len(usc_record) // 2
+    opp_rec_pad = RIGHT_CENTER - len(opp_record) // 2 - (usc_rec_pad + len(usc_record))
+
+    line3 = " " * usc_rec_pad + usc_record
+    line3 += " " * max(1, opp_rec_pad) + opp_record
+
+    content_lines.append(line1.rstrip())
+    content_lines.append(line2.rstrip())
+    content_lines.append(line3.rstrip())
+
+    # For live games, show team fouls and timeouts below the header
+    if is_live:
         if usc_is_home:
             usc_fouls = home_fouls
             opp_fouls = away_fouls
@@ -985,49 +1033,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             fouls_padding = " " * (PAGE_CENTER - len(fouls_str) // 2)
             content_lines.append(f"{fouls_padding}{fouls_str}")
 
-        # Line 4: Timeouts remaining (if available)
         if usc_timeouts and opp_timeouts:
             timeouts_str = f"{usc_timeouts} TOL {opp_timeouts}"
             timeouts_padding = " " * (PAGE_CENTER - len(timeouts_str) // 2)
             content_lines.append(f"{timeouts_padding}{timeouts_str}")
-
-        content_lines.append("")
-    else:
-        # Final/scheduled game format: standard three-line header
-        # Use string building with HTML bold tags
-        usc_school_full = f"{usc_rank_str}{usc_school}"
-        opp_school_full = f"{opp_rank_str}{opp_school}"
-
-        # Line 1: School names (bold) and status (bold)
-        # Calculate positions based on text length (without HTML tags)
-        usc_school_pad = LEFT_CENTER - len(usc_school_full) // 2
-        status_pad = PAGE_CENTER - len(status_detail) // 2 - (usc_school_pad + len(usc_school_full))
-        opp_school_pad = RIGHT_CENTER - len(opp_school_full) // 2 - (usc_school_pad + len(usc_school_full) + status_pad + len(status_detail))
-
-        line1 = " " * usc_school_pad + f"<b>{usc_school_full}</b>"
-        line1 += " " * max(1, status_pad) + f"<b>{status_detail}</b>"
-        line1 += " " * max(1, opp_school_pad) + f"<b>{opp_school_full}</b>"
-
-        # Line 2: Team names (bold) and score
-        score_str = f"{usc_score} - {opp_score}"
-        usc_name_pad = LEFT_CENTER - len(usc_name) // 2
-        score_pad = PAGE_CENTER - len(score_str) // 2 - (usc_name_pad + len(usc_name))
-        opp_name_pad = RIGHT_CENTER - len(opp_name) // 2 - (usc_name_pad + len(usc_name) + score_pad + len(score_str))
-
-        line2 = " " * usc_name_pad + f"<b>{usc_name}</b>"
-        line2 += " " * max(1, score_pad) + score_str
-        line2 += " " * max(1, opp_name_pad) + f"<b>{opp_name}</b>"
-
-        # Line 3: Records (not bold)
-        usc_rec_pad = LEFT_CENTER - len(usc_record) // 2
-        opp_rec_pad = RIGHT_CENTER - len(opp_record) // 2 - (usc_rec_pad + len(usc_record))
-
-        line3 = " " * usc_rec_pad + usc_record
-        line3 += " " * max(1, opp_rec_pad) + opp_record
-
-        content_lines.append(line1.rstrip())
-        content_lines.append(line2.rstrip())
-        content_lines.append(line3.rstrip())
         content_lines.append("")
 
     # Quarter by quarter box score - centered within 55 chars, USC first
