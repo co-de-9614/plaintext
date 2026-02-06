@@ -1063,9 +1063,21 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         # Settings: 11 columns per quarter (start + 10 minutes), plus breaks
         # Col layout per quarter: "+" (break) then "=" (start) then 10 "=" (minutes 1-10)
         cols_per_quarter = 12  # 1 "+" break + 11 "=" columns (1 start + 10 minutes)
-        # For live games, only show through the current period
-        flow_periods = game_period if is_live and game_period > 0 else num_periods
-        total_cols = flow_periods * cols_per_quarter + 1  # +1 for final "+"
+        total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
+
+        # For live games, calculate cutoff column from current period/clock
+        # Dots only appear up to where the game has actually reached
+        cutoff_col = total_cols  # default: show everything (completed games)
+        if is_live and game_period > 0:
+            try:
+                clock_parts = game_clock.split(":")
+                mins_left = int(clock_parts[0])
+                secs_left = int(clock_parts[1]) if len(clock_parts) > 1 else 0
+                secs_elapsed = 600 - (mins_left * 60 + secs_left)
+                current_minute = min(10, max(1, (secs_elapsed + 59) // 60)) if secs_elapsed > 0 else 0
+            except Exception:
+                current_minute = 0
+            cutoff_col = (game_period - 1) * cols_per_quarter + current_minute + 1
 
         # Track USC lead at each column
         # Positive = USC leading, negative = opponent leading
@@ -1106,15 +1118,15 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
         # Fill in gaps by carrying forward the last known lead
         # Break columns (multiples of cols_per_quarter) get None - no dots there
-        # Start columns show the lead carried from previous quarter
+        # Columns past the cutoff get None (future game time, no dots yet)
         last_lead = 0
         filled_lead = []
         for col in range(total_cols):
             is_break = (col % cols_per_quarter == 0)
             if col in lead_at_col:
                 last_lead = lead_at_col[col]
-            if is_break:
-                filled_lead.append(None)  # No dots at break positions
+            if is_break or col > cutoff_col:
+                filled_lead.append(None)  # No dots at break positions or future columns
             else:
                 filled_lead.append(last_lead)
 
