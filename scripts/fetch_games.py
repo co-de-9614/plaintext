@@ -387,6 +387,19 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         event = game_data["event"]
         competition = game_data["competition"]
         event_id = event.get("id", "")
+        state = competition.get("status", {}).get("type", {}).get("state", "")
+
+        # Fetch game summary early so we can use its scores and details
+        summary = None
+        if state in ("in", "post") and event_id:
+            try:
+                summary = get_game_summary(event_id)
+                # Use summary header for score display (schedule API lacks scores for live games)
+                summary_comps = summary.get("header", {}).get("competitions", [])
+                if summary_comps:
+                    competition = summary_comps[0]
+            except Exception as e:
+                content_lines.append(f"\nCould not load game details: {e}")
 
         # Game status
         status_line = format_game_status(competition)
@@ -397,22 +410,14 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         content_lines.append(format_score_display(competition))
         content_lines.append("")
 
-        # Try to get detailed game summary for live/finished games
-        state = competition.get("status", {}).get("type", {}).get("state", "")
-        if state in ("in", "post") and event_id:
-            try:
-                summary = get_game_summary(event_id)
-
-                # Play by play for live games
-                if state == "in":
-                    content_lines.append("")
-                    content_lines.append(format_play_by_play(summary))
-
-                # Box score
+        # Play by play and box score from summary
+        if summary:
+            if state == "in":
                 content_lines.append("")
-                content_lines.append(format_box_score(summary))
-            except Exception as e:
-                content_lines.append(f"\nCould not load game details: {e}")
+                content_lines.append(format_play_by_play(summary))
+
+            content_lines.append("")
+            content_lines.append(format_box_score(summary))
     else:
         content_lines.append("\nNo game in progress today.")
 
@@ -1341,6 +1346,98 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             return (-mins, -pts, last_name)
         except:
             return (0, 0, last_name)
+
+    # Team Stats section
+    team_players = boxscore.get("players", [])
+    if team_players:
+        pre_stats = {}
+        for td in team_players:
+            tid = td.get("team", {}).get("id", "")
+            tab = td.get("team", {}).get("abbreviation", "TEAM")
+            ts = {"abbrev": tab, "fg_m": 0, "fg_a": 0, "three_m": 0, "three_a": 0,
+                  "ft_m": 0, "ft_a": 0, "pts": 0, "orb": 0, "drb": 0,
+                  "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0, "bench_pts": 0}
+            stat_sections = td.get("statistics", [])
+            if stat_sections:
+                for a in stat_sections[0].get("athletes", []):
+                    st = a.get("stats", [])
+                    if not st or len(st) < 13:
+                        continue
+                    mins = st[0] if st[0] and st[0] != '--' else "0"
+                    if mins == "0" or mins == "0:00":
+                        continue
+                    fm, fa = parse_shooting(st[2] if st[2] and st[2] != '--' else "0-0")
+                    tm, ta = parse_shooting(st[3] if st[3] and st[3] != '--' else "0-0")
+                    ftm, fta = parse_shooting(st[4] if st[4] and st[4] != '--' else "0-0")
+                    p = int(st[1]) if st[1] and st[1] != '--' else 0
+                    ts["fg_m"] += fm; ts["fg_a"] += fa
+                    ts["three_m"] += tm; ts["three_a"] += ta
+                    ts["ft_m"] += ftm; ts["ft_a"] += fta
+                    ts["pts"] += p
+                    ts["orb"] += int(st[10]) if st[10] and st[10] != '--' else 0
+                    ts["drb"] += int(st[11]) if st[11] and st[11] != '--' else 0
+                    ts["ast"] += int(st[6]) if st[6] and st[6] != '--' else 0
+                    ts["stl"] += int(st[8]) if st[8] and st[8] != '--' else 0
+                    ts["blk"] += int(st[9]) if st[9] and st[9] != '--' else 0
+                    ts["to"] += int(st[7]) if st[7] and st[7] != '--' else 0
+                    ts["fls"] += int(st[12]) if st[12] and st[12] != '--' else 0
+                    if not a.get("starter"):
+                        ts["bench_pts"] += p
+            pre_stats[tid] = ts
+
+        # Try to get advanced stats from boxscore teams data
+        for td in boxscore.get("teams", []):
+            tid = td.get("team", {}).get("id", "")
+            if tid in pre_stats:
+                for stat in td.get("statistics", []):
+                    name = stat.get("name", "")
+                    val = stat.get("displayValue", "0")
+                    if name == "pointsInPaint":
+                        pre_stats[tid]["pitp"] = val
+                    elif name == "fastBreakPoints":
+                        pre_stats[tid]["fb_pts"] = val
+                    elif name == "turnoverPoints":
+                        pre_stats[tid]["pts_off_to"] = val
+
+        usc_tid = next((t for t in pre_stats if t == USC_TEAM_ID), None)
+        opp_tid = next((t for t in pre_stats if t != USC_TEAM_ID), None)
+
+        if usc_tid and opp_tid:
+            usc_ts = pre_stats[usc_tid]
+            opp_ts = pre_stats[opp_tid]
+
+            content_lines.append("<b>Team Stats:</b>")
+            content_lines.append(f"{'':>5}{'PTS':>3}  {'FG':>5} {'3PT':>5} {'FT':>5} {'OR/DR/TR':>8} {'A':>2} {'S':>2} {'B':>2}")
+
+            for ts in [usc_ts, opp_ts]:
+                ab = ts["abbrev"]
+                fg = f"{ts['fg_m']}/{ts['fg_a']}"
+                thr = f"{ts['three_m']}/{ts['three_a']}"
+                ft = f"{ts['ft_m']}/{ts['ft_a']}"
+                reb = f"{ts['orb']}/{ts['drb']}/{ts['orb']+ts['drb']}"
+                content_lines.append(f"{ab:<5}{ts['pts']:>3}  {fg:>5} {thr:>5} {ft:>5} {reb:>8} {ts['ast']:>2} {ts['stl']:>2} {ts['blk']:>2}")
+                fg_pct = f"{100*ts['fg_m']/ts['fg_a']:.1f}%" if ts['fg_a'] > 0 else "0.0%"
+                thr_pct = f"{100*ts['three_m']/ts['three_a']:.1f}%" if ts['three_a'] > 0 else "0.0%"
+                ft_pct = f"{100*ts['ft_m']/ts['ft_a']:.1f}%" if ts['ft_a'] > 0 else "0.0%"
+                content_lines.append(f"{'':>10}{fg_pct:>5} {thr_pct:>5} {ft_pct:>5}")
+
+            content_lines.append("")
+
+            # Advanced stats table (only if ESPN provides the data)
+            has_advanced = any(k in usc_ts for k in ("pitp", "fb_pts", "pts_off_to"))
+            if has_advanced:
+                content_lines.append(f"{'':>5}{'PITP':>4}{'FB PTS':>8}{'BNCH':>6}{'OR':>4}{'TO':>4}{'POTO':>5}{'PF':>4}")
+                for ts in [usc_ts, opp_ts]:
+                    ab = ts["abbrev"]
+                    pitp = ts.get("pitp", "-")
+                    fb = ts.get("fb_pts", "-")
+                    bnch = str(ts["bench_pts"])
+                    orb = str(ts["orb"])
+                    to_v = str(ts["to"])
+                    poto = ts.get("pts_off_to", "-")
+                    pf = str(ts["fls"])
+                    content_lines.append(f"{ab:<5}{pitp:>4}{fb:>8}{bnch:>6}{orb:>4}{to_v:>4}{poto:>5}{pf:>4}")
+                content_lines.append("")
 
     # Player stats for each team (USC first)
     players_data = boxscore.get("players", [])
