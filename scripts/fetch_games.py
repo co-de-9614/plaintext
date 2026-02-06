@@ -1386,6 +1386,62 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         except:
             return (0, 0, last_name)
 
+    # Calculate second chance points from play-by-play
+    def calculate_second_chance_pts(plays, home_team_id, away_team_id):
+        """Calculate second chance points by tracking offensive rebounds and subsequent scoring."""
+        home_2ch = 0
+        away_2ch = 0
+        # Track which team is in a "second chance" state (got an offensive rebound)
+        second_chance_team = None  # "home" or "away" or None
+
+        for p in plays:
+            ptype = p.get("type", {}).get("text", "")
+            play_team_id = p.get("team", {}).get("id", "") if p.get("team") else ""
+            score_val = p.get("scoreValue", 0)
+
+            # Offensive rebound: team enters second chance state
+            if "Offensive Rebound" in ptype and play_team_id:
+                if play_team_id == home_team_id:
+                    second_chance_team = "home"
+                elif play_team_id == away_team_id:
+                    second_chance_team = "away"
+                continue
+
+            # Scoring play: if team is in second chance state, count the points
+            is_scoring = p.get("scoringPlay", False)
+            if is_scoring and score_val and score_val > 0 and play_team_id:
+                if second_chance_team == "home" and play_team_id == home_team_id:
+                    home_2ch += score_val
+                elif second_chance_team == "away" and play_team_id == away_team_id:
+                    away_2ch += score_val
+                # Made free throws don't end second chance (could be and-1 or multiple FTs)
+                # Only end on made field goals (possession change)
+                if "FreeThrow" not in ptype:
+                    second_chance_team = None
+                continue
+
+            # A missed shot by the second-chance team doesn't end it
+            # (they could get another offensive rebound)
+            # But a missed shot by the OTHER team means they had possession,
+            # so second chance is over
+            if score_val and not is_scoring and play_team_id:
+                if second_chance_team == "home" and play_team_id != home_team_id:
+                    second_chance_team = None
+                elif second_chance_team == "away" and play_team_id != away_team_id:
+                    second_chance_team = None
+                continue
+
+            # Events that end the second chance opportunity
+            if any(x in ptype for x in ("Defensive Rebound", "Turnover", "End Period",
+                                         "Jumpball", "Dead Ball Rebound", "Steal")):
+                second_chance_team = None
+
+        return home_2ch, away_2ch
+
+    home_2ch_pts, away_2ch_pts = calculate_second_chance_pts(
+        plays, home_team.get("id", ""), away_team.get("id", "")
+    ) if plays else (0, 0)
+
     # Team Stats section
     team_players = boxscore.get("players", [])
     if team_players:
@@ -1438,6 +1494,14 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     elif name == "turnoverPoints":
                         pre_stats[tid]["pts_off_to"] = val
 
+        # Add second chance points from play-by-play calculation
+        home_id = home_team.get("id", "")
+        away_id = away_team.get("id", "")
+        if home_id in pre_stats:
+            pre_stats[home_id]["second_ch"] = str(home_2ch_pts)
+        if away_id in pre_stats:
+            pre_stats[away_id]["second_ch"] = str(away_2ch_pts)
+
         usc_tid = next((t for t in pre_stats if t == USC_TEAM_ID), None)
         opp_tid = next((t for t in pre_stats if t != USC_TEAM_ID), None)
 
@@ -1465,17 +1529,18 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             # Advanced stats table (only if ESPN provides the data)
             has_advanced = any(k in usc_ts for k in ("pitp", "fb_pts", "pts_off_to"))
             if has_advanced:
-                content_lines.append(f"{'':>5}{'PITP':>4}{'FB PTS':>8}{'BNCH':>6}{'OR':>4}{'TO':>4}{'POTO':>5}{'PF':>4}")
+                content_lines.append(f"{'':>5}{'PITP':>4}{'FB PTS':>8}{'BNCH':>6}{'OR':>4}{'2CH':>5}{'TO':>4}{'POTO':>5}{'PF':>4}")
                 for ts in [usc_ts, opp_ts]:
                     ab = ts["abbrev"]
                     pitp = ts.get("pitp", "-")
                     fb = ts.get("fb_pts", "-")
                     bnch = str(ts["bench_pts"])
                     orb = str(ts["orb"])
+                    sch = ts.get("second_ch", "-")
                     to_v = str(ts["to"])
                     poto = ts.get("pts_off_to", "-")
                     pf = str(ts["fls"])
-                    content_lines.append(f"{ab:<5}{pitp:>4}{fb:>8}{bnch:>6}{orb:>4}{to_v:>4}{poto:>5}{pf:>4}")
+                    content_lines.append(f"{ab:<5}{pitp:>4}{fb:>8}{bnch:>6}{orb:>4}{sch:>5}{to_v:>4}{poto:>5}{pf:>4}")
                 content_lines.append("")
 
     # Player stats for each team (USC first)
