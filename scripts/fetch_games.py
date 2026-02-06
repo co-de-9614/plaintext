@@ -317,7 +317,7 @@ def find_usc_game(scoreboard: dict, schedule: dict) -> dict | None:
         comp = event.get("competitions", [{}])[0]
         status = comp.get("status", {}).get("type", {})
         state = status.get("state", "")
-        if state == "in":  # Game in progress
+        if state not in ("pre", "post", ""):  # Game in progress (covers "in", halftime, etc.)
             return {"event": event, "competition": comp}
 
     return None
@@ -337,11 +337,12 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
     usc_game = find_usc_game(scoreboard, schedule)
     if usc_game:
         state = usc_game["competition"].get("status", {}).get("type", {}).get("state", "")
-        if state == "in":
-            return True, "Game is LIVE"
-        elif state == "post":
+        if state == "post":
             # Game just ended - update to show final
             return True, "Game just finished"
+        elif state not in ("pre", ""):
+            # Game in progress (covers "in", halftime, etc.)
+            return True, "Game is LIVE"
 
     # Check schedule for upcoming games
     events = schedule.get("events", [])
@@ -350,7 +351,7 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
         status = comp.get("status", {}).get("type", {})
         state = status.get("state", "")
 
-        if state == "in":
+        if state not in ("pre", "post", ""):
             return True, "Game is LIVE"
 
         if state == "pre":
@@ -412,7 +413,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
         # Play by play and box score from summary
         if summary:
-            if state == "in":
+            if state not in ("pre", "post", ""):
                 content_lines.append("")
                 content_lines.append(format_play_by_play(summary))
 
@@ -635,7 +636,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
 
     # Split into completed and upcoming
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
-    upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") in ("pre", "in")]
+    upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") != "post"]
 
     # Results section
     content_lines.append("RESULTS")
@@ -732,9 +733,17 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         opp_rank = rankings.get(opp_abbrev, 0)
         opp_str = f"#{opp_rank} {opp_school}" if opp_rank else opp_school
 
-        if state == "in":
+        if state not in ("pre", "post", ""):
             event_id = event.get("id", "")
-            content_lines.append(f'<a href="games/{event_id}.html">{date_str} LIVE {home_away} {opp_str}</a>')
+            # Replace game time with red "LIVE" label
+            date_raw_dt = comp.get("date", "")
+            try:
+                dt = datetime.fromisoformat(date_raw_dt.replace("Z", "+00:00"))
+                dt_pt = dt.astimezone(PT)
+                live_date = dt_pt.strftime("%b %d")
+            except Exception:
+                live_date = date_str.split()[0] if date_str else ""
+            content_lines.append(f'<a href="games/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
         else:
             content_lines.append(f"{date_str} {home_away} {opp_str}")
 
@@ -882,7 +891,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     status_detail = status.get("detail", "Final")
 
     # Get live game data if in progress
-    is_live = status_state == "in"
+    is_live = status_state not in ("pre", "post", "")
     game_clock = comp.get("status", {}).get("displayClock", "")
     game_period = comp.get("status", {}).get("period", 0)
 
@@ -1914,7 +1923,7 @@ def main():
 
     events = schedule.get("events", [])
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
-    live = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "in"]
+    live = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") not in ("pre", "post", "")]
 
     # Get current team records from schedule (most recent game has current records)
     team_records = {}
