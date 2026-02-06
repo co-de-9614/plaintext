@@ -1063,7 +1063,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         # Settings: 11 columns per quarter (start + 10 minutes), plus breaks
         # Col layout per quarter: "+" (break) then "=" (start) then 10 "=" (minutes 1-10)
         cols_per_quarter = 12  # 1 "+" break + 11 "=" columns (1 start + 10 minutes)
-        total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
+        # For live games, only show through the current period
+        flow_periods = game_period if is_live and game_period > 0 else num_periods
+        total_cols = flow_periods * cols_per_quarter + 1  # +1 for final "+"
 
         # Track USC lead at each column
         # Positive = USC leading, negative = opponent leading
