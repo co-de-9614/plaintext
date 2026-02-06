@@ -886,37 +886,51 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     game_clock = comp.get("status", {}).get("displayClock", "")
     game_period = comp.get("status", {}).get("period", 0)
 
-    # Get team fouls and timeouts from header competitors or boxscore
+    # Parse team fouls and timeouts from play-by-play
     home_fouls = ""
     away_fouls = ""
     home_timeouts = ""
     away_timeouts = ""
 
-    # Header competitors have fouls and timeoutsRemaining for live games
-    home_fouls_data = home.get("fouls", {})
-    away_fouls_data = away.get("fouls", {})
-    if home_fouls_data.get("teamFouls"):
-        home_fouls = str(home_fouls_data["teamFouls"])
-    if away_fouls_data.get("teamFouls"):
-        away_fouls = str(away_fouls_data["teamFouls"])
+    plays = game.get("plays", [])
+    if plays:
+        home_id = home_team.get("id", "")
+        away_id = away_team.get("id", "")
 
-    home_tol = home.get("timeoutsRemaining")
-    away_tol = away.get("timeoutsRemaining")
-    if home_tol is not None:
-        home_timeouts = str(home_tol)
-    if away_tol is not None:
-        away_timeouts = str(away_tol)
+        # Count fouls in current half (fouls reset each half in college basketball)
+        current_half_start = 3 if game_period >= 3 else 1
+        home_foul_count = 0
+        away_foul_count = 0
+        # Count team timeouts used in the game (4 per game in NCAA WBB)
+        home_to_used = 0
+        away_to_used = 0
 
-    # Fall back to boxscore team stats for fouls if header had none
-    if not home_fouls or not away_fouls:
-        for td in boxscore.get("teams", []):
-            tid = td.get("team", {}).get("id", "")
-            for stat in td.get("statistics", []):
-                if stat.get("name") == "fouls":
-                    if tid == home_team.get("id"):
-                        home_fouls = stat.get("displayValue", "")
-                    elif tid == away_team.get("id"):
-                        away_fouls = stat.get("displayValue", "")
+        for p in plays:
+            ptype = p.get("type", {}).get("text", "")
+            period = p.get("period", {}).get("number", 0)
+            play_team_id = p.get("team", {}).get("id", "") if p.get("team") else ""
+
+            # Fouls in current half
+            if "Foul" in ptype and play_team_id and period >= current_half_start:
+                if play_team_id == home_id:
+                    home_foul_count += 1
+                elif play_team_id == away_id:
+                    away_foul_count += 1
+
+            # Team timeouts (exclude OfficialTVTimeOut which has no team)
+            if "timeout" in ptype.lower() and play_team_id:
+                if play_team_id == home_id:
+                    home_to_used += 1
+                elif play_team_id == away_id:
+                    away_to_used += 1
+
+        home_fouls = str(home_foul_count)
+        away_fouls = str(away_foul_count)
+        # NCAA WBB: 4 timeouts per game (+ 1 per OT)
+        ot_periods = max(0, game_period - 4)
+        total_timeouts = 4 + ot_periods
+        home_timeouts = str(total_timeouts - home_to_used)
+        away_timeouts = str(total_timeouts - away_to_used)
 
     # Page width is 55 characters
     PAGE_WIDTH = 55
