@@ -1035,9 +1035,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
     content_lines.append(line1.rstrip())
     content_lines.append(line2.rstrip())
-    content_lines.append(line3.rstrip())
 
-    # For live games, show team fouls and timeouts below the header
+    # For live games, merge TF/TOL into the records and next line
     if is_live:
         if usc_is_home:
             usc_fouls = home_fouls
@@ -1050,16 +1049,22 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             usc_timeouts = away_timeouts
             opp_timeouts = home_timeouts
 
-        if usc_fouls and opp_fouls:
-            fouls_str = f"{usc_fouls} TF {opp_fouls}"
-            fouls_padding = " " * (PAGE_CENTER - len(fouls_str) // 2)
-            content_lines.append(f"{fouls_padding}{fouls_str}")
+        # Records line with TF in the center
+        fouls_str = f"{usc_fouls} TF {opp_fouls}" if usc_fouls and opp_fouls else ""
+        usc_rec_left = " " * (LEFT_CENTER - len(usc_record) // 2) + usc_record
+        fouls_pad = PAGE_CENTER - len(fouls_str) // 2 - len(usc_rec_left)
+        opp_rec_start = RIGHT_CENTER - len(opp_record) // 2
+        opp_rec_pad = opp_rec_start - (len(usc_rec_left) + max(1, fouls_pad) + len(fouls_str))
+        line3 = usc_rec_left + " " * max(1, fouls_pad) + fouls_str + " " * max(1, opp_rec_pad) + opp_record
+        content_lines.append(line3.rstrip())
 
+        # TOL line centered
         if usc_timeouts and opp_timeouts:
             timeouts_str = f"{usc_timeouts} TOL {opp_timeouts}"
             timeouts_padding = " " * (PAGE_CENTER - len(timeouts_str) // 2)
             content_lines.append(f"{timeouts_padding}{timeouts_str}")
-        content_lines.append("")
+    else:
+        content_lines.append(line3.rstrip())
 
     # Quarter by quarter box score - centered within 55 chars, USC first
     num_periods = max(len(usc_quarters), len(opp_quarters), 4)
