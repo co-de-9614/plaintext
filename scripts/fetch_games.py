@@ -471,14 +471,6 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC SEASON STATS</b>\n{stats_header}</span>')
             row_idx += 1
 
-            # Team totals accumulators
-            team_totals = {
-                "fg_made": 0, "fg_att": 0,
-                "three_made": 0, "three_att": 0,
-                "ft_made": 0, "ft_att": 0,
-                "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0
-            }
-
             for p in roster:
                 name = p.get("name", "")
                 jersey = p.get("jersey", "")
@@ -501,22 +493,6 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 fls = p.get("fls", 0)
                 pts = p.get("pts", 0)
 
-                # Accumulate team totals
-                team_totals["fg_made"] += fg_made
-                team_totals["fg_att"] += fg_att
-                team_totals["three_made"] += three_made
-                team_totals["three_att"] += three_att
-                team_totals["ft_made"] += ft_made
-                team_totals["ft_att"] += ft_att
-                team_totals["pts"] += pts
-                team_totals["orb"] += orb
-                team_totals["drb"] += drb
-                team_totals["ast"] += ast
-                team_totals["stl"] += stl
-                team_totals["blk"] += blk
-                team_totals["to"] += to
-                team_totals["fls"] += fls
-
                 fg_str = f"{fg_made}/{fg_att}"
                 three_str = f"{three_made}/{three_att}"
                 ft_str = f"{ft_made}/{ft_att}"
@@ -525,25 +501,6 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
                 all_spans.append(f'<span class="{row_class}">{name_part}\n{stats_line}</span>')
                 row_idx += 1
-
-            # Totals header
-            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC TOTALS</b>\n{stats_header}</span>')
-            row_idx += 1
-
-            # Totals data
-            fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
-            three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
-            ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
-            totals_line = f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3} {team_totals['pts']:>4}"
-            # Percentages
-            fg_pct = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.0f}%" if team_totals['fg_att'] > 0 else "0%"
-            three_pct = f"{100 * team_totals['three_made'] / team_totals['three_att']:.0f}%" if team_totals['three_att'] > 0 else "0%"
-            ft_pct = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.0f}%" if team_totals['ft_att'] > 0 else "0%"
-            pct_line = f"    {fg_pct:>6} {three_pct:>5} {ft_pct:>5}"
-
-            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}">{totals_line}\n{pct_line}</span>')
 
             content_lines.append("".join(all_spans))
 
