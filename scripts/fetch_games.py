@@ -496,7 +496,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 fg_pct = f"{100 * fg_made / fg_att:.2f}%" if fg_att > 0 else "--"
                 three_pct = f"{100 * three_made / three_att:.2f}%" if three_att > 0 else "--"
                 ft_pct = f"{100 * ft_made / ft_att:.2f}%" if ft_att > 0 else "--"
-                name_line = f"  {name_part:<32}{fg_pct:>8}{three_pct:>8}{ft_pct:>8}"
+                name_line = f"{name_part:<34}{fg_pct:<8}{three_pct:<8}{ft_pct}"
 
                 fg_str = f"{fg_made}/{fg_att}"
                 three_str = f"{three_made}/{three_att}"
