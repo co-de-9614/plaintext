@@ -28,6 +28,9 @@ BASE_API = f"https://site.api.espn.com/apis/site/v2/sports/{SPORT}/{LEAGUE}"
 # How many minutes before game start to begin frequent updates
 PREGAME_WINDOW_MINUTES = 60
 
+# Version string generated at runtime
+VERSION = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("v%Y.%m.%d-%H:%M")
+
 
 def fetch_json(url: str) -> dict:
     """Fetch JSON from URL."""
@@ -380,8 +383,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     now_iso = now.isoformat()
 
     content_lines = []
-    content_lines.append(f"USC WOMEN'S BASKETBALL")
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
+    content_lines.append(f"USC WOMEN'S BASKETBALL")
     content_lines.append("=" * 47)
 
     if game_data:
@@ -426,20 +429,33 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         if roster:
             content_lines.append("")
             content_lines.append("=" * 47)
-            content_lines.append("SEASON STATS")
-            content_lines.append("-" * 47)
-            content_lines.append(f"{'PLAYER':<18} {'PPG':>5} {'RPG':>4} {'APG':>4} {'STL':>4} {'BLK':>4}")
-            content_lines.append("-" * 47)
-            for p in roster:  # Full roster
-                name = p.get("name", "")[:14]
+            season_header = " GP   PPG  RPG  APG  SPG  BPG"
+            all_spans = []
+            row_idx = 0
+
+            # Section header (USC cardinal colored)
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC SEASON STATS</b>\n{season_header}</span>')
+            row_idx += 1
+
+            for p in roster:
+                name = p.get("name", "")
                 jersey = p.get("jersey", "")
-                player_str = f"#{jersey:>2} {name}" if jersey else f"    {name}"
+                jersey_str = f"#{jersey}" if jersey else ""
+                name_part = f"{name} {jersey_str}"
                 ppg = p.get("ppg", "-")
                 rpg = p.get("rpg", "-")
                 apg = p.get("apg", "-")
                 spg = p.get("spg", "-")
                 bpg = p.get("bpg", "-")
-                content_lines.append(f"{player_str:<18} {ppg:>5} {rpg:>4} {apg:>4} {spg:>4} {bpg:>4}")
+                gp = p.get("gp", "-")
+                stats_line = f"{gp:>3} {ppg:>5} {rpg:>4} {apg:>4} {spg:>4} {bpg:>4}"
+
+                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                all_spans.append(f'<span class="{row_class}">{name_part}\n{stats_line}</span>')
+                row_idx += 1
+
+            content_lines.append("".join(all_spans))
 
     # Upcoming schedule
     content_lines.append("\n")
@@ -534,6 +550,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     # Link to full schedule
     content_lines.append("")
     content_lines.append('<a href="schedule.html">Full Schedule/Results</a>')
+    content_lines.append(f"\n{VERSION}")
 
     content = "\n".join(content_lines)
 
@@ -566,6 +583,18 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         }}
         a {{
             color: #0066cc;
+        }}
+        .row-even {{
+            background: #f0f0f0;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }}
+        .row-odd {{
+            background: transparent;
+            display: block;
+            margin: 0;
+            padding: 0;
         }}
     </style>
 </head>
@@ -750,6 +779,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     # Link back to main page
     content_lines.append("")
     content_lines.append('<a href="index.html">Back to Home</a>')
+    content_lines.append(f"\n{VERSION}")
 
     content = "\n".join(content_lines)
 
@@ -1765,6 +1795,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append("")
 
     # No bottom links - navigation is at top
+    content_lines.append(VERSION)
 
     content = "\n".join(content_lines)
 
