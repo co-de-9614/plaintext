@@ -164,8 +164,8 @@ def get_roster_with_stats() -> list:
                 "to": t["to"], "fls": t["fls"], "pts": t["pts"],
             })
 
-    # Sort by PTS descending
-    players.sort(key=lambda x: x.get("pts", 0), reverse=True)
+    # Sort by minutes desc, points desc, last name asc (same as game page)
+    players.sort(key=lambda x: (-x.get("min", 0), -x.get("pts", 0), x.get("name", "").split()[-1] if x.get("name") else "ZZZ"))
     return players
 
 
