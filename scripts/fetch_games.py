@@ -49,8 +49,19 @@ def get_roster_with_stats() -> list:
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
 
     # Aggregate stats from each game
-    # Stats indices: 0=MIN, 1=PTS, 5=REB, 6=AST, 8=STL, 9=BLK
-    player_totals = {}  # {athlete_id: {name, jersey, pts, reb, ast, stl, blk, gp}}
+    # ESPN indices: 0=MIN, 1=PTS, 2=FG, 3=3PT, 4=FT, 5=REB, 6=AST, 7=TO, 8=STL, 9=BLK, 10=OREB, 11=DREB, 12=PF
+    player_totals = {}
+
+    def parse_shooting(stat):
+        if not stat or stat == '--':
+            return (0, 0)
+        parts = stat.replace("/", "-").split("-")
+        if len(parts) == 2:
+            try:
+                return (int(parts[0]), int(parts[1]))
+            except ValueError:
+                pass
+        return (0, 0)
 
     for event in completed:
         event_id = event.get("id")
@@ -80,19 +91,26 @@ def get_roster_with_stats() -> list:
                         continue
 
                     stats = a.get("stats", [])
-                    if len(stats) < 10:
+                    if len(stats) < 13:
                         continue
 
                     # Parse stats (handle DNP)
                     try:
                         mins = int(stats[0]) if stats[0] and stats[0] != '--' else 0
                         pts = int(stats[1]) if stats[1] and stats[1] != '--' else 0
-                        reb = int(stats[5]) if stats[5] and stats[5] != '--' else 0
                         ast = int(stats[6]) if stats[6] and stats[6] != '--' else 0
                         stl = int(stats[8]) if stats[8] and stats[8] != '--' else 0
                         blk = int(stats[9]) if stats[9] and stats[9] != '--' else 0
+                        to = int(stats[7]) if stats[7] and stats[7] != '--' else 0
+                        orb = int(stats[10]) if stats[10] and stats[10] != '--' else 0
+                        drb = int(stats[11]) if stats[11] and stats[11] != '--' else 0
+                        fls = int(stats[12]) if stats[12] and stats[12] != '--' else 0
                     except (ValueError, IndexError):
                         continue
+
+                    fg_m, fg_a = parse_shooting(stats[2] if stats[2] and stats[2] != '--' else "0-0")
+                    three_m, three_a = parse_shooting(stats[3] if stats[3] and stats[3] != '--' else "0-0")
+                    ft_m, ft_a = parse_shooting(stats[4] if stats[4] and stats[4] != '--' else "0-0")
 
                     # Only count if player actually played
                     if mins == 0:
@@ -102,37 +120,52 @@ def get_roster_with_stats() -> list:
                         player_totals[athlete_id] = {
                             "name": athlete.get("displayName", "Unknown"),
                             "jersey": athlete.get("jersey", ""),
-                            "pts": 0, "reb": 0, "ast": 0, "stl": 0, "blk": 0, "gp": 0
+                            "min": 0, "pts": 0, "ast": 0, "stl": 0, "blk": 0,
+                            "fg_made": 0, "fg_att": 0, "three_made": 0, "three_att": 0,
+                            "ft_made": 0, "ft_att": 0, "orb": 0, "drb": 0,
+                            "to": 0, "fls": 0, "gp": 0
                         }
 
-                    player_totals[athlete_id]["pts"] += pts
-                    player_totals[athlete_id]["reb"] += reb
-                    player_totals[athlete_id]["ast"] += ast
-                    player_totals[athlete_id]["stl"] += stl
-                    player_totals[athlete_id]["blk"] += blk
-                    player_totals[athlete_id]["gp"] += 1
+                    t = player_totals[athlete_id]
+                    t["min"] += mins
+                    t["pts"] += pts
+                    t["ast"] += ast
+                    t["stl"] += stl
+                    t["blk"] += blk
+                    t["to"] += to
+                    t["orb"] += orb
+                    t["drb"] += drb
+                    t["fls"] += fls
+                    t["fg_made"] += fg_m
+                    t["fg_att"] += fg_a
+                    t["three_made"] += three_m
+                    t["three_att"] += three_a
+                    t["ft_made"] += ft_m
+                    t["ft_att"] += ft_a
+                    t["gp"] += 1
 
         except Exception:
             continue
 
-    # Calculate averages
+    # Return raw totals
     players = []
-    for athlete_id, totals in player_totals.items():
-        gp = totals["gp"]
-        if gp > 0:
+    for athlete_id, t in player_totals.items():
+        if t["gp"] > 0:
             players.append({
-                "name": totals["name"],
-                "jersey": totals["jersey"],
-                "ppg": f"{totals['pts'] / gp:.1f}",
-                "rpg": f"{totals['reb'] / gp:.1f}",
-                "apg": f"{totals['ast'] / gp:.1f}",
-                "spg": f"{totals['stl'] / gp:.1f}",
-                "bpg": f"{totals['blk'] / gp:.1f}",
-                "gp": str(gp)
+                "name": t["name"],
+                "jersey": t["jersey"],
+                "gp": t["gp"],
+                "min": t["min"],
+                "fg_made": t["fg_made"], "fg_att": t["fg_att"],
+                "three_made": t["three_made"], "three_att": t["three_att"],
+                "ft_made": t["ft_made"], "ft_att": t["ft_att"],
+                "orb": t["orb"], "drb": t["drb"],
+                "ast": t["ast"], "stl": t["stl"], "blk": t["blk"],
+                "to": t["to"], "fls": t["fls"], "pts": t["pts"],
             })
 
-    # Sort by PPG descending
-    players.sort(key=lambda x: float(x.get("ppg", 0)), reverse=True)
+    # Sort by PTS descending
+    players.sort(key=lambda x: x.get("pts", 0), reverse=True)
     return players
 
 
@@ -429,31 +462,88 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         if roster:
             content_lines.append("")
             content_lines.append("=" * 47)
-            season_header = " GP   PPG  RPG  APG  SPG  BPG"
+            stats_header = "MIN     FG   3PT    FT ORB DRB AST STL BLK  TO FLS  PTS"
             all_spans = []
             row_idx = 0
 
             # Section header (USC cardinal colored)
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC SEASON STATS</b>\n{season_header}</span>')
+            all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC SEASON STATS</b>\n{stats_header}</span>')
             row_idx += 1
+
+            # Team totals accumulators
+            team_totals = {
+                "fg_made": 0, "fg_att": 0,
+                "three_made": 0, "three_att": 0,
+                "ft_made": 0, "ft_att": 0,
+                "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0
+            }
 
             for p in roster:
                 name = p.get("name", "")
                 jersey = p.get("jersey", "")
                 jersey_str = f"#{jersey}" if jersey else ""
                 name_part = f"{name} {jersey_str}"
-                ppg = p.get("ppg", "-")
-                rpg = p.get("rpg", "-")
-                apg = p.get("apg", "-")
-                spg = p.get("spg", "-")
-                bpg = p.get("bpg", "-")
-                gp = p.get("gp", "-")
-                stats_line = f"{gp:>3} {ppg:>5} {rpg:>4} {apg:>4} {spg:>4} {bpg:>4}"
+
+                mins = p.get("min", 0)
+                fg_made = p.get("fg_made", 0)
+                fg_att = p.get("fg_att", 0)
+                three_made = p.get("three_made", 0)
+                three_att = p.get("three_att", 0)
+                ft_made = p.get("ft_made", 0)
+                ft_att = p.get("ft_att", 0)
+                orb = p.get("orb", 0)
+                drb = p.get("drb", 0)
+                ast = p.get("ast", 0)
+                stl = p.get("stl", 0)
+                blk = p.get("blk", 0)
+                to = p.get("to", 0)
+                fls = p.get("fls", 0)
+                pts = p.get("pts", 0)
+
+                # Accumulate team totals
+                team_totals["fg_made"] += fg_made
+                team_totals["fg_att"] += fg_att
+                team_totals["three_made"] += three_made
+                team_totals["three_att"] += three_att
+                team_totals["ft_made"] += ft_made
+                team_totals["ft_att"] += ft_att
+                team_totals["pts"] += pts
+                team_totals["orb"] += orb
+                team_totals["drb"] += drb
+                team_totals["ast"] += ast
+                team_totals["stl"] += stl
+                team_totals["blk"] += blk
+                team_totals["to"] += to
+                team_totals["fls"] += fls
+
+                fg_str = f"{fg_made}/{fg_att}"
+                three_str = f"{three_made}/{three_att}"
+                ft_str = f"{ft_made}/{ft_att}"
+                stats_line = f"{mins:>3} {fg_str:>6} {three_str:>5} {ft_str:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>4}"
 
                 row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
                 all_spans.append(f'<span class="{row_class}">{name_part}\n{stats_line}</span>')
                 row_idx += 1
+
+            # Totals header
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC TOTALS</b>\n{stats_header}</span>')
+            row_idx += 1
+
+            # Totals data
+            fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
+            three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
+            ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
+            totals_line = f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3} {team_totals['pts']:>4}"
+            # Percentages
+            fg_pct = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.0f}%" if team_totals['fg_att'] > 0 else "0%"
+            three_pct = f"{100 * team_totals['three_made'] / team_totals['three_att']:.0f}%" if team_totals['three_att'] > 0 else "0%"
+            ft_pct = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.0f}%" if team_totals['ft_att'] > 0 else "0%"
+            pct_line = f"    {fg_pct:>6} {three_pct:>5} {ft_pct:>5}"
+
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            all_spans.append(f'<span class="{row_class}">{totals_line}\n{pct_line}</span>')
 
             content_lines.append("".join(all_spans))
 
