@@ -572,7 +572,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 ft_pct = f"{100 * ft_made / ft_att:.2f}%" if ft_att > 0 else "--"
                 pm_val = p.get("pm", 0)
                 pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>5} "
+                grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>3} "
                 name_line = f'{name_part:<34}<span style="color:#999">{grey_part}</span>'
 
                 fg_str = f"{fg_made}/{fg_att}"
