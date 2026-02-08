@@ -536,7 +536,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         if roster:
             content_lines.append("")
             content_lines.append("=" * 47)
-            stats_header = " MIN  OR  DR  AS  ST  BK  TO  FL      FG      3P      FT  PTS "
+            stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
             all_spans = []
             row_idx = 0
 
@@ -1458,7 +1458,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     player_plus_minus = calculate_plus_minus(plays, boxscore, home_team.get("id", "")) if plays else {}
 
     # Stats header line for player stats (matches home page format)
-    stats_header = " MIN  OR  DR  AS  ST  BK  TO  FL      FG      3P      FT  PTS "
+    stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
 
     # Helper to parse shooting stats for totals
     def parse_shooting(stat):
