@@ -41,8 +41,8 @@ jobs:
       - name: Fetch and generate
         id: fetch
         run: |
-          # Force full update on manual trigger or at the top of each hour
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || [[ "$(date +%M)" == "00" ]]; then
+          # Force full update on manual trigger, push, or at the top of each hour
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || [[ "${{ github.event_name }}" == "push" ]] || [[ "$(date +%M)" == "00" ]]; then
             python scripts/fetch_games.py --force
           else
             python scripts/fetch_games.py
