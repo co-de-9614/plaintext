@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>MD vs USC - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-07T20:15:33.866221-08:00">
+    <meta name="data-loaded" content="2026-02-07T20:20:10.547720-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -39,6 +39,13 @@
             margin: 0;
             padding: 0;
         }
+        .game-flow {
+            line-height: 0.5;
+            display: block;
+        }
+        .usc-dots {
+            color: #990000;
+        }
         .dnp {
             color: #999999;
         }
@@ -50,7 +57,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 08:15:33 PM</span>
+<span id="timestamps">Data loaded: 08:20:10 PM</span>
 
 <a href="../schedule.html">&lt; USC Schedule</a>
 
@@ -62,8 +69,18 @@
                  USC  20  8 14 13  55
                  MD   16 11 19 16  62
 
-<b>Game Flow:</b>
-<span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#999">=</span><span style="color:#999">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span>|<span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span>|<span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#990000">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#999">=</span><span style="color:#990000">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span>|<span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#990000">=</span><span style="color:#990000">=</span><span style="color:#999">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span><span style="color:#ce1126">=</span>
+<b>Game Flow:</b>                              (1 dot = 3 pts)
+
+<span class="game-flow">
+<span class="usc-dots">                                                       </span>
+<span class="usc-dots">               .      ..                               </span>
+<span class="usc-dots">USC           .... ....... .                           </span>
+
+      +===========+===========+===========+===========+
+<span style="color: #ce1126;">MD      ...                              . ....    ... </span>
+<span style="color: #ce1126;">                                                     . </span>
+<span style="color: #ce1126;">                                                       </span>
+</span>
 
 <b>Lead Changes:</b> 6
 <b>Times Tied:</b> 11
@@ -124,7 +141,7 @@ MD     26       3    14  12   13  18    9  18
  MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even">                                  <span style="color:#999">39.13%  25.00%  84.62% </span>
       12  26  13   3   3  18  18   18/46    4/16   22/26   62 </span>
 
-v2026.02.07-20:15.607fda3
+v2026.02.07-20:20.82e6fe4
 </pre>
 <script>
 (function() {
