@@ -567,9 +567,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 fls = p.get("fls", 0)
                 pts = p.get("pts", 0)
 
-                fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
-                three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
-                ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
+                fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>6}" if fg_att > 0 else "    --"
+                three_pct = f"{f'{100 * three_made / three_att:.2f}%':>6}" if three_att > 0 else "    --"
+                ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>6}" if ft_att > 0 else "    --"
                 pm_val = p.get("pm", 0)
                 pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
                 grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4} "
@@ -1744,9 +1744,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     team_totals["to"] += int(to) if to else 0
                     team_totals["fls"] += int(fls) if fls else 0
 
-                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
-                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
-                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
+                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>6}" if fg_a > 0 else "    --"
+                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>6}" if three_a > 0 else "    --"
+                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>6}" if ft_a > 0 else "    --"
                     pm_val = player_plus_minus.get(athlete_id, 0)
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
                     grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4} "
@@ -1817,9 +1817,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     team_totals["to"] += int(to) if to else 0
                     team_totals["fls"] += int(fls) if fls else 0
 
-                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
-                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
-                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
+                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>6}" if fg_a > 0 else "    --"
+                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>6}" if three_a > 0 else "    --"
+                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>6}" if ft_a > 0 else "    --"
                     pm_val = player_plus_minus.get(athlete_id, 0)
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
                     grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4} "
@@ -1845,9 +1845,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         fg_pct_val = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.2f}%" if team_totals['fg_att'] > 0 else "--"
         three_pct_val = f"{100 * team_totals['three_made'] / team_totals['three_att']:.2f}%" if team_totals['three_att'] > 0 else "--"
         ft_pct_val = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.2f}%" if team_totals['ft_att'] > 0 else "--"
-        fg_pct = f"{fg_pct_val:>7}"
-        three_pct = f"{three_pct_val:>7}"
-        ft_pct = f"{ft_pct_val:>7}"
+        fg_pct = f"{fg_pct_val:>6}"
+        three_pct = f"{three_pct_val:>6}"
+        ft_pct = f"{ft_pct_val:>6}"
 
         pct_line = f"{'':34}<span style=\"color:#999\">{fg_pct:<8}{three_pct:<8}{ft_pct:<7}</span>"
         totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>8}{three_total:>8}{ft_total:>8}{team_totals['pts']:>5} "
