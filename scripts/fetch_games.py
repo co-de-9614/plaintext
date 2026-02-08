@@ -1248,71 +1248,151 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines.append(pad + opp_row)
     content_lines.append("")
 
-    # Game Flow visualization
+    # Game Flow visualization (based on game lead)
     plays = game.get("plays", [])
     scoring_plays = [p for p in plays if p.get("scoringPlay")]
 
-    # Get opponent color and abbreviation for game flow and lead stats
+    # Get opponent color for game flow
     opp_color = opp_team.get("color", "888888")
     opp_abbrev = opp_abbrev_display
 
-    if plays:
-        # Group plays by period
-        plays_by_period = {}
-        for play in plays:
-            pnum = play.get("period", {}).get("number", 0)
-            if pnum not in plays_by_period:
-                plays_by_period[pnum] = []
-            plays_by_period[pnum].append(play)
+    if scoring_plays:
+        # Settings: 11 columns per quarter (start + 10 minutes), plus breaks
+        # Col layout per quarter: "+" (break) then "=" (start) then 10 "=" (minutes 1-10)
+        cols_per_quarter = 12  # 1 "+" break + 11 "=" columns (1 start + 10 minutes)
+        total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
 
-        if plays_by_period:
-            all_flow = []
-            prev_score = (0, 0)
+        # For live games, calculate cutoff column from current period/clock
+        # Dots only appear up to where the game has actually reached
+        cutoff_col = total_cols  # default: show everything (completed games)
+        if is_live and game_period > 0:
+            try:
+                clock_parts = game_clock.split(":")
+                mins_left = int(clock_parts[0])
+                secs_left = int(clock_parts[1]) if len(clock_parts) > 1 else 0
+                secs_elapsed = 600 - (mins_left * 60 + secs_left)
+                current_minute = min(10, max(1, (secs_elapsed + 59) // 60)) if secs_elapsed > 0 else 0
+            except Exception:
+                current_minute = 0
+            cutoff_col = (game_period - 1) * cols_per_quarter + current_minute + 1
 
-            for pnum in sorted(plays_by_period.keys()):
-                p_plays = plays_by_period[pnum]
-                period_minutes = 10 if pnum <= 4 else 5
-                segments = 12 if pnum <= 4 else 6
-                total_sec = period_minutes * 60
-                seg_sec = total_sec / segments
+        # Track USC lead at each column
+        # Positive = USC leading, negative = opponent leading
+        lead_at_col = {}
 
-                # For each segment, find the score at its end
-                seg_scores = [None] * segments
-                for play in p_plays:
-                    clock_str = play.get("clock", {}).get("displayValue", "")
-                    if not clock_str:
-                        continue
-                    try:
-                        parts = clock_str.split(":")
-                        remaining = int(parts[0]) * 60 + float(parts[1]) if len(parts) == 2 else float(parts[0])
-                    except Exception:
-                        continue
-                    elapsed = total_sec - remaining
-                    seg_idx = min(int(elapsed / seg_sec), segments - 1)
-                    seg_scores[seg_idx] = (play.get("homeScore", 0), play.get("awayScore", 0))
+        for play in scoring_plays:
+            period = play.get("period", {}).get("number", 1)
+            clock_str = play.get("clock", {}).get("displayValue", "10:00")
+            away_sc = play.get("awayScore", 0)
+            home_sc = play.get("homeScore", 0)
 
-                # Fill forward from previous period or earlier segments
-                for i in range(segments):
-                    if seg_scores[i] is None:
-                        seg_scores[i] = seg_scores[i - 1] if i > 0 else prev_score
+            # Parse clock to determine which minute we're in
+            try:
+                parts = clock_str.split(":")
+                minutes_left = int(parts[0])
+                seconds_left = int(parts[1]) if len(parts) > 1 else 0
+                seconds_remaining = minutes_left * 60 + seconds_left
+                seconds_elapsed = 600 - seconds_remaining  # 10-min quarters
 
-                # Generate colored = characters
-                period_chars = []
-                for h_s, a_s in seg_scores:
-                    diff = (h_s - a_s) if usc_is_home else (a_s - h_s)
-                    if diff > 0:
-                        period_chars.append('<span style="color:#990000">=</span>')
-                    elif diff < 0:
-                        period_chars.append(f'<span style="color:#{opp_color}">=</span>')
-                    else:
-                        period_chars.append('<span style="color:#999">=</span>')
+                # Calculate which minute (1-10) - dot represents score at end of that minute
+                if seconds_elapsed <= 0:
+                    minute = 1
+                else:
+                    minute = min(10, max(1, (seconds_elapsed + 59) // 60))  # ceil division
+            except:
+                minute = 5  # default to middle
 
-                all_flow.append("".join(period_chars))
-                prev_score = seg_scores[-1]
+            # Calculate column: break at 0, start at 1, minutes 1-10 at cols 2-11
+            # For quarter q: break at (q-1)*12, start at (q-1)*12+1, minutes at (q-1)*12+2 to +11
+            col = (period - 1) * cols_per_quarter + minute + 1  # +1 for start column
 
-            content_lines.append("<b>Game Flow:</b>")
-            content_lines.append("|".join(all_flow))
-            content_lines.append("")
+            # Lead from USC perspective: positive = USC leading
+            if usc_is_home:
+                lead = home_sc - away_sc
+            else:
+                lead = away_sc - home_sc
+            lead_at_col[col] = lead
+
+        # Fill in gaps by carrying forward the last known lead
+        # Break columns (multiples of cols_per_quarter) get None - no dots there
+        # Columns past the cutoff get None (future game time, no dots yet)
+        last_lead = 0
+        filled_lead = []
+        for col in range(total_cols):
+            is_break = (col % cols_per_quarter == 0)
+            if col in lead_at_col:
+                last_lead = lead_at_col[col]
+            if is_break or col > cutoff_col:
+                filled_lead.append(None)  # No dots at break positions or future columns
+            else:
+                filled_lead.append(last_lead)
+
+        # Calculate separate heights for USC (positive leads) and opponent (negative leads)
+        valid_leads = [l for l in filled_lead if l is not None]
+        max_usc_lead = max(0, max(valid_leads)) if valid_leads else 0
+        max_opp_lead = abs(min(0, min(valid_leads))) if valid_leads else 0
+        usc_height = max(1, (max_usc_lead + 2) // 3) if max_usc_lead > 0 else 0
+        opp_height = max(1, (max_opp_lead + 2) // 3) if max_opp_lead > 0 else 0
+
+        # Build the visualization
+        # Total chart width = 6 (padding) + total_cols
+        chart_width = 6 + total_cols
+        legend = "(1 dot = 3 pts)"
+        game_flow_label = "<b>Game Flow:</b>"
+        # Right-justify the legend to align with the final "+"
+        spacing = chart_width - 10 - len(legend)  # 10 = len("Game Flow:")
+        content_lines.append(f"{game_flow_label}{' ' * spacing}{legend}")
+        content_lines.append("")
+        content_lines.append('<span class="game-flow">')
+
+        # USC rows (dots going up when USC is leading) - cardinal color
+        for row in range(usc_height, 0, -1):
+            threshold = row * 3
+            line = ""
+            for col in range(total_cols):
+                if filled_lead[col] is None:
+                    line += " "  # No dot at break positions
+                elif filled_lead[col] >= threshold:
+                    line += "."
+                else:
+                    line += " "
+            # Put USC label on the bottom row (row 1) of USC dots
+            if row == 1:
+                content_lines.append(f'<span class="usc-dots">USC   {line}</span>')
+            else:
+                content_lines.append(f'<span class="usc-dots">      {line}</span>')
+
+        # Blank line before timeline to prevent overlap with compact line-height
+        content_lines.append("")
+
+        # Timeline: + at breaks, = for minutes
+        timeline = ""
+        for col in range(total_cols):
+            if col % cols_per_quarter == 0:
+                timeline += "+"
+            else:
+                timeline += "="
+        content_lines.append(f"      {timeline}")
+
+        # Opponent rows (dots going down when opponent is leading)
+        for row in range(1, opp_height + 1):
+            threshold = row * 3
+            line = ""
+            for col in range(total_cols):
+                if filled_lead[col] is None:
+                    line += " "  # No dot at break positions
+                elif filled_lead[col] <= -threshold:
+                    line += "."
+                else:
+                    line += " "
+            # Put opponent label on the first row of opponent dots
+            if row == 1:
+                content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<6}{line}</span>')
+            else:
+                content_lines.append(f'<span style="color: #{opp_color};">      {line}</span>')
+
+        content_lines.append('</span>')
+        content_lines.append("")
 
     # Calculate lead changes, times tied, and biggest leads from scoring plays
     if scoring_plays:
@@ -1822,6 +1902,13 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             display: block;
             margin: 0;
             padding: 0;
+        }}
+        .game-flow {{
+            line-height: 0.5;
+            display: block;
+        }}
+        .usc-dots {{
+            color: #990000;
         }}
         .dnp {{
             color: #999999;
