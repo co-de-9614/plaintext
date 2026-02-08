@@ -45,6 +45,62 @@ def fetch_json(url: str) -> dict:
         return json.loads(resp.read().decode())
 
 
+def calculate_plus_minus(plays, boxscore, home_team_id):
+    """Calculate plus/minus for each player by tracking who's on court during scoring."""
+    plus_minus = {}
+    on_court = {}
+
+    players_data = boxscore.get("players", [])
+    for team_data in players_data:
+        team_id = team_data.get("team", {}).get("id", "")
+        statistics = team_data.get("statistics", [])
+        if statistics:
+            athletes = statistics[0].get("athletes", [])
+            starters = [a.get("athlete", {}).get("id") for a in athletes if a.get("starter")]
+            on_court[team_id] = set(starters)
+            for a in athletes:
+                athlete_id = a.get("athlete", {}).get("id")
+                if athlete_id:
+                    plus_minus[athlete_id] = 0
+
+    prev_home_score = 0
+    prev_away_score = 0
+
+    for play in plays:
+        play_type = play.get("type", {}).get("text", "").lower()
+        play_text = play.get("text", "").lower()
+        home_score = play.get("homeScore", prev_home_score)
+        away_score = play.get("awayScore", prev_away_score)
+
+        if "substitution" in play_type:
+            participants = play.get("participants", [])
+            team_id = play.get("team", {}).get("id", "")
+            if participants and team_id in on_court:
+                athlete_id = participants[0].get("athlete", {}).get("id")
+                if athlete_id:
+                    if "subbing out" in play_text or "exits" in play_text:
+                        on_court[team_id].discard(athlete_id)
+                    elif "subbing in" in play_text or "enters" in play_text:
+                        on_court[team_id].add(athlete_id)
+
+        home_diff = home_score - prev_home_score
+        away_diff = away_score - prev_away_score
+
+        if home_diff != 0 or away_diff != 0:
+            for team_id, players_on in on_court.items():
+                for athlete_id in players_on:
+                    if athlete_id in plus_minus:
+                        if team_id == home_team_id:
+                            plus_minus[athlete_id] += home_diff - away_diff
+                        else:
+                            plus_minus[athlete_id] += away_diff - home_diff
+
+        prev_home_score = home_score
+        prev_away_score = away_score
+
+    return plus_minus
+
+
 def get_roster_with_stats() -> list:
     """Get USC roster with current season stats aggregated from game box scores."""
     # Get schedule to find completed games
@@ -80,6 +136,17 @@ def get_roster_with_stats() -> list:
 
             boxscore = game_data.get("boxscore", {})
             players = boxscore.get("players", [])
+
+            # Calculate plus/minus for this game
+            game_pm = {}
+            plays = game_data.get("plays", [])
+            if plays:
+                header = game_data.get("header", {})
+                header_comps = header.get("competitions", [{}])[0]
+                header_competitors = header_comps.get("competitors", [])
+                home_comp = next((c for c in header_competitors if c.get("homeAway") == "home"), {})
+                home_id = home_comp.get("team", {}).get("id", "")
+                game_pm = calculate_plus_minus(plays, boxscore, home_id)
 
             for team in players:
                 if team.get("team", {}).get("id") != USC_TEAM_ID:
@@ -129,7 +196,7 @@ def get_roster_with_stats() -> list:
                             "min": 0, "pts": 0, "ast": 0, "stl": 0, "blk": 0,
                             "fg_made": 0, "fg_att": 0, "three_made": 0, "three_att": 0,
                             "ft_made": 0, "ft_att": 0, "orb": 0, "drb": 0,
-                            "to": 0, "fls": 0, "gp": 0
+                            "to": 0, "fls": 0, "pm": 0, "gp": 0
                         }
 
                     t = player_totals[athlete_id]
@@ -148,6 +215,7 @@ def get_roster_with_stats() -> list:
                     t["three_att"] += three_a
                     t["ft_made"] += ft_m
                     t["ft_att"] += ft_a
+                    t["pm"] += game_pm.get(athlete_id, 0)
                     t["gp"] += 1
 
         except Exception:
@@ -167,7 +235,7 @@ def get_roster_with_stats() -> list:
                 "ft_made": t["ft_made"], "ft_att": t["ft_att"],
                 "orb": t["orb"], "drb": t["drb"],
                 "ast": t["ast"], "stl": t["stl"], "blk": t["blk"],
-                "to": t["to"], "fls": t["fls"], "pts": t["pts"],
+                "to": t["to"], "fls": t["fls"], "pts": t["pts"], "pm": t["pm"],
             })
 
     # Sort by minutes desc, points desc, last name asc (same as game page)
@@ -502,7 +570,10 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 fg_pct = f"{100 * fg_made / fg_att:.2f}%" if fg_att > 0 else "--"
                 three_pct = f"{100 * three_made / three_att:.2f}%" if three_att > 0 else "--"
                 ft_pct = f"{100 * ft_made / ft_att:.2f}%" if ft_att > 0 else "--"
-                name_line = f"{name_part:<34}{fg_pct:<8}{three_pct:<8}{ft_pct}"
+                pm_val = p.get("pm", 0)
+                pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+                grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>5} "
+                name_line = f'{name_part:<34}<span style="color:#999">{grey_part}</span>'
 
                 fg_str = f"{fg_made}/{fg_att}"
                 three_str = f"{three_made}/{three_att}"
@@ -1383,73 +1454,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append(f"<b>Attendance:</b> {attendance:,}")
     content_lines.append("")
 
-    # Calculate plus/minus for each player from play-by-play
-    def calculate_plus_minus(plays, boxscore):
-        """Calculate plus/minus for each player by tracking who's on court during scoring."""
-        plus_minus = {}  # athlete_id -> +/- value
-
-        # Get starters for each team from boxscore
-        on_court = {}  # team_id -> set of athlete_ids currently on court
-
-        players_data = boxscore.get("players", [])
-        for team_data in players_data:
-            team_id = team_data.get("team", {}).get("id", "")
-            statistics = team_data.get("statistics", [])
-            if statistics:
-                athletes = statistics[0].get("athletes", [])
-                starters = [a.get("athlete", {}).get("id") for a in athletes if a.get("starter")]
-                on_court[team_id] = set(starters)
-                # Initialize plus/minus for all players
-                for a in athletes:
-                    athlete_id = a.get("athlete", {}).get("id")
-                    if athlete_id:
-                        plus_minus[athlete_id] = 0
-
-        prev_home_score = 0
-        prev_away_score = 0
-
-        for play in plays:
-            play_type = play.get("type", {}).get("text", "").lower()
-            play_text = play.get("text", "").lower()
-            home_score = play.get("homeScore", prev_home_score)
-            away_score = play.get("awayScore", prev_away_score)
-
-            # Handle substitutions - parse from play text
-            if "substitution" in play_type:
-                participants = play.get("participants", [])
-                team_id = play.get("team", {}).get("id", "")
-                if participants and team_id in on_court:
-                    athlete_id = participants[0].get("athlete", {}).get("id")
-                    if athlete_id:
-                        if "subbing out" in play_text or "exits" in play_text:
-                            on_court[team_id].discard(athlete_id)
-                        elif "subbing in" in play_text or "enters" in play_text:
-                            on_court[team_id].add(athlete_id)
-
-            # Calculate score change and attribute to players on court
-            home_diff = home_score - prev_home_score
-            away_diff = away_score - prev_away_score
-
-            if home_diff != 0 or away_diff != 0:
-                # For each team's players on court, add/subtract the differential
-                for team_id, players_on in on_court.items():
-                    for athlete_id in players_on:
-                        if athlete_id in plus_minus:
-                            # Home team: +home_diff - away_diff
-                            # Away team: +away_diff - home_diff
-                            is_home = team_id == home.get("team", {}).get("id", "")
-                            if is_home:
-                                plus_minus[athlete_id] += home_diff - away_diff
-                            else:
-                                plus_minus[athlete_id] += away_diff - home_diff
-
-            prev_home_score = home_score
-            prev_away_score = away_score
-
-        return plus_minus
-
     # Calculate plus/minus from plays
-    player_plus_minus = calculate_plus_minus(plays, boxscore) if plays else {}
+    player_plus_minus = calculate_plus_minus(plays, boxscore, home_team.get("id", "")) if plays else {}
 
     # Stats header line for player stats
     stats_header = "MIN     FG   3PT    FT ORB DRB AST STL BLK  TO FLS  PTS"
