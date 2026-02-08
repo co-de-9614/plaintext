@@ -13,10 +13,9 @@ on:
     # Hourly during off-hours to catch schedule changes
     - cron: '0 8-17 * * *'
 
-  # Also run on push so manual code changes trigger a score refresh
+  # Also run on push so any change triggers a score refresh
   push:
     branches: [main]
-    paths: [scripts/**]
 
 jobs:
   update:
