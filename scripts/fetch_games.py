@@ -1348,8 +1348,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         opp_height = max(1, (max_opp_lead + 2) // 3) if max_opp_lead > 0 else 0
 
         # Build the visualization
-        # Total chart width = 6 (padding) + total_cols
-        chart_width = 6 + total_cols
+        # Total chart width = 7 (padding) + total_cols
+        chart_width = 7 + total_cols
         legend = "(1 dot = 3 pts)"
         game_flow_label = "<b>Game Flow:</b>"
         # Right-justify the legend to align with the final "+"
@@ -1371,9 +1371,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     line += " "
             # Put USC label on the bottom row (row 1) of USC dots
             if row == 1:
-                content_lines.append(f'<span class="usc-dots">{team_abbrev:<6}{line}</span>')
+                content_lines.append(f'<span class="usc-dots"> {team_abbrev:<6}{line}</span>')
             else:
-                content_lines.append(f'<span class="usc-dots">      {line}</span>')
+                content_lines.append(f'<span class="usc-dots">       {line}</span>')
 
         # Blank line before timeline to prevent overlap with compact line-height
         content_lines.append("")
@@ -1385,7 +1385,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 timeline += "+"
             else:
                 timeline += "="
-        content_lines.append(f"      {timeline}")
+        content_lines.append(f"       {timeline}")
 
         # Opponent rows (dots going down when opponent is leading)
         for row in range(1, opp_height + 1):
@@ -1400,9 +1400,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     line += " "
             # Put opponent label on the first row of opponent dots
             if row == 1:
-                content_lines.append(f'<span style="color: #{opp_color};">{opp_abbrev:<6}{line}</span>')
+                content_lines.append(f'<span style="color: #{opp_color};"> {opp_abbrev:<6}{line}</span>')
             else:
-                content_lines.append(f'<span style="color: #{opp_color};">      {line}</span>')
+                content_lines.append(f'<span style="color: #{opp_color};">       {line}</span>')
 
         content_lines.append('</span>')
         content_lines.append("")
