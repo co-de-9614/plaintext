@@ -1457,12 +1457,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     # Calculate plus/minus from plays
     player_plus_minus = calculate_plus_minus(plays, boxscore, home_team.get("id", "")) if plays else {}
 
-    # Stats header line for player stats
-    stats_header = "MIN     FG   3PT    FT ORB DRB AST STL BLK  TO FLS  PTS"
-
-    # Helper to convert dash to slash in shooting stats
-    def to_slash(stat):
-        return stat.replace("-", "/") if stat else "0/0"
+    # Stats header line for player stats (matches home page format)
+    stats_header = " MIN  OR  DR  AS  ST  BK  TO  FL      FG      3P      FT  PTS "
 
     # Helper to parse shooting stats for totals
     def parse_shooting(stat):
@@ -1711,16 +1707,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             jersey_str = f"#{jersey}" if jersey else ""
             name_part = f"{name} {jersey_str}"
 
-            # Get plus/minus for this player
-            pm_val = player_plus_minus.get(athlete_id, 0)
-            pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-            # Pad player line to align +/- to end at position 55 (page width)
-            padding = 51 - len(name_part)
-            player_line = f'{name_part}{" " * padding}<span class="plusminus">{pm_str:>4}</span>'
-
             if not stats or len(stats) < 13:
+                player_line = name_part
                 stats_line = '<span class="dnp">  Did not play</span>'
-                player_line = name_part  # No +/- for DNP
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -1736,8 +1725,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 fls = stats[12] if stats[12] and stats[12] != '--' else "0"
 
                 if mins == "0" or mins == "0:00":
+                    player_line = name_part
                     stats_line = '<span class="dnp">  Did not play</span>'
-                    player_line = name_part  # No +/- for DNP
                 else:
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
@@ -1757,10 +1746,18 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     team_totals["to"] += int(to) if to else 0
                     team_totals["fls"] += int(fls) if fls else 0
 
-                    fg_slash = to_slash(fg)
-                    three_slash = to_slash(threept)
-                    ft_slash = to_slash(ft)
-                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>4}"
+                    fg_pct = f"{100 * fg_m / fg_a:.2f}%" if fg_a > 0 else "    --"
+                    three_pct = f"{100 * three_m / three_a:.2f}%" if three_a > 0 else "    --"
+                    ft_pct = f"{100 * ft_m / ft_a:.2f}%" if ft_a > 0 else "    --"
+                    pm_val = player_plus_minus.get(athlete_id, 0)
+                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4} "
+                    player_line = f'{name_part:<34}<span style="color:#999">{grey_part}</span>'
+
+                    fg_str = f"{fg_m}/{fg_a}"
+                    three_str = f"{three_m}/{three_a}"
+                    ft_str = f"{ft_m}/{ft_a}"
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
@@ -1783,16 +1780,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             jersey_str = f"#{jersey}" if jersey else ""
             name_part = f"{name} {jersey_str}"
 
-            # Get plus/minus for this player
-            pm_val = player_plus_minus.get(athlete_id, 0)
-            pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-            # Pad player line to align +/- to end at position 55 (page width)
-            padding = 51 - len(name_part)
-            player_line = f'{name_part}{" " * padding}<span class="plusminus">{pm_str:>4}</span>'
-
             if not stats or len(stats) < 13:
+                player_line = name_part
                 stats_line = '<span class="dnp">  Did not play</span>'
-                player_line = name_part  # No +/- for DNP
             else:
                 mins = stats[0] if stats[0] and stats[0] != '--' else "0"
                 pts = stats[1] if stats[1] and stats[1] != '--' else "0"
@@ -1808,8 +1798,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 fls = stats[12] if stats[12] and stats[12] != '--' else "0"
 
                 if mins == "0" or mins == "0:00":
+                    player_line = name_part
                     stats_line = '<span class="dnp">  Did not play</span>'
-                    player_line = name_part  # No +/- for DNP
                 else:
                     fg_m, fg_a = parse_shooting(fg)
                     three_m, three_a = parse_shooting(threept)
@@ -1829,10 +1819,18 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     team_totals["to"] += int(to) if to else 0
                     team_totals["fls"] += int(fls) if fls else 0
 
-                    fg_slash = to_slash(fg)
-                    three_slash = to_slash(threept)
-                    ft_slash = to_slash(ft)
-                    stats_line = f"{mins:>3} {fg_slash:>6} {three_slash:>5} {ft_slash:>5} {orb:>3} {drb:>3} {ast:>3} {stl:>3} {blk:>3} {to:>3} {fls:>3} {pts:>4}"
+                    fg_pct = f"{100 * fg_m / fg_a:.2f}%" if fg_a > 0 else "    --"
+                    three_pct = f"{100 * three_m / three_a:.2f}%" if three_a > 0 else "    --"
+                    ft_pct = f"{100 * ft_m / ft_a:.2f}%" if ft_a > 0 else "    --"
+                    pm_val = player_plus_minus.get(athlete_id, 0)
+                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4} "
+                    player_line = f'{name_part:<34}<span style="color:#999">{grey_part}</span>'
+
+                    fg_str = f"{fg_m}/{fg_a}"
+                    three_str = f"{three_m}/{three_a}"
+                    ft_str = f"{ft_m}/{ft_a}"
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
@@ -1845,15 +1843,16 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
         three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
         ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
-        totals_line = f"    {fg_total:>6} {three_total:>5} {ft_total:>5} {team_totals['orb']:>3} {team_totals['drb']:>3} {team_totals['ast']:>3} {team_totals['stl']:>3} {team_totals['blk']:>3} {team_totals['to']:>3} {team_totals['fls']:>3} {team_totals['pts']:>4}"
-        # Percentages
-        fg_pct = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.0f}%" if team_totals['fg_att'] > 0 else "0%"
-        three_pct = f"{100 * team_totals['three_made'] / team_totals['three_att']:.0f}%" if team_totals['three_att'] > 0 else "0%"
-        ft_pct = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.0f}%" if team_totals['ft_att'] > 0 else "0%"
-        pct_line = f"    {fg_pct:>6} {three_pct:>5} {ft_pct:>5}"
+
+        fg_pct = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.2f}%" if team_totals['fg_att'] > 0 else "    --"
+        three_pct = f"{100 * team_totals['three_made'] / team_totals['three_att']:.2f}%" if team_totals['three_att'] > 0 else "    --"
+        ft_pct = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.2f}%" if team_totals['ft_att'] > 0 else "    --"
+
+        pct_line = f"{'':34}<span style=\"color:#999\">{fg_pct:<8}{three_pct:<8}{ft_pct:<7}</span>"
+        totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>8}{three_total:>8}{ft_total:>8}{team_totals['pts']:>5} "
 
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}">{totals_line}\n{pct_line}</span>')
+        all_spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
 
         content_lines.append("".join(all_spans))
         content_lines.append("")
@@ -1912,9 +1911,6 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             color: #990000;
         }}
         .dnp {{
-            color: #999999;
-        }}
-        .plusminus {{
             color: #999999;
         }}
         .live-clock {{
