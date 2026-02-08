@@ -723,14 +723,14 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         .row-even {{
             background: #f0f0f0;
             display: block;
-            margin: 0;
-            padding: 0;
+            margin: 0 -16px;
+            padding: 0 16px;
         }}
         .row-odd {{
             background: transparent;
             display: block;
-            margin: 0;
-            padding: 0;
+            margin: 0 -16px;
+            padding: 0 16px;
         }}
     </style>
 </head>
@@ -1915,14 +1915,14 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         .row-even {{
             background: #f0f0f0;
             display: block;
-            margin: 0;
-            padding: 0;
+            margin: 0 -16px;
+            padding: 0 16px;
         }}
         .row-odd {{
             background: transparent;
             display: block;
-            margin: 0;
-            padding: 0;
+            margin: 0 -16px;
+            padding: 0 16px;
         }}
         .game-flow {{
             line-height: 0.5;
