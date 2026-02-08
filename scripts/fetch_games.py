@@ -1649,6 +1649,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     players_data = boxscore.get("players", [])
     players_data_sorted = sorted(players_data, key=lambda t: t.get("team", {}).get("id") != USC_TEAM_ID)
 
+    # Build all spans with continuous zebra striping across both teams
+    all_spans = []
+    row_idx = 0
+
     for team_data in players_data_sorted:
         team = team_data.get("team", {})
         team_abbrev = team.get("abbreviation", "TEAM")
@@ -1681,10 +1685,6 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             "ft_made": 0, "ft_att": 0,
             "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0
         }
-
-        # Build all spans with continuous zebra striping
-        all_spans = []
-        row_idx = 0
 
         # Starters header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
@@ -1851,9 +1851,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
         all_spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
+        row_idx += 1
 
-        content_lines.append("".join(all_spans))
-        content_lines.append("")
+    content_lines.append("".join(all_spans))
+    content_lines.append("")
 
     # No bottom links - navigation is at top
     content_lines.append(VERSION)
