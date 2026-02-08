@@ -1853,6 +1853,13 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         all_spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
         row_idx += 1
 
+        # Add two blank zebra lines between USC and opponent sections
+        if team_id == USC_TEAM_ID:
+            for _ in range(2):
+                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                all_spans.append(f'<span class="{row_class}">\n</span>')
+                row_idx += 1
+
     content_lines.append("".join(all_spans))
     content_lines.append("")
 
