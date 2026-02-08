@@ -1257,9 +1257,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     opp_abbrev = opp_abbrev_display
 
     if scoring_plays:
-        # Settings: 11 columns per quarter (start + 10 minutes), plus breaks
-        # Col layout per quarter: "+" (break) then "=" (start) then 10 "=" (minutes 1-10)
-        cols_per_quarter = 12  # 1 "+" break + 11 "=" columns (1 start + 10 minutes)
+        # Settings: 12 "=" columns per quarter (50 sec each), plus "+" breaks
+        cols_per_quarter = 13  # 1 "+" break + 12 "=" columns (50 sec each in 10-min quarter)
         total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
 
         # For live games, calculate cutoff column from current period/clock
@@ -1271,10 +1270,10 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 mins_left = int(clock_parts[0])
                 secs_left = int(clock_parts[1]) if len(clock_parts) > 1 else 0
                 secs_elapsed = 600 - (mins_left * 60 + secs_left)
-                current_minute = min(10, max(1, (secs_elapsed + 59) // 60)) if secs_elapsed > 0 else 0
+                current_seg = min(12, max(1, int(secs_elapsed / 50) + 1)) if secs_elapsed > 0 else 0
             except Exception:
-                current_minute = 0
-            cutoff_col = (game_period - 1) * cols_per_quarter + current_minute + 1
+                current_seg = 0
+            cutoff_col = (game_period - 1) * cols_per_quarter + current_seg
 
         # Track USC lead at each column
         # Positive = USC leading, negative = opponent leading
@@ -1286,7 +1285,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             away_sc = play.get("awayScore", 0)
             home_sc = play.get("homeScore", 0)
 
-            # Parse clock to determine which minute we're in
+            # Parse clock to determine which 50-sec segment we're in (1-12)
             try:
                 parts = clock_str.split(":")
                 minutes_left = int(parts[0])
@@ -1294,17 +1293,16 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 seconds_remaining = minutes_left * 60 + seconds_left
                 seconds_elapsed = 600 - seconds_remaining  # 10-min quarters
 
-                # Calculate which minute (1-10) - dot represents score at end of that minute
+                # 12 segments of 50 seconds each
                 if seconds_elapsed <= 0:
-                    minute = 1
+                    segment = 1
                 else:
-                    minute = min(10, max(1, (seconds_elapsed + 59) // 60))  # ceil division
+                    segment = min(12, int(seconds_elapsed / 50) + 1)
             except:
-                minute = 5  # default to middle
+                segment = 6  # default to middle
 
-            # Calculate column: break at 0, start at 1, minutes 1-10 at cols 2-11
-            # For quarter q: break at (q-1)*12, start at (q-1)*12+1, minutes at (q-1)*12+2 to +11
-            col = (period - 1) * cols_per_quarter + minute + 1  # +1 for start column
+            # Column: break at 0, segments 1-12 at cols 1-12
+            col = (period - 1) * cols_per_quarter + segment
 
             # Lead from USC perspective: positive = USC leading
             if usc_is_home:
