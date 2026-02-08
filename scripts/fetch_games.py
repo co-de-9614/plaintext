@@ -462,7 +462,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         if roster:
             content_lines.append("")
             content_lines.append("=" * 47)
-            stats_header = "   MIN  OR  DR  AS  ST  BK  TO  FL      FG      3P      FT  PTS"
+            stats_header = " MIN  OR  DR  AS  ST  BK  TO  FL      FG      3P      FT  PTS"
             all_spans = []
             row_idx = 0
 
@@ -496,12 +496,12 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 fg_pct = f"{100 * fg_made / fg_att:.2f}%" if fg_att > 0 else "--"
                 three_pct = f"{100 * three_made / three_att:.2f}%" if three_att > 0 else "--"
                 ft_pct = f"{100 * ft_made / ft_att:.2f}%" if ft_att > 0 else "--"
-                name_line = f"{name_part:<36}{fg_pct:<8}{three_pct:<8}{ft_pct}"
+                name_line = f"{name_part:<34}{fg_pct:<8}{three_pct:<8}{ft_pct}"
 
                 fg_str = f"{fg_made}/{fg_att}"
                 three_str = f"{three_made}/{three_att}"
                 ft_str = f"{ft_made}/{ft_att}"
-                stats_line = f"{mins:>6}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5}"
+                stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5}"
 
                 row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
                 all_spans.append(f'<span class="{row_class}">{name_line}\n{stats_line}</span>')
