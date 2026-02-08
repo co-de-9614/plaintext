@@ -1252,8 +1252,9 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     plays = game.get("plays", [])
     scoring_plays = [p for p in plays if p.get("scoringPlay")]
 
-    # Get opponent color for game flow
+    # Get opponent color and abbreviation for game flow and lead stats
     opp_color = opp_team.get("color", "888888")
+    opp_abbrev = opp_abbrev_display
 
     if plays:
         # Group plays by period
