@@ -572,7 +572,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
                 pm_val = p.get("pm", 0)
                 pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4}  "
+                grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
                 name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                 fg_str = f"{fg_made}/{fg_att}"
@@ -1749,7 +1749,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
                     pm_val = player_plus_minus.get(athlete_id, 0)
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4}  "
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
                     player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                     fg_str = f"{fg_m}/{fg_a}"
@@ -1822,7 +1822,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
                     pm_val = player_plus_minus.get(athlete_id, 0)
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4}  "
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
                     player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                     fg_str = f"{fg_m}/{fg_a}"
