@@ -54,7 +54,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add index.html schedule.html games/
+          git add index.html schedule.html games/ nu.html nu-schedule.html nu-games/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else

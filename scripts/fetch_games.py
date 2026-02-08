@@ -20,6 +20,7 @@ PT = ZoneInfo("America/Los_Angeles")
 
 # USC Women's Basketball team ID on ESPN
 USC_TEAM_ID = "30"
+NU_TEAM_ID = "77"
 TEAM_NAME = "USC Trojans"
 SPORT = "basketball"
 LEAGUE = "womens-college-basketball"
@@ -101,10 +102,10 @@ def calculate_plus_minus(plays, boxscore, home_team_id):
     return plus_minus
 
 
-def get_roster_with_stats() -> list:
-    """Get USC roster with current season stats aggregated from game box scores."""
+def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
+    """Get team roster with current season stats aggregated from game box scores."""
     # Get schedule to find completed games
-    schedule_url = f"{BASE_API}/teams/{USC_TEAM_ID}/schedule"
+    schedule_url = f"{BASE_API}/teams/{team_id}/schedule"
     schedule_data = fetch_json(schedule_url)
 
     events = schedule_data.get("events", [])
@@ -149,7 +150,7 @@ def get_roster_with_stats() -> list:
                 game_pm = calculate_plus_minus(plays, boxscore, home_id)
 
             for team in players:
-                if team.get("team", {}).get("id") != USC_TEAM_ID:
+                if team.get("team", {}).get("id") != team_id:
                     continue
 
                 statistics = team.get("statistics", [])
@@ -262,9 +263,9 @@ def get_rankings() -> dict:
         return {}
 
 
-def get_team_schedule() -> dict:
-    """Get USC's schedule and recent results."""
-    url = f"{BASE_API}/teams/{USC_TEAM_ID}/schedule"
+def get_team_schedule(team_id=USC_TEAM_ID) -> dict:
+    """Get team's schedule and recent results."""
+    url = f"{BASE_API}/teams/{team_id}/schedule"
     return fetch_json(url)
 
 
@@ -410,16 +411,16 @@ def format_play_by_play(game_summary: dict, last_n: int = 10) -> str:
     return "\n".join(lines)
 
 
-def find_usc_game(scoreboard: dict, schedule: dict) -> dict | None:
-    """Find USC's live or recent game from scoreboard or schedule."""
+def find_usc_game(scoreboard: dict, schedule: dict, team_id=USC_TEAM_ID) -> dict | None:
+    """Find team's live or recent game from scoreboard or schedule."""
     # First check scoreboard
     for event in scoreboard.get("events", []):
         competitions = event.get("competitions", [])
         for comp in competitions:
             competitors = comp.get("competitors", [])
             for c in competitors:
-                team_id = c.get("team", {}).get("id", "")
-                if team_id == USC_TEAM_ID:
+                c_team_id = c.get("team", {}).get("id", "")
+                if c_team_id == team_id:
                     return {"event": event, "competition": comp}
 
     # Also check schedule for live game (not always on scoreboard)
@@ -433,9 +434,9 @@ def find_usc_game(scoreboard: dict, schedule: dict) -> dict | None:
     return None
 
 
-def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, str]:
+def is_game_live_or_imminent(schedule: dict, scoreboard: dict, team_id=USC_TEAM_ID) -> tuple[bool, str]:
     """
-    Check if USC has a game that is:
+    Check if a team has a game that is:
     - Currently in progress
     - Starting within PREGAME_WINDOW_MINUTES
 
@@ -444,7 +445,7 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
     now = datetime.now(timezone.utc)  # Use UTC for comparison since ESPN uses UTC
 
     # First check scoreboard and schedule for live game
-    usc_game = find_usc_game(scoreboard, schedule)
+    usc_game = find_usc_game(scoreboard, schedule, team_id=team_id)
     if usc_game:
         state = usc_game["competition"].get("status", {}).get("type", {}).get("state", "")
         if state == "post":
@@ -483,7 +484,8 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict) -> tuple[bool, st
     return False, "No game live or imminent"
 
 
-def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict, roster: list) -> str:
+def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict, roster: list,
+                       team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html") -> str:
     """Generate the main game page HTML."""
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -491,7 +493,11 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
-    content_lines.append(f"USC WOMEN'S BASKETBALL")
+    content_lines.append("")
+    if team_abbrev == "USC":
+        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>')
+    else:
+        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>')
     content_lines.append("=" * 47)
 
     if game_data:
@@ -540,9 +546,10 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             all_spans = []
             row_idx = 0
 
-            # Section header (USC cardinal colored)
+            # Section header (team colored)
+            team_color = "990000" if team_abbrev == "USC" else "4E2A84"
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>USC SEASON STATS</b>\n{stats_header}</span>')
+            all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} SEASON STATS</b>\n{stats_header}</span>')
             row_idx += 1
 
             for p in roster:
@@ -609,14 +616,14 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             date_str = "TBD"
 
         competitors = comp.get("competitors", [])
-        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != team_id), None)
         if opponent:
             opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
             home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
             # Get rankings from lookup
             opp_rank = rankings.get(opp_abbrev, 0)
-            usc_rank = rankings.get("USC", 0)
+            usc_rank = rankings.get(team_abbrev, 0)
 
             opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
             usc_str = f"(#{usc_rank})" if usc_rank else ""
@@ -643,8 +650,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             date_str = ""
 
         competitors = comp.get("competitors", [])
-        usc = next((c for c in competitors if c.get("team", {}).get("id") == USC_TEAM_ID), None)
-        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+        usc = next((c for c in competitors if c.get("team", {}).get("id") == team_id), None)
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != team_id), None)
 
         if usc and opponent:
             usc_score_raw = usc.get("score", "")
@@ -678,7 +685,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
     # Link to full schedule
     content_lines.append("")
-    content_lines.append('<a href="schedule.html">Full Schedule/Results</a>')
+    content_lines.append(f'<a href="{schedule_page}">Full Schedule/Results</a>')
     content_lines.append(f"\n{VERSION}")
 
     content = "\n".join(content_lines)
@@ -688,7 +695,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
-    <title>USC Women's Basketball</title>
+    <title>{team_abbrev} Women's Basketball</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
@@ -778,7 +785,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     return html
 
 
-def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
+def generate_schedule_html(schedule_data: dict, rankings: dict,
+                           team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", games_dir="games") -> str:
     """Generate the full schedule/results page."""
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -786,7 +794,11 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
-    content_lines.append("USC WOMEN'S BASKETBALL")
+    content_lines.append("")
+    if team_abbrev == "USC":
+        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>')
+    else:
+        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>')
     content_lines.append("Full Schedule/Results")
     content_lines.append("=" * 47)
 
@@ -817,8 +829,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
             date_str = "TBD"
 
         competitors = comp.get("competitors", [])
-        usc = next((c for c in competitors if c.get("team", {}).get("id") == USC_TEAM_ID), None)
-        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+        usc = next((c for c in competitors if c.get("team", {}).get("id") == team_id), None)
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != team_id), None)
 
         if not opponent:
             continue
@@ -851,7 +863,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
         except:
             result = "-"
 
-        game_link = f'<a href="games/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
+        game_link = f'<a href="{games_dir}/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
         content_lines.append(game_link)
 
     # Upcoming section
@@ -877,7 +889,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
             date_str = "TBD"
 
         competitors = comp.get("competitors", [])
-        opponent = next((c for c in competitors if c.get("team", {}).get("id") != USC_TEAM_ID), None)
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != team_id), None)
 
         if not opponent:
             continue
@@ -901,13 +913,13 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
                 live_date = dt_pt.strftime("%b %d")
             except Exception:
                 live_date = date_str.split()[0] if date_str else ""
-            content_lines.append(f'<a href="games/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
+            content_lines.append(f'<a href="{games_dir}/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
         else:
             content_lines.append(f"{date_str} {home_away} {opp_str}")
 
     # Link back to main page
     content_lines.append("")
-    content_lines.append('<a href="index.html">Back to Home</a>')
+    content_lines.append(f'<a href="{home_page}">Back to Home</a>')
     content_lines.append(f"\n{VERSION}")
 
     content = "\n".join(content_lines)
@@ -917,7 +929,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
-    <title>USC WBB Schedule</title>
+    <title>{team_abbrev} WBB Schedule</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
@@ -995,7 +1007,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
     return html
 
 
-def generate_game_page(event_id: str, rankings: dict = None, team_records: dict = None) -> str:
+def generate_game_page(event_id: str, rankings: dict = None, team_records: dict = None,
+                       team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html") -> str:
     """Generate a detailed game report page."""
     if rankings is None:
         rankings = {}
@@ -1109,11 +1122,11 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("")
-    content_lines.append('<a href="../schedule.html">&lt; USC Schedule</a>')
+    content_lines.append(f'<a href="../{schedule_page}">&lt; {team_abbrev} Schedule</a>')
     content_lines.append("")
 
-    # Determine USC and opponent - always show USC first (left side)
-    usc_is_home = home_team.get("id") == USC_TEAM_ID
+    # Determine our team and opponent - always show our team first (left side)
+    usc_is_home = home_team.get("id") == team_id
     if usc_is_home:
         usc_team = home_team
         usc_score = home_score
@@ -1138,8 +1151,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         opp_quarters = home_quarters
 
     # Get full team names
-    usc_school = "USC"
-    usc_name = "Trojans"
+    usc_school = usc_team.get("location", team_abbrev)
+    usc_name = usc_team.get("name", "")
     opp_school = opp_team.get("location", opp_team.get("abbreviation", "OPP"))
     opp_name = opp_team.get("name", "")
     opp_abbrev_display = opp_team.get("abbreviation", "OPP")
@@ -1242,7 +1255,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     # USC first, then opponent - pad quarters to full width
     usc_q_padded = usc_quarters + [""] * (num_periods - len(usc_quarters))
     opp_q_padded = opp_quarters + [""] * (num_periods - len(opp_quarters))
-    usc_row = f"{'USC':<4}" + "".join(f"{q:>3}" for q in usc_q_padded) + f" {usc_score:>3}"
+    usc_row = f"{team_abbrev:<4}" + "".join(f"{q:>3}" for q in usc_q_padded) + f" {usc_score:>3}"
     opp_row = f"{opp_abbrev_display:<4}" + "".join(f"{q:>3}" for q in opp_q_padded) + f" {opp_score:>3}"
     content_lines.append(pad + usc_row)
     content_lines.append(pad + opp_row)
@@ -1356,7 +1369,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     line += " "
             # Put USC label on the bottom row (row 1) of USC dots
             if row == 1:
-                content_lines.append(f'<span class="usc-dots">USC   {line}</span>')
+                content_lines.append(f'<span class="usc-dots">{team_abbrev:<6}{line}</span>')
             else:
                 content_lines.append(f'<span class="usc-dots">      {line}</span>')
 
@@ -1439,7 +1452,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         content_lines.append(f"<b>Times Tied:</b> {times_tied}")
         usc_lead_str = str(usc_biggest_lead) if usc_biggest_lead > 0 else "N/A"
         opp_lead_str = str(opp_biggest_lead) if opp_biggest_lead > 0 else "N/A"
-        content_lines.append(f"<b>Biggest Lead:</b> USC: {usc_lead_str}, {opp_abbrev}: {opp_lead_str}")
+        content_lines.append(f"<b>Biggest Lead:</b> {team_abbrev}: {usc_lead_str}, {opp_abbrev}: {opp_lead_str}")
         content_lines.append("")
 
     # Game info
@@ -1604,8 +1617,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         if away_id in pre_stats:
             pre_stats[away_id]["second_ch"] = str(away_2ch_pts)
 
-        usc_tid = next((t for t in pre_stats if t == USC_TEAM_ID), None)
-        opp_tid = next((t for t in pre_stats if t != USC_TEAM_ID), None)
+        usc_tid = next((t for t in pre_stats if t == team_id), None)
+        opp_tid = next((t for t in pre_stats if t != team_id), None)
 
         if usc_tid and opp_tid:
             usc_ts = pre_stats[usc_tid]
@@ -1647,7 +1660,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
     # Player stats for each team (USC first)
     players_data = boxscore.get("players", [])
-    players_data_sorted = sorted(players_data, key=lambda t: t.get("team", {}).get("id") != USC_TEAM_ID)
+    players_data_sorted = sorted(players_data, key=lambda t: t.get("team", {}).get("id") != team_id)
 
     # Build all spans with continuous zebra striping across both teams
     all_spans = []
@@ -1655,12 +1668,12 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
     for team_data in players_data_sorted:
         team = team_data.get("team", {})
-        team_abbrev = team.get("abbreviation", "TEAM")
-        team_id = team.get("id", "")
+        td_abbrev = team.get("abbreviation", "TEAM")
+        td_id = team.get("id", "")
 
-        # Get team color - use cardinal for USC, team color for opponents
-        if team_id == USC_TEAM_ID:
-            team_color = "990000"  # USC cardinal
+        # Get team color - use our team color for our team, team color for opponents
+        if td_id == team_id:
+            team_color = "990000" if team_abbrev == "USC" else "4E2A84"
         else:
             team_color = team.get("color", "888888")
 
@@ -1688,7 +1701,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
         # Starters header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} STARTERS</b>\n{stats_header}</span>')
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{td_abbrev} STARTERS</b>\n{stats_header}</span>')
         row_idx += 1
 
         # Starters
@@ -1761,7 +1774,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
         # Bench header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} BENCH</b>\n{stats_header}</span>')
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{td_abbrev} BENCH</b>\n{stats_header}</span>')
         row_idx += 1
 
         # Bench
@@ -1834,7 +1847,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 
         # Totals header (team colored)
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} TOTALS</b>\n{stats_header}</span>')
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{td_abbrev} TOTALS</b>\n{stats_header}</span>')
         row_idx += 1
 
         # Totals data
@@ -1856,8 +1869,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         all_spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
         row_idx += 1
 
-        # Add two blank lines (same zebra stripe) between USC and opponent sections
-        if team_id == USC_TEAM_ID:
+        # Add two blank lines (same zebra stripe) between our team and opponent sections
+        if td_id == team_id:
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
             all_spans.append(f'<span class="{row_class}">\n\n</span>')
             row_idx += 1
@@ -1875,7 +1888,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
-    <title>{away_abbrev} vs {home_abbrev} - USC WBB</title>
+    <title>{away_abbrev} vs {home_abbrev} - {team_abbrev} WBB</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
@@ -1916,7 +1929,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             display: block;
         }}
         .usc-dots {{
-            color: #990000;
+            color: #{"990000" if team_abbrev == "USC" else "4E2A84"};
         }}
         .dnp {{
             color: #999999;
@@ -1981,14 +1994,18 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 def main():
     force_update = "--force" in sys.argv
 
-    print("Fetching USC Women's Basketball data...")
+    print("Fetching Women's Basketball data...")
 
-    # Get schedule and scoreboard (lightweight calls)
+    # Get schedules and scoreboard (lightweight calls)
     schedule = get_team_schedule()
+    nu_schedule = get_team_schedule(team_id=NU_TEAM_ID)
     scoreboard = get_scoreboard()
 
-    # Check if we should update
-    should_update, reason = is_game_live_or_imminent(schedule, scoreboard)
+    # Check if we should update (either team live/imminent triggers update)
+    usc_should, usc_reason = is_game_live_or_imminent(schedule, scoreboard)
+    nu_should, nu_reason = is_game_live_or_imminent(nu_schedule, scoreboard, team_id=NU_TEAM_ID)
+    should_update = usc_should or nu_should
+    reason = usc_reason if usc_should else nu_reason
 
     if not should_update and not force_update:
         print(f"Skipping update: {reason}")
@@ -2000,11 +2017,14 @@ def main():
     # Fetch rankings
     rankings = get_rankings()
 
+    # --- USC pages ---
+    print("Generating USC pages...")
+
     # Fetch roster with stats (only if no live game, to save API calls)
     usc_game = find_usc_game(scoreboard, schedule)
     roster = []
     if not usc_game:
-        print("Fetching player stats...")
+        print("Fetching USC player stats...")
         roster = get_roster_with_stats()
 
     # Generate HTML
@@ -2022,8 +2042,8 @@ def main():
     print(f"Written to {schedule_path}")
 
     # Generate individual game pages for completed games
-    games_dir = Path(__file__).parent.parent / "games"
-    games_dir.mkdir(exist_ok=True)
+    usc_games_dir = Path(__file__).parent.parent / "games"
+    usc_games_dir.mkdir(exist_ok=True)
 
     events = schedule.get("events", [])
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
@@ -2043,17 +2063,70 @@ def main():
                     break
 
     games_to_generate = completed + live
-    print(f"Generating {len(games_to_generate)} game pages...")
+    print(f"Generating {len(games_to_generate)} USC game pages...")
     for event in games_to_generate:
         event_id = event.get("id", "")
         if event_id:
             try:
                 game_html = generate_game_page(event_id, rankings, team_records)
-                game_path = games_dir / f"{event_id}.html"
+                game_path = usc_games_dir / f"{event_id}.html"
                 game_path.write_text(game_html)
             except Exception as e:
                 print(f"  Error generating game {event_id}: {e}")
-    print(f"Written game pages to {games_dir}")
+    print(f"Written USC game pages to {usc_games_dir}")
+
+    # --- NU pages ---
+    print("Generating NU pages...")
+
+    nu_game = find_usc_game(scoreboard, nu_schedule, team_id=NU_TEAM_ID)
+    nu_roster = []
+    if not nu_game:
+        print("Fetching NU player stats...")
+        nu_roster = get_roster_with_stats(team_id=NU_TEAM_ID)
+
+    nu_html = generate_game_html(nu_game, nu_schedule, rankings, nu_roster,
+        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html")
+    nu_path = Path(__file__).parent.parent / "nu.html"
+    nu_path.write_text(nu_html)
+    print(f"Written to {nu_path}")
+
+    nu_schedule_html = generate_schedule_html(nu_schedule, rankings,
+        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", games_dir="nu-games")
+    nu_schedule_path = Path(__file__).parent.parent / "nu-schedule.html"
+    nu_schedule_path.write_text(nu_schedule_html)
+    print(f"Written to {nu_schedule_path}")
+
+    nu_games_dir = Path(__file__).parent.parent / "nu-games"
+    nu_games_dir.mkdir(exist_ok=True)
+
+    nu_events = nu_schedule.get("events", [])
+    nu_completed = [e for e in nu_events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+    nu_live = [e for e in nu_events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") not in ("pre", "post", "")]
+
+    nu_team_records = {}
+    if nu_completed:
+        latest_comp = nu_completed[-1].get("competitions", [{}])[0]
+        for competitor in latest_comp.get("competitors", []):
+            abbrev = competitor.get("team", {}).get("abbreviation", "")
+            records = competitor.get("records", [])
+            for rec in records:
+                if rec.get("type") == "total":
+                    nu_team_records[abbrev] = rec.get("summary", "")
+                    break
+
+    nu_games_to_generate = nu_completed + nu_live
+    print(f"Generating {len(nu_games_to_generate)} NU game pages...")
+    for event in nu_games_to_generate:
+        event_id = event.get("id", "")
+        if event_id:
+            try:
+                game_html = generate_game_page(event_id, rankings, nu_team_records,
+                    team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html")
+                game_path = nu_games_dir / f"{event_id}.html"
+                game_path.write_text(game_html)
+            except Exception as e:
+                print(f"  Error generating NU game {event_id}: {e}")
+    print(f"Written NU game pages to {nu_games_dir}")
 
 
 if __name__ == "__main__":
