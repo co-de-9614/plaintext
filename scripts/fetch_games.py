@@ -567,9 +567,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                 fls = p.get("fls", 0)
                 pts = p.get("pts", 0)
 
-                fg_pct = f"{100 * fg_made / fg_att:.2f}%" if fg_att > 0 else "--"
-                three_pct = f"{100 * three_made / three_att:.2f}%" if three_att > 0 else "--"
-                ft_pct = f"{100 * ft_made / ft_att:.2f}%" if ft_att > 0 else "--"
+                fg_pct = f"{100 * fg_made / fg_att:.2f}%" if fg_att > 0 else "    --"
+                three_pct = f"{100 * three_made / three_att:.2f}%" if three_att > 0 else "    --"
+                ft_pct = f"{100 * ft_made / ft_att:.2f}%" if ft_att > 0 else "    --"
                 pm_val = p.get("pm", 0)
                 pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
                 grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<7}{pm_str:>4} "
