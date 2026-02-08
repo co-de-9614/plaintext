@@ -553,60 +553,60 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     else:
         content_lines.append("\nNo game in progress today.")
 
-        # Show player stats when no game
-        if roster:
-            content_lines.append("")
-            content_lines.append("=" * 47)
-            stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
-            all_spans = []
-            row_idx = 0
+    # Show player season stats
+    if roster:
+        content_lines.append("")
+        content_lines.append("=" * 47)
+        stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
+        all_spans = []
+        row_idx = 0
 
-            # Section header (team colored)
-            team_color = "990000" if team_abbrev == "USC" else "4E2A84"
+        # Section header (team colored)
+        team_color = "990000" if team_abbrev == "USC" else "4E2A84"
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} SEASON STATS</b>\n{stats_header}</span>')
+        row_idx += 1
+
+        for p in roster:
+            name = p.get("name", "")
+            jersey = p.get("jersey", "")
+            jersey_str = f"#{jersey}" if jersey else ""
+            name_part = f"{name} {jersey_str}"
+
+            mins = p.get("min", 0)
+            fg_made = p.get("fg_made", 0)
+            fg_att = p.get("fg_att", 0)
+            three_made = p.get("three_made", 0)
+            three_att = p.get("three_att", 0)
+            ft_made = p.get("ft_made", 0)
+            ft_att = p.get("ft_att", 0)
+            orb = p.get("orb", 0)
+            drb = p.get("drb", 0)
+            ast = p.get("ast", 0)
+            stl = p.get("stl", 0)
+            blk = p.get("blk", 0)
+            to = p.get("to", 0)
+            fls = p.get("fls", 0)
+            pts = p.get("pts", 0)
+
+            fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
+            three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
+            ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
+            pm_val = p.get("pm", 0)
+            pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+            grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+            name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+
+            fg_str = f"{fg_made}/{fg_att}"
+            three_str = f"{three_made}/{three_att}"
+            ft_str = f"{ft_made}/{ft_att}"
+            stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
+
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} SEASON STATS</b>\n{stats_header}</span>')
+            all_spans.append(f'<span class="{row_class}">{name_line}\n{stats_line}</span>')
             row_idx += 1
 
-            for p in roster:
-                name = p.get("name", "")
-                jersey = p.get("jersey", "")
-                jersey_str = f"#{jersey}" if jersey else ""
-                name_part = f"{name} {jersey_str}"
-
-                mins = p.get("min", 0)
-                fg_made = p.get("fg_made", 0)
-                fg_att = p.get("fg_att", 0)
-                three_made = p.get("three_made", 0)
-                three_att = p.get("three_att", 0)
-                ft_made = p.get("ft_made", 0)
-                ft_att = p.get("ft_att", 0)
-                orb = p.get("orb", 0)
-                drb = p.get("drb", 0)
-                ast = p.get("ast", 0)
-                stl = p.get("stl", 0)
-                blk = p.get("blk", 0)
-                to = p.get("to", 0)
-                fls = p.get("fls", 0)
-                pts = p.get("pts", 0)
-
-                fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
-                three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
-                ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
-                pm_val = p.get("pm", 0)
-                pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
-                name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
-
-                fg_str = f"{fg_made}/{fg_att}"
-                three_str = f"{three_made}/{three_att}"
-                ft_str = f"{ft_made}/{ft_att}"
-                stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
-
-                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-                all_spans.append(f'<span class="{row_class}">{name_line}\n{stats_line}</span>')
-                row_idx += 1
-
-            content_lines.append("".join(all_spans))
+        content_lines.append("".join(all_spans))
 
     # Upcoming schedule
     content_lines.append("\n")
@@ -2193,12 +2193,9 @@ def main():
     # --- USC pages ---
     print("Generating USC pages...")
 
-    # Fetch roster with stats (only if no live game, to save API calls)
     usc_game = find_usc_game(scoreboard, schedule)
-    roster = []
-    if not usc_game:
-        print("Fetching USC player stats...")
-        roster = get_roster_with_stats()
+    print("Fetching USC player stats...")
+    roster = get_roster_with_stats()
 
     # Generate HTML
     html = generate_game_html(usc_game, schedule, rankings, roster)
@@ -2251,10 +2248,8 @@ def main():
     print("Generating NU pages...")
 
     nu_game = find_usc_game(scoreboard, nu_schedule, team_id=NU_TEAM_ID)
-    nu_roster = []
-    if not nu_game:
-        print("Fetching NU player stats...")
-        nu_roster = get_roster_with_stats(team_id=NU_TEAM_ID)
+    print("Fetching NU player stats...")
+    nu_roster = get_roster_with_stats(team_id=NU_TEAM_ID)
 
     nu_html = generate_game_html(nu_game, nu_schedule, rankings, nu_roster,
         team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html",
