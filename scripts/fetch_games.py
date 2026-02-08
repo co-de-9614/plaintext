@@ -2051,12 +2051,11 @@ def main():
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
     live = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") not in ("pre", "post", "")]
 
-    # Get current team records from schedule (most recent game has current records)
+    # Get current team records from schedule
+    # Iterate all completed games so each team's record reflects their latest appearance
     team_records = {}
-    if completed:
-        # Get records from the most recent completed game
-        latest_comp = completed[-1].get("competitions", [{}])[0]
-        for competitor in latest_comp.get("competitors", []):
+    for event in completed:
+        for competitor in event.get("competitions", [{}])[0].get("competitors", []):
             abbrev = competitor.get("team", {}).get("abbreviation", "")
             records = competitor.get("records", [])
             for rec in records:
@@ -2106,9 +2105,8 @@ def main():
     nu_live = [e for e in nu_events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") not in ("pre", "post", "")]
 
     nu_team_records = {}
-    if nu_completed:
-        latest_comp = nu_completed[-1].get("competitions", [{}])[0]
-        for competitor in latest_comp.get("competitors", []):
+    for event in nu_completed:
+        for competitor in event.get("competitions", [{}])[0].get("competitors", []):
             abbrev = competitor.get("team", {}).get("abbreviation", "")
             records = competitor.get("records", [])
             for rec in records:
