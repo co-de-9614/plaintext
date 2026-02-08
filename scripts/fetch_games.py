@@ -507,7 +507,8 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict, team_id=USC_TEAM_
 
 
 def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict, roster: list,
-                       team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html") -> str:
+                       team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html",
+                       games_dir="games") -> str:
     """Generate the main game page HTML."""
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -529,35 +530,26 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         event_id = event.get("id", "")
         state = competition.get("status", {}).get("type", {}).get("state", "")
 
-        # Fetch game summary early so we can use its scores and details
-        summary = None
-        if state in ("in", "post") and event_id:
+        if state not in ("pre", "post", ""):
+            # Live game — just link to the game page
             try:
                 summary = get_game_summary(event_id)
-                # Use summary header for score display (schedule API lacks scores for live games)
                 summary_comps = summary.get("header", {}).get("competitions", [])
                 if summary_comps:
                     competition = summary_comps[0]
-            except Exception as e:
-                content_lines.append(f"\nCould not load game details: {e}")
+            except Exception:
+                pass
 
-        # Game status
-        status_line = format_game_status(competition)
-        content_lines.append(f"\n{status_line}")
-        content_lines.append("")
-
-        # Score display
-        content_lines.append(format_score_display(competition))
-        content_lines.append("")
-
-        # Play by play and box score from summary
-        if summary:
-            if state not in ("pre", "post", ""):
-                content_lines.append("")
-                content_lines.append(format_play_by_play(summary))
-
+            status_line = format_game_status(competition)
+            content_lines.append(f"\n{status_line}")
             content_lines.append("")
-            content_lines.append(format_box_score(summary))
+            content_lines.append(format_score_display(competition))
+            content_lines.append("")
+            content_lines.append(f'<a href="{games_dir}/{event_id}.html">Full game details</a>')
+        else:
+            content_lines.append(f"\n{format_game_status(competition)}")
+            content_lines.append("")
+            content_lines.append(format_score_display(competition))
     else:
         content_lines.append("\nNo game in progress today.")
 
@@ -2265,7 +2257,8 @@ def main():
         nu_roster = get_roster_with_stats(team_id=NU_TEAM_ID)
 
     nu_html = generate_game_html(nu_game, nu_schedule, rankings, nu_roster,
-        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html")
+        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html",
+        games_dir="nu-games")
     nu_path = Path(__file__).parent.parent / "nu.html"
     nu_path.write_text(nu_html)
     print(f"Written to {nu_path}")
