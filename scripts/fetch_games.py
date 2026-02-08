@@ -8,6 +8,7 @@ Usage:
 """
 
 import json
+import subprocess
 import sys
 import urllib.request
 from datetime import datetime, timezone, timedelta
@@ -29,7 +30,12 @@ BASE_API = f"https://site.api.espn.com/apis/site/v2/sports/{SPORT}/{LEAGUE}"
 PREGAME_WINDOW_MINUTES = 60
 
 # Version string generated at runtime
-VERSION = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("v%Y.%m.%d-%H:%M")
+_commit = ""
+try:
+    _commit = "." + subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL).decode().strip()
+except Exception:
+    pass
+VERSION = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("v%Y.%m.%d-%H:%M") + _commit
 
 
 def fetch_json(url: str) -> dict:
