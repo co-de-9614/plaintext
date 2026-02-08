@@ -687,7 +687,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=700">
     <title>USC Women's Basketball</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
@@ -916,7 +916,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict) -> str:
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=700">
     <title>USC WBB Schedule</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
@@ -1867,7 +1867,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=700">
     <title>{away_abbrev} vs {home_abbrev} - USC WBB</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
