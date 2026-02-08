@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>NU WBB Schedule</title>
-    <meta name="data-loaded" content="2026-02-07T23:22:16.221403-08:00">
+    <meta name="data-loaded" content="2026-02-07T23:27:19.671082-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -32,7 +32,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 11:22:16 PM</span>
+<span id="timestamps">Data loaded: 11:27:19 PM</span>
 
 <a href="index.html">USC</a>  <b>NU</b>  B1G
 
@@ -75,7 +75,7 @@ Mar 01 12:00PM vs Purdue
 
 <a href="nu.html">Back to Home</a>
 
-v2026.02.07-23:21.c9c71b3
+v2026.02.07-23:26.c3bcaf7
 </pre>
 <script>
 (function() {
@@ -102,12 +102,12 @@ v2026.02.07-23:21.c9c71b3
         if (el) {
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\n' + dataLoadedStr + dataSpaces + dataAgo;

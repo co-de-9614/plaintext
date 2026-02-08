@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>RUTG vs USC - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-07T23:22:09.084885-08:00">
+    <meta name="data-loaded" content="2026-02-07T23:27:12.641226-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -57,7 +57,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 11:22:09 PM</span>
+<span id="timestamps">Data loaded: 11:27:12 PM</span>
 
 <a href="../schedule.html">&lt; USC Schedule</a>
 
@@ -146,7 +146,7 @@ RUTG   18      10     6   7    2  16   11  22
  MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd">                                 <span style="color:#999"> 24.14%  15.79%  80.00% </span>
        7  19  11  10   4  16  22   14/58    3/19    8/10   39 </span>
 
-v2026.02.07-23:21.c9c71b3
+v2026.02.07-23:26.c3bcaf7
 </pre>
 <script>
 (function() {
@@ -173,12 +173,12 @@ v2026.02.07-23:21.c9c71b3
         if (el) {
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\n' + dataLoadedStr + dataSpaces + dataAgo;

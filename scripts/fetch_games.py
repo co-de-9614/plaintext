@@ -764,12 +764,12 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
@@ -987,12 +987,12 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
@@ -1971,12 +1971,12 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 55 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 55 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
