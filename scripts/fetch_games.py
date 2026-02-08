@@ -495,9 +495,10 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("")
     if team_abbrev == "USC":
-        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>')
+        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  B1G')
     else:
-        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>')
+        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  B1G')
+    content_lines.append("")
     content_lines.append("=" * 47)
 
     if game_data:
@@ -796,9 +797,10 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("")
     if team_abbrev == "USC":
-        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>')
+        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  B1G')
     else:
-        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>')
+        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  B1G')
+    content_lines.append("")
     content_lines.append("Full Schedule/Results")
     content_lines.append("=" * 47)
 
