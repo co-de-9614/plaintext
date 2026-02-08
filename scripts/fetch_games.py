@@ -287,6 +287,28 @@ def get_game_summary(event_id: str) -> dict:
     return fetch_json(url)
 
 
+def get_b1g_standings() -> list:
+    """Get Big Ten conference standings from ESPN API."""
+    url = f"https://site.web.api.espn.com/apis/v2/sports/{SPORT}/{LEAGUE}/standings?group=7"
+    data = fetch_json(url)
+    entries = data.get("standings", {}).get("entries", [])
+
+    # Extract playoff seed from stats array and sort by it
+    for entry in entries:
+        seed = 99
+        for stat in entry.get("stats", []):
+            if stat.get("type") == "playoffseed":
+                try:
+                    seed = int(stat.get("displayValue", "99"))
+                except ValueError:
+                    pass
+                break
+        entry["_seed"] = seed
+
+    entries.sort(key=lambda e: e["_seed"])
+    return entries
+
+
 def format_game_status(competition: dict) -> str:
     """Format the game status line."""
     status = competition.get("status", {})
@@ -495,9 +517,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("")
     if team_abbrev == "USC":
-        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  B1G')
+        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  <a href="b1g.html">B1G</a>')
     else:
-        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  B1G')
+        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  <a href="b1g.html">B1G</a>')
     content_lines.append("")
     content_lines.append("=" * 47)
 
@@ -797,9 +819,9 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
     content_lines.append("")
     if team_abbrev == "USC":
-        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  B1G')
+        content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  <a href="b1g.html">B1G</a>')
     else:
-        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  B1G')
+        content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  <a href="b1g.html">B1G</a>')
     content_lines.append("")
     content_lines.append("Full Schedule/Results")
     content_lines.append("=" * 47)
@@ -955,6 +977,163 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         }}
         a {{
             color: #0066cc;
+        }}
+    </style>
+</head>
+<body>
+<pre>
+{content}
+</pre>
+<script>
+(function() {{
+    const dataLoaded = new Date(document.querySelector('meta[name="data-loaded"]').content);
+    const pageLoaded = new Date();
+
+    function formatTime(date) {{
+        return date.toLocaleTimeString('en-US', {{ hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }});
+    }}
+
+    function timeAgo(date) {{
+        const seconds = Math.floor((new Date() - date) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + ' min ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + ' hr ago';
+        const days = Math.floor(hours / 24);
+        return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+    }}
+
+    function updateTimestamps() {{
+        const el = document.getElementById('timestamps');
+        if (el) {{
+            const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+            const pageAgo = '(' + timeAgo(pageLoaded) + ')';
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
+
+            const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
+            const dataAgo = '(' + timeAgo(dataLoaded) + ')';
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
+
+            el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
+        }}
+    }}
+
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Update every minute
+}})();
+</script>
+</body>
+</html>
+"""
+    return html
+
+
+def generate_standings_html(standings: list, rankings: dict) -> str:
+    """Generate B1G conference standings page."""
+    now = datetime.now(PT)
+    now_str = now.strftime("%I:%M:%S %p")
+    now_iso = now.isoformat()
+
+    content_lines = []
+    content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
+    content_lines.append("")
+    content_lines.append('<a href="index.html">USC</a>  <a href="nu.html">NU</a>  <b>B1G</b>')
+    content_lines.append("")
+    content_lines.append("Big Ten Standings")
+    content_lines.append("=" * 47)
+
+    # Header row
+    content_lines.append(f'{"":>2}  {"Team":<18} {"Conf":>7} {"Overall":>7} {"Strk":>5}')
+    content_lines.append("-" * 47)
+
+    row_idx = 0
+    for entry in standings:
+        team = entry.get("team", {})
+        abbrev = team.get("abbreviation", "???")
+        location = team.get("location", abbrev)
+        seed = entry.get("_seed", 0)
+
+        # Get rank from rankings
+        rank = rankings.get(abbrev, 0)
+        rank_str = f"#{rank} " if rank else ""
+        team_display = f"{rank_str}{location}"
+        if len(team_display) > 18:
+            team_display = team_display[:18]
+
+        # Extract stats (flat list with type as key)
+        conf_record = ""
+        overall_record = ""
+        streak = ""
+        for stat in entry.get("stats", []):
+            stype = stat.get("type", "")
+            if stype == "vsconf":
+                conf_record = stat.get("displayValue", "")
+            elif stype == "total":
+                overall_record = stat.get("displayValue", "")
+            elif stype == "streak":
+                streak = stat.get("displayValue", "")
+
+        # Build the row text
+        line_text = f"{seed:>2}  {team_display:<18} {conf_record:>7} {overall_record:>7} {streak:>5}"
+
+        # Highlight USC and NU rows with team colors
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        if abbrev == "USC":
+            content_lines.append(f'<span class="{row_class}" style="color: #990000;"><b>{line_text}</b></span>')
+        elif abbrev == "NU":
+            content_lines.append(f'<span class="{row_class}" style="color: #4E2A84;"><b>{line_text}</b></span>')
+        else:
+            content_lines.append(f'<span class="{row_class}">{line_text}</span>')
+        row_idx += 1
+
+    content_lines.append(f"\n{VERSION}")
+
+    content = "\n".join(content_lines)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=700">
+    <title>Big Ten WBB Standings</title>
+    <meta name="data-loaded" content="{now_iso}">
+    <style>
+        * {{
+            box-sizing: border-box;
+        }}
+        body {{
+            font-family: monospace;
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 16px;
+            max-width: 100%;
+            margin: 0 auto;
+            line-height: 1.4;
+            overflow-x: auto;
+        }}
+        pre {{
+            white-space: pre;
+            min-width: 55ch;
+            margin: 0;
+            font-size: 12px;
+        }}
+        a {{
+            color: #0066cc;
+        }}
+        .row-even {{
+            background: #f0f0f0;
+            display: block;
+            margin: 0 -16px;
+            padding: 0 16px;
+        }}
+        .row-odd {{
+            background: transparent;
+            display: block;
+            margin: 0 -16px;
+            padding: 0 16px;
         }}
     </style>
 </head>
@@ -2127,6 +2306,14 @@ def main():
             except Exception as e:
                 print(f"  Error generating NU game {event_id}: {e}")
     print(f"Written NU game pages to {nu_games_dir}")
+
+    # --- B1G standings page ---
+    print("Generating B1G standings page...")
+    standings = get_b1g_standings()
+    standings_html = generate_standings_html(standings, rankings)
+    standings_path = Path(__file__).parent.parent / "b1g.html"
+    standings_path.write_text(standings_html)
+    print(f"Written to {standings_path}")
 
 
 if __name__ == "__main__":
