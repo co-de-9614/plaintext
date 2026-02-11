@@ -8,6 +8,7 @@ Usage:
 """
 
 import json
+import re
 import subprocess
 import sys
 import urllib.request
@@ -307,6 +308,82 @@ def get_b1g_standings() -> list:
 
     entries.sort(key=lambda e: e["_seed"])
     return entries
+
+
+def get_b1g_leaders(team_id_map: dict) -> dict:
+    """Get B1G conference stat leaders from ESPN core API.
+
+    Args:
+        team_id_map: dict mapping team ID (str) to abbreviation (str),
+                     built from standings data.
+
+    Returns:
+        Ordered dict: {category_display: [{name, team, value}, ...], ...}
+    """
+    url = ("https://sports.core.api.espn.com/v2/sports/basketball/leagues/"
+           "womens-college-basketball/seasons/2026/types/2/groups/7/leaders")
+    data = fetch_json(url)
+
+    target_cats = {
+        "pointsPerGame": "PTS PER GAME",
+        "3PointsMadePerGame": "3PT PER GAME",
+        "reboundsPerGame": "REB PER GAME",
+        "assistsPerGame": "AST PER GAME",
+        "stealsPerGame": "STL PER GAME",
+        "blocksPerGame": "BLK PER GAME",
+    }
+    cat_order = list(target_cats.keys())
+
+    # Collect leaders per category and unique athlete refs
+    raw = {}  # cat_name -> [(display_value, athlete_ref, team_abbrev), ...]
+    athlete_refs = {}  # athlete_ref -> None (to deduplicate)
+
+    for cat in data.get("categories", []):
+        name = cat.get("name", "")
+        if name not in target_cats:
+            continue
+        entries = []
+        for leader in cat.get("leaders", [])[:10]:
+            value = leader.get("displayValue", "")
+            athlete_ref = leader.get("athlete", {}).get("$ref", "")
+            team_ref = leader.get("team", {}).get("$ref", "")
+
+            # Extract team ID from $ref URL
+            team_match = re.search(r"/teams/(\d+)", team_ref)
+            team_id = team_match.group(1) if team_match else ""
+            team_abbrev = team_id_map.get(team_id, "???")
+
+            entries.append((value, athlete_ref, team_abbrev))
+            if athlete_ref:
+                athlete_refs[athlete_ref] = None
+
+        raw[name] = entries
+
+    # Resolve athlete names
+    athlete_names = {}
+    for ref in athlete_refs:
+        try:
+            adata = fetch_json(ref)
+            athlete_names[ref] = adata.get("displayName", "Unknown")
+        except Exception:
+            athlete_names[ref] = "Unknown"
+
+    # Build result in category order
+    result = {}
+    for cat_name in cat_order:
+        if cat_name not in raw:
+            continue
+        display = target_cats[cat_name]
+        leaders = []
+        for value, athlete_ref, team_abbrev in raw[cat_name]:
+            leaders.append({
+                "name": athlete_names.get(athlete_ref, "Unknown"),
+                "team": team_abbrev,
+                "value": value,
+            })
+        result[display] = leaders
+
+    return result
 
 
 def format_game_status(competition: dict) -> str:
@@ -1023,7 +1100,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
     return html
 
 
-def generate_standings_html(standings: list, rankings: dict) -> str:
+def generate_standings_html(standings: list, rankings: dict, leaders: dict = None) -> str:
     """Generate B1G conference standings page."""
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -1080,6 +1157,32 @@ def generate_standings_html(standings: list, rankings: dict) -> str:
         else:
             content_lines.append(f'<span class="{row_class}">{line_text}</span>')
         row_idx += 1
+
+    # Conference leaders sections
+    if leaders:
+        for cat_display, entries in leaders.items():
+            content_lines.append("")
+            content_lines.append("=" * 47)
+            content_lines.append(f'{"":>2}  {cat_display:<28} {"Value":>7}')
+            content_lines.append("-" * 47)
+
+            row_idx = 0
+            for i, entry in enumerate(entries):
+                rank = i + 1
+                name = entry["name"]
+                team = entry["team"]
+                value = entry["value"]
+
+                line_text = f"{rank:>2}  {name:<21} {team:<7} {value:>7}"
+
+                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                if team == "USC":
+                    content_lines.append(f'<span class="{row_class}" style="color: #990000;"><b>{line_text}</b></span>')
+                elif team == "NU":
+                    content_lines.append(f'<span class="{row_class}" style="color: #4E2A84;"><b>{line_text}</b></span>')
+                else:
+                    content_lines.append(f'<span class="{row_class}">{line_text}</span>')
+                row_idx += 1
 
     content_lines.append(f"\n{VERSION}")
 
@@ -2298,7 +2401,24 @@ def main():
     # --- B1G standings page ---
     print("Generating B1G standings page...")
     standings = get_b1g_standings()
-    standings_html = generate_standings_html(standings, rankings)
+
+    # Build team ID -> abbreviation map from standings for leader lookups
+    team_id_map = {}
+    for entry in standings:
+        team = entry.get("team", {})
+        tid = str(team.get("id", ""))
+        abbrev = team.get("abbreviation", "")
+        if tid and abbrev:
+            team_id_map[tid] = abbrev
+
+    print("Fetching B1G conference leaders...")
+    try:
+        leaders = get_b1g_leaders(team_id_map)
+    except Exception as e:
+        print(f"  Error fetching leaders: {e}")
+        leaders = {}
+
+    standings_html = generate_standings_html(standings, rankings, leaders)
     standings_path = Path(__file__).parent.parent / "b1g.html"
     standings_path.write_text(standings_html)
     print(f"Written to {standings_path}")
