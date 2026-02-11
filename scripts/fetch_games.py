@@ -1119,6 +1119,7 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
     content_lines.append("-" * 47)
 
     row_idx = 0
+    standings_spans = []
     for entry in standings:
         team = entry.get("team", {})
         abbrev = team.get("abbreviation", "???")
@@ -1149,14 +1150,15 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
         line_text = f"{seed:>2}  {team_display:<18} {conf_record:>7} {overall_record:>7} {streak:>5}"
 
         # Highlight USC and NU rows with team colors
-        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        row_class = "row-even" if row_idx // 2 % 2 == 0 else "row-odd"
         if abbrev == "USC":
-            content_lines.append(f'<span class="{row_class}" style="color: #990000;"><b>{line_text}</b></span>')
+            standings_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>{line_text}</b></span>')
         elif abbrev == "NU":
-            content_lines.append(f'<span class="{row_class}" style="color: #4E2A84;"><b>{line_text}</b></span>')
+            standings_spans.append(f'<span class="{row_class}" style="color: #4E2A84;"><b>{line_text}</b></span>')
         else:
-            content_lines.append(f'<span class="{row_class}">{line_text}</span>')
+            standings_spans.append(f'<span class="{row_class}">{line_text}</span>')
         row_idx += 1
+    content_lines.append("".join(standings_spans))
 
     # Conference leaders sections
     if leaders:
@@ -1166,7 +1168,7 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
             content_lines.append(f'{"":>2}  {cat_display:<28} {"Value":>7}')
             content_lines.append("-" * 47)
 
-            row_idx = 0
+            leader_spans = []
             for i, entry in enumerate(entries):
                 rank = i + 1
                 name = entry["name"]
@@ -1175,14 +1177,14 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
 
                 line_text = f"{rank:>2}  {name:<21} {team:<7} {value:>7}"
 
-                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                row_class = "row-even" if i // 2 % 2 == 0 else "row-odd"
                 if team == "USC":
-                    content_lines.append(f'<span class="{row_class}" style="color: #990000;"><b>{line_text}</b></span>')
+                    leader_spans.append(f'<span class="{row_class}" style="color: #990000;"><b>{line_text}</b></span>')
                 elif team == "NU":
-                    content_lines.append(f'<span class="{row_class}" style="color: #4E2A84;"><b>{line_text}</b></span>')
+                    leader_spans.append(f'<span class="{row_class}" style="color: #4E2A84;"><b>{line_text}</b></span>')
                 else:
-                    content_lines.append(f'<span class="{row_class}">{line_text}</span>')
-                row_idx += 1
+                    leader_spans.append(f'<span class="{row_class}">{line_text}</span>')
+            content_lines.append("".join(leader_spans))
 
     content_lines.append(f"\n{VERSION}")
 
