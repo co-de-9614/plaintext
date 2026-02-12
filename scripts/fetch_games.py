@@ -706,6 +706,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     else:
         content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  <a href="b1g.html">B1G</a>')
     content_lines.append("")
+    content_lines.append(f'<a href="{schedule_page}">Full Schedule/Results</a>')
+    content_lines.append("")
     content_lines.append("=" * 47)
 
     if game_data:
@@ -882,9 +884,6 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
             content_lines.append(f"{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
 
-    # Link to full schedule
-    content_lines.append("")
-    content_lines.append(f'<a href="{schedule_page}">Full Schedule/Results</a>')
     content_lines.append(f"\n{VERSION}")
 
     content = "\n".join(content_lines)
@@ -998,6 +997,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         content_lines.append('<b>USC</b>  <a href="nu.html">NU</a>  <a href="b1g.html">B1G</a>')
     else:
         content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  <a href="b1g.html">B1G</a>')
+    content_lines.append("")
+    content_lines.append(f'<a href="{home_page}">Back to Home</a>')
     content_lines.append("")
     content_lines.append("Full Schedule/Results")
     content_lines.append("=" * 47)
@@ -1117,9 +1118,6 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         else:
             content_lines.append(f"{date_str} {home_away} {opp_str}")
 
-    # Link back to main page
-    content_lines.append("")
-    content_lines.append(f'<a href="{home_page}">Back to Home</a>')
     content_lines.append(f"\n{VERSION}")
 
     content = "\n".join(content_lines)
