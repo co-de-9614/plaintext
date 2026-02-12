@@ -8,6 +8,7 @@ Usage:
 """
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -45,6 +46,112 @@ def fetch_json(url: str) -> dict:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read().decode())
+
+
+ODDS_CACHE_PATH = Path(__file__).parent.parent / "data" / "odds_cache.json"
+
+
+def load_odds_cache() -> dict:
+    """Load cached odds data from disk."""
+    if ODDS_CACHE_PATH.exists():
+        try:
+            return json.loads(ODDS_CACHE_PATH.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def save_odds_cache(cache: dict):
+    """Save odds cache to disk."""
+    ODDS_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    ODDS_CACHE_PATH.write_text(json.dumps(cache, indent=2))
+
+
+def fetch_game_odds(event_id: str, home_display_name: str, away_display_name: str) -> dict | None:
+    """Fetch pregame betting odds for a game from The Odds API.
+
+    Returns cached data if available. Fetches from API only if not cached.
+    Returns None if no API key or no matching game found.
+    """
+    cache = load_odds_cache()
+    if event_id in cache:
+        return cache[event_id]
+
+    api_key = os.environ.get("ODDS_API_KEY", "")
+    if not api_key:
+        return None
+
+    url = (
+        f"https://api.the-odds-api.com/v4/sports/basketball_wncaab/odds"
+        f"?apiKey={api_key}&regions=us&markets=h2h,spreads,totals&oddsFormat=american"
+    )
+
+    try:
+        data = fetch_json(url)
+    except Exception as e:
+        print(f"  Odds API error: {e}")
+        return None
+
+    # Find matching game by team names
+    matched = None
+    for game in data:
+        api_home = game.get("home_team", "")
+        api_away = game.get("away_team", "")
+        if api_home == home_display_name and api_away == away_display_name:
+            matched = game
+            break
+
+    if not matched or not matched.get("bookmakers"):
+        return None
+
+    book = matched["bookmakers"][0]
+    markets = {m["key"]: m for m in book.get("markets", [])}
+
+    odds_data = {}
+
+    # Spread
+    spreads = markets.get("spreads", {}).get("outcomes", [])
+    if spreads:
+        # Find the home team spread
+        for outcome in spreads:
+            if outcome.get("name") == home_display_name:
+                odds_data["spread"] = {
+                    "team": home_display_name,
+                    "line": str(outcome.get("point", "")),
+                    "price": str(outcome.get("price", "")),
+                }
+                break
+
+    # Total
+    totals = markets.get("totals", {}).get("outcomes", [])
+    if totals:
+        over = next((o for o in totals if o.get("name") == "Over"), {})
+        under = next((o for o in totals if o.get("name") == "Under"), {})
+        odds_data["total"] = {
+            "line": str(over.get("point", "")),
+            "over_price": str(over.get("price", "")),
+            "under_price": str(under.get("price", "")),
+        }
+
+    # Moneyline (h2h)
+    h2h = markets.get("h2h", {}).get("outcomes", [])
+    if h2h:
+        home_ml = next((o for o in h2h if o.get("name") == home_display_name), {})
+        away_ml = next((o for o in h2h if o.get("name") == away_display_name), {})
+        odds_data["moneyline"] = {
+            "home": str(home_ml.get("price", "")),
+            "away": str(away_ml.get("price", "")),
+            "home_team": home_display_name,
+            "away_team": away_display_name,
+        }
+
+    if odds_data:
+        cache[event_id] = odds_data
+        save_odds_cache(cache)
+        print(f"  Cached odds for event {event_id}")
+        return odds_data
+
+    return None
 
 
 def calculate_plus_minus(plays, boxscore, home_team_id):
@@ -1286,7 +1393,8 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
 
 
 def generate_game_page(event_id: str, rankings: dict = None, team_records: dict = None,
-                       team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html") -> str:
+                       team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html",
+                       odds: dict = None) -> str:
     """Generate a detailed game report page."""
     if rankings is None:
         rankings = {}
@@ -1538,6 +1646,46 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     content_lines.append(pad + usc_row)
     content_lines.append(pad + opp_row)
     content_lines.append("")
+
+    # Betting odds section (if available)
+    if odds:
+        spread = odds.get("spread", {})
+        total = odds.get("total", {})
+        moneyline = odds.get("moneyline", {})
+
+        # Map full team names to abbreviations
+        name_to_abbrev = {
+            home_team.get("displayName", ""): home_abbrev,
+            away_team.get("displayName", ""): away_abbrev,
+        }
+
+        content_lines.append("CURRENT LINE".center(PAGE_WIDTH))
+
+        # Line 1: Spread and O/U
+        if spread and total:
+            spread_abbrev = name_to_abbrev.get(spread.get("team", ""), home_abbrev)
+            line = spread.get("line", "")
+            if line and not line.startswith("-"):
+                line = "+" + line
+            spread_str = f"{spread_abbrev} {line} ({spread.get('price', '')})"
+            total_str = f"O/U {total.get('line', '')}"
+            odds_line1 = f"{spread_str}  {total_str}"
+            content_lines.append(odds_line1.center(PAGE_WIDTH))
+
+        # Line 2: Moneyline
+        if moneyline:
+            ml_home_abbrev = name_to_abbrev.get(moneyline.get("home_team", ""), home_abbrev)
+            ml_away_abbrev = name_to_abbrev.get(moneyline.get("away_team", ""), away_abbrev)
+            home_price = moneyline.get("home", "")
+            away_price = moneyline.get("away", "")
+            if home_price and not home_price.startswith("-"):
+                home_price = "+" + home_price
+            if away_price and not away_price.startswith("-"):
+                away_price = "+" + away_price
+            ml_str = f"{ml_home_abbrev} {home_price}    {ml_away_abbrev} {away_price}"
+            content_lines.append(ml_str.center(PAGE_WIDTH))
+
+        content_lines.append("")
 
     # Game Flow visualization (based on game lead)
     plays = game.get("plays", [])
@@ -2294,6 +2442,7 @@ def main():
 
     # Fetch rankings
     rankings = get_rankings()
+    now_utc = datetime.now(timezone.utc)
 
     # --- USC pages ---
     print("Generating USC pages...")
@@ -2336,13 +2485,37 @@ def main():
                     team_records[abbrev] = rec.get("summary", "")
                     break
 
+    # Fetch odds for imminent/live USC games
+    usc_odds_map = {}
+    imminent_pre = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "pre"]
+    for event in imminent_pre + live:
+        comp = event.get("competitions", [{}])[0]
+        date_str = comp.get("date", "")
+        if date_str:
+            try:
+                game_time = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                if (game_time - now_utc).total_seconds() / 60 <= PREGAME_WINDOW_MINUTES:
+                    eid = event.get("id", "")
+                    competitors = comp.get("competitors", [])
+                    home_c = next((c for c in competitors if c.get("homeAway") == "home"), {})
+                    away_c = next((c for c in competitors if c.get("homeAway") == "away"), {})
+                    home_name = home_c.get("team", {}).get("displayName", "")
+                    away_name = away_c.get("team", {}).get("displayName", "")
+                    if eid and home_name and away_name:
+                        odds = fetch_game_odds(eid, home_name, away_name)
+                        if odds:
+                            usc_odds_map[eid] = odds
+            except Exception:
+                pass
+
     games_to_generate = completed + live
     print(f"Generating {len(games_to_generate)} USC game pages...")
     for event in games_to_generate:
         event_id = event.get("id", "")
         if event_id:
             try:
-                game_html = generate_game_page(event_id, rankings, team_records)
+                game_html = generate_game_page(event_id, rankings, team_records,
+                    odds=usc_odds_map.get(event_id))
                 game_path = usc_games_dir / f"{event_id}.html"
                 game_path.write_text(game_html)
             except Exception as e:
@@ -2386,6 +2559,29 @@ def main():
                     nu_team_records[abbrev] = rec.get("summary", "")
                     break
 
+    # Fetch odds for imminent/live NU games
+    nu_odds_map = {}
+    nu_imminent_pre = [e for e in nu_events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "pre"]
+    for event in nu_imminent_pre + nu_live:
+        comp = event.get("competitions", [{}])[0]
+        date_str = comp.get("date", "")
+        if date_str:
+            try:
+                game_time = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                if (game_time - now_utc).total_seconds() / 60 <= PREGAME_WINDOW_MINUTES:
+                    eid = event.get("id", "")
+                    competitors = comp.get("competitors", [])
+                    home_c = next((c for c in competitors if c.get("homeAway") == "home"), {})
+                    away_c = next((c for c in competitors if c.get("homeAway") == "away"), {})
+                    home_name = home_c.get("team", {}).get("displayName", "")
+                    away_name = away_c.get("team", {}).get("displayName", "")
+                    if eid and home_name and away_name:
+                        odds = fetch_game_odds(eid, home_name, away_name)
+                        if odds:
+                            nu_odds_map[eid] = odds
+            except Exception:
+                pass
+
     nu_games_to_generate = nu_completed + nu_live
     print(f"Generating {len(nu_games_to_generate)} NU game pages...")
     for event in nu_games_to_generate:
@@ -2393,7 +2589,8 @@ def main():
         if event_id:
             try:
                 game_html = generate_game_page(event_id, rankings, nu_team_records,
-                    team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html")
+                    team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html",
+                    odds=nu_odds_map.get(event_id))
                 game_path = nu_games_dir / f"{event_id}.html"
                 game_path.write_text(game_html)
             except Exception as e:
