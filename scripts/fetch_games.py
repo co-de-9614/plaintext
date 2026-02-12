@@ -692,7 +692,9 @@ def is_game_live_or_imminent(schedule: dict, scoreboard: dict, team_id=USC_TEAM_
 
 def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: dict, roster: list,
                        team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html",
-                       games_dir="games") -> str:
+                       games_dir="games",
+                       other_game_data: dict | None = None, other_schedule: dict | None = None,
+                       other_team_id=None, other_team_abbrev="", other_games_dir="") -> str:
     """Generate the main game page HTML."""
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -710,34 +712,95 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     content_lines.append("")
     content_lines.append("=" * 47)
 
-    if game_data:
-        event = game_data["event"]
-        competition = game_data["competition"]
-        event_id = event.get("id", "")
-        state = competition.get("status", {}).get("type", {}).get("state", "")
+    # Build list of today's games across both teams
+    # Each entry: (sort_key, abbrev, matchup, status_str)
+    #   matchup = "at Illinois" or "vs Iowa"
+    #   status_str = "LIVE 2nd 8:58 70-62" (with HTML) or "5:00 PM"
+    today_pt = now.date()
+    today_games = []
 
-        if state not in ("pre", "post", ""):
-            # Live game — just link to the game page
+    teams_info = [(team_id, team_abbrev, games_dir, game_data, schedule_data)]
+    if other_schedule is not None and other_team_id is not None:
+        teams_info.append((other_team_id, other_team_abbrev, other_games_dir, other_game_data, other_schedule))
+
+    for t_id, t_abbrev, t_games_dir, t_game_data, t_schedule in teams_info:
+        # Check for live game
+        if t_game_data:
+            comp = t_game_data["competition"]
+            eid = t_game_data["event"].get("id", "")
+            state = comp.get("status", {}).get("type", {}).get("state", "")
+
+            if state not in ("pre", "post", ""):
+                try:
+                    summary = get_game_summary(eid)
+                    summary_comps = summary.get("header", {}).get("competitions", [])
+                    if summary_comps:
+                        comp = summary_comps[0]
+                except Exception:
+                    pass
+
+                status = comp.get("status", {})
+                period = status.get("period", 0)
+                clock = status.get("displayClock", "")
+                period_names = {1: "1st", 2: "2nd", 3: "3rd", 4: "4th"}
+                period_str = period_names.get(period, f"OT{period - 4}" if period > 4 else "")
+                if status.get("type", {}).get("detail", "").lower().startswith("half"):
+                    period_str = "Half"
+                    clock = ""
+
+                competitors = comp.get("competitors", [])
+                us = next((c for c in competitors if c.get("team", {}).get("id") == t_id), {})
+                opp = next((c for c in competitors if c.get("team", {}).get("id") != t_id), {})
+                our_score = us.get("score", "0")
+                opp_score = opp.get("score", "0")
+                opp_name = opp.get("team", {}).get("location", opp.get("team", {}).get("abbreviation", "OPP"))
+                home_away = "vs" if us.get("homeAway") == "home" else "at"
+
+                clock_part = f" {clock}" if clock else ""
+                live_link = f'<a href="{t_games_dir}/{eid}.html"><span style="color: #cc0000; font-weight: bold;">LIVE</span></a>'
+                matchup = f"{home_away} {opp_name}"
+                status_str = f"{live_link} {period_str}{clock_part} {our_score}-{opp_score}"
+                today_games.append((0, t_abbrev, matchup, status_str))
+                continue
+
+        # Check schedule for today's pregame
+        for sched_event in t_schedule.get("events", []):
+            sched_comp = sched_event.get("competitions", [{}])[0]
+            sched_state = sched_comp.get("status", {}).get("type", {}).get("state", "")
+            if sched_state != "pre":
+                continue
+            date_str = sched_comp.get("date", "")
+            if not date_str:
+                continue
             try:
-                summary = get_game_summary(event_id)
-                summary_comps = summary.get("header", {}).get("competitions", [])
-                if summary_comps:
-                    competition = summary_comps[0]
+                game_time_utc = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                game_time_pt = game_time_utc.astimezone(PT)
+                if game_time_pt.date() == today_pt:
+                    sched_competitors = sched_comp.get("competitors", [])
+                    us = next((c for c in sched_competitors if c.get("team", {}).get("id") == t_id), {})
+                    opp = next((c for c in sched_competitors if c.get("team", {}).get("id") != t_id), {})
+                    opp_name = opp.get("team", {}).get("location", opp.get("team", {}).get("abbreviation", "OPP"))
+                    home_away = "vs" if us.get("homeAway") == "home" else "at"
+                    time_str = game_time_pt.strftime("%-I:%M %p")
+                    matchup = f"{home_away} {opp_name}"
+                    today_games.append((game_time_utc.timestamp(), t_abbrev, matchup, time_str))
             except Exception:
                 pass
 
-            status_line = format_game_status(competition)
-            content_lines.append(f"\n{status_line}")
-            content_lines.append("")
-            content_lines.append(format_score_display(competition))
-            content_lines.append("")
-            content_lines.append(f'<a href="{games_dir}/{event_id}.html">Full game details</a>')
+    if today_games:
+        today_games.sort(key=lambda x: x[0])
+        # Align columns if multiple games
+        if len(today_games) > 1:
+            max_matchup = max(len(g[2]) for g in today_games)
+            for _, abbrev, matchup, status_str in today_games:
+                content_lines.append("")
+                content_lines.append(f"{abbrev:<3} {matchup:<{max_matchup}} {status_str}")
         else:
-            content_lines.append(f"\n{format_game_status(competition)}")
+            _, abbrev, matchup, status_str = today_games[0]
             content_lines.append("")
-            content_lines.append(format_score_display(competition))
+            content_lines.append(f"{abbrev} {matchup} {status_str}")
     else:
-        content_lines.append("\nNo game in progress today.")
+        content_lines.append("\nNo game today.")
 
     # Show player season stats
     if roster:
@@ -2442,15 +2505,20 @@ def main():
     rankings = get_rankings()
     now_utc = datetime.now(timezone.utc)
 
+    # Find live/recent games for both teams (needed for cross-team display on homepages)
+    usc_game = find_usc_game(scoreboard, schedule)
+    nu_game = find_usc_game(scoreboard, nu_schedule, team_id=NU_TEAM_ID)
+
     # --- USC pages ---
     print("Generating USC pages...")
 
-    usc_game = find_usc_game(scoreboard, schedule)
     print("Fetching USC player stats...")
     roster = get_roster_with_stats()
 
     # Generate HTML
-    html = generate_game_html(usc_game, schedule, rankings, roster)
+    html = generate_game_html(usc_game, schedule, rankings, roster,
+        other_game_data=nu_game, other_schedule=nu_schedule,
+        other_team_id=NU_TEAM_ID, other_team_abbrev="NU", other_games_dir="nu-games")
 
     # Write output
     output_path = Path(__file__).parent.parent / "index.html"
@@ -2523,13 +2591,14 @@ def main():
     # --- NU pages ---
     print("Generating NU pages...")
 
-    nu_game = find_usc_game(scoreboard, nu_schedule, team_id=NU_TEAM_ID)
     print("Fetching NU player stats...")
     nu_roster = get_roster_with_stats(team_id=NU_TEAM_ID)
 
     nu_html = generate_game_html(nu_game, nu_schedule, rankings, nu_roster,
         team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html",
-        games_dir="nu-games")
+        games_dir="nu-games",
+        other_game_data=usc_game, other_schedule=schedule,
+        other_team_id=USC_TEAM_ID, other_team_abbrev="USC", other_games_dir="games")
     nu_path = Path(__file__).parent.parent / "nu.html"
     nu_path.write_text(nu_html)
     print(f"Written to {nu_path}")
