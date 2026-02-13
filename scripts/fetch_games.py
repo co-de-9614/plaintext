@@ -1898,7 +1898,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         times_tied = 0
         usc_biggest_lead = 0
         opp_biggest_lead = 0
-        prev_leader = None  # None = tied, "usc" = USC leading, "opp" = opponent leading
+        last_leader = None   # last team that held a lead (ignores ties)
+        prev_leader = None   # leader after previous play (None = tied)
 
         for play in scoring_plays:
             away_sc = play.get("awayScore", 0)
@@ -1924,14 +1925,16 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             else:
                 current_leader = None
 
-            # Count lead changes (when lead switches from one team to the other)
-            if prev_leader is not None and current_leader is not None and prev_leader != current_leader:
+            # Count lead changes (when a different team takes the lead, even through ties)
+            if current_leader is not None and last_leader is not None and current_leader != last_leader:
                 lead_changes += 1
 
             # Count times tied (when score becomes tied after not being tied)
             if current_leader is None and prev_leader is not None:
                 times_tied += 1
 
+            if current_leader is not None:
+                last_leader = current_leader
             prev_leader = current_leader
 
         # Display lead stats
