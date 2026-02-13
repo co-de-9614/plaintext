@@ -783,7 +783,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             # Home vs away
             home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
-            game_link = f'<a href="{games_dir}/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
+            score_link = f'<a href="{games_dir}/{event_id}.html">{result} {usc_score}-{opp_score}</a>'
+            game_link = f'{date_str} {score_link} {home_away} {opp_str}'
             content_lines.append(game_link)
 
     # Upcoming schedule
@@ -1001,7 +1002,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         except Exception:
             result = "-"
 
-        game_link = f'<a href="{games_dir}/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
+        score_link = f'<a href="{games_dir}/{event_id}.html">{result} {usc_score}-{opp_score}</a>'
+        game_link = f'{date_str} {score_link} {home_away} {opp_str}'
         content_lines.append(game_link)
 
     # Upcoming section
