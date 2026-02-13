@@ -378,12 +378,6 @@ def get_team_schedule(team_id=USC_TEAM_ID) -> dict:
     return fetch_json(url)
 
 
-def get_team_info() -> dict:
-    """Get USC team information."""
-    url = f"{BASE_API}/teams/{USC_TEAM_ID}"
-    return fetch_json(url)
-
-
 def get_scoreboard() -> dict:
     """Get today's scoreboard for all games."""
     url = f"{BASE_API}/scoreboard"
@@ -492,130 +486,6 @@ def get_b1g_leaders(team_id_map: dict) -> dict:
         result[display] = leaders
 
     return result
-
-
-def format_game_status(competition: dict) -> str:
-    """Format the game status line."""
-    status = competition.get("status", {})
-    status_type = status.get("type", {})
-    state = status_type.get("state", "")
-
-    if state == "pre":
-        # Game hasn't started
-        date_str = status.get("type", {}).get("detail", "")
-        return f"Scheduled: {date_str}"
-    elif state == "in":
-        # Game in progress
-        display_clock = status.get("displayClock", "")
-        period = status.get("period", 0)
-        period_name = f"Q{period}" if period <= 4 else f"OT{period - 4}"
-        return f"LIVE: {period_name} {display_clock}"
-    elif state == "post":
-        # Game finished
-        return "FINAL"
-    else:
-        return status_type.get("detail", "Unknown")
-
-
-def format_score_display(competition: dict) -> str:
-    """Format the main score display like plaintextsports."""
-    competitors = competition.get("competitors", [])
-    if len(competitors) < 2:
-        return "No score data"
-
-    # Sort by home/away
-    home = next((c for c in competitors if c.get("homeAway") == "home"), competitors[0])
-    away = next((c for c in competitors if c.get("homeAway") == "away"), competitors[1])
-
-    home_team = home.get("team", {})
-    away_team = away.get("team", {})
-
-    home_abbrev = home_team.get("abbreviation", "HOME")
-    away_abbrev = away_team.get("abbreviation", "AWAY")
-    home_score = home.get("score", "-")
-    away_score = away.get("score", "-")
-
-    # Get records if available
-    home_record = ""
-    away_record = ""
-    for rec in home.get("records", []):
-        if rec.get("type") == "total":
-            home_record = f" ({rec.get('summary', '')})"
-            break
-    for rec in away.get("records", []):
-        if rec.get("type") == "total":
-            away_record = f" ({rec.get('summary', '')})"
-            break
-
-    lines = []
-    lines.append(f"{'AWAY':<6} {'':>20} {'HOME':<6}")
-    lines.append(f"{away_abbrev:<6} {away_score:>8}  -  {home_score:<8} {home_abbrev:<6}")
-    lines.append(f"{away_record:<20} {home_record:>20}")
-
-    return "\n".join(lines)
-
-
-def format_box_score(game_summary: dict) -> str:
-    """Format a simple box score from game summary."""
-    boxscore = game_summary.get("boxscore", {})
-    players = boxscore.get("players", [])
-
-    if not players:
-        return "No box score available"
-
-    lines = []
-
-    for team_data in players:
-        team = team_data.get("team", {})
-        team_name = team.get("abbreviation", "TEAM")
-        lines.append(f"\n{team_name}")
-        lines.append("-" * 47)
-        lines.append(f"{'PLAYER':<20} {'MIN':>5} {'PTS':>5} {'REB':>5} {'AST':>5} {'FG':>8}")
-        lines.append("-" * 47)
-
-        statistics = team_data.get("statistics", [])
-        if statistics:
-            stat_athletes = statistics[0].get("athletes", [])
-            for athlete in stat_athletes[:10]:  # Top 10 players
-                name = athlete.get("athlete", {}).get("shortName", "Unknown")
-                stats = athlete.get("stats", [])
-                if len(stats) >= 13:
-                    # ESPN stat order: MIN, FG, 3PT, FT, OREB, DREB, REB, AST, STL, BLK, TO, PF, PTS
-                    mins = stats[0] if stats[0] else "0"
-                    fg = stats[1] if stats[1] else "0-0"
-                    pts = stats[12] if len(stats) > 12 and stats[12] else "0"
-                    reb = stats[6] if len(stats) > 6 and stats[6] else "0"
-                    ast = stats[7] if len(stats) > 7 and stats[7] else "0"
-                    lines.append(f"{name:<20} {mins:>5} {pts:>5} {reb:>5} {ast:>5} {fg:>8}")
-
-    return "\n".join(lines)
-
-
-def format_play_by_play(game_summary: dict, last_n: int = 10) -> str:
-    """Format recent plays."""
-    plays = game_summary.get("plays", [])
-
-    if not plays:
-        return "No play-by-play available"
-
-    recent = plays[-last_n:] if len(plays) > last_n else plays
-    recent.reverse()  # Most recent first
-
-    lines = ["RECENT PLAYS", "-" * 47]
-
-    for play in recent:
-        clock = play.get("clock", {}).get("displayValue", "")
-        period = play.get("period", {}).get("number", 0)
-        period_name = f"Q{period}" if period <= 4 else f"OT{period - 4}"
-        text = play.get("text", "")
-        score = play.get("scoreValue", 0)
-
-        if score:
-            lines.append(f"{period_name} {clock:>5} | +{score} {text}")
-        else:
-            lines.append(f"{period_name} {clock:>5} | {text}")
-
-    return "\n".join(lines)
 
 
 def find_usc_game(scoreboard: dict, schedule: dict, team_id=USC_TEAM_ID) -> dict | None:
@@ -858,58 +728,25 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
         content_lines.append("".join(all_spans))
 
-    # Upcoming schedule
-    content_lines.append("\n")
-    content_lines.append("=" * 47)
-    content_lines.append("UPCOMING SCHEDULE")
-    content_lines.append("-" * 47)
-
     events = schedule_data.get("events", [])
-    upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "pre"]
-
-    for event in upcoming[:5]:
-        comp = event.get("competitions", [{}])[0]
-        date_raw = comp.get("date", "")
-        if date_raw:
-            try:
-                dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
-                dt_pt = dt.astimezone(PT)
-                date_str = dt_pt.strftime("%a %b %d %I:%M%p PT")
-            except:
-                date_str = date_raw[:10]
-        else:
-            date_str = "TBD"
-
-        competitors = comp.get("competitors", [])
-        opponent = next((c for c in competitors if c.get("team", {}).get("id") != team_id), None)
-        if opponent:
-            opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
-            home_away = "vs" if opponent.get("homeAway") == "away" else "at"
-
-            # Get rankings from lookup
-            opp_rank = rankings.get(opp_abbrev, 0)
-            usc_rank = rankings.get(team_abbrev, 0)
-
-            opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
-            usc_str = f"(#{usc_rank})" if usc_rank else ""
-
-            content_lines.append(f"{date_str} {home_away} {opp_str} {usc_str}".rstrip())
 
     # Recent results
     content_lines.append("\n")
+    content_lines.append("=" * 47)
     content_lines.append("RECENT RESULTS")
     content_lines.append("-" * 47)
 
     completed = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
 
     for event in completed[-5:]:
+        event_id = event.get("id", "")
         comp = event.get("competitions", [{}])[0]
         date_raw = comp.get("date", "")
         if date_raw:
             try:
                 dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
                 date_str = dt.strftime("%b %d")
-            except:
+            except Exception:
                 date_str = date_raw[:10]
         else:
             date_str = ""
@@ -936,7 +773,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
             try:
                 result = "W" if float(usc_score) > float(opp_score) else "L"
-            except:
+            except Exception:
                 result = "-"
 
             # Add ranking if opponent is ranked
@@ -946,7 +783,43 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             # Home vs away
             home_away = "vs" if opponent.get("homeAway") == "away" else "at"
 
-            content_lines.append(f"{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}")
+            game_link = f'<a href="{games_dir}/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
+            content_lines.append(game_link)
+
+    # Upcoming schedule
+    content_lines.append("\n")
+    content_lines.append("UPCOMING SCHEDULE")
+    content_lines.append("-" * 47)
+
+    upcoming = [e for e in events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "pre"]
+
+    for event in upcoming[:5]:
+        comp = event.get("competitions", [{}])[0]
+        date_raw = comp.get("date", "")
+        if date_raw:
+            try:
+                dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
+                dt_pt = dt.astimezone(PT)
+                date_str = dt_pt.strftime("%a %b %d %I:%M%p PT")
+            except Exception:
+                date_str = date_raw[:10]
+        else:
+            date_str = "TBD"
+
+        competitors = comp.get("competitors", [])
+        opponent = next((c for c in competitors if c.get("team", {}).get("id") != team_id), None)
+        if opponent:
+            opp_abbrev = opponent.get("team", {}).get("abbreviation", "OPP")
+            home_away = "vs" if opponent.get("homeAway") == "away" else "at"
+
+            # Get rankings from lookup
+            opp_rank = rankings.get(opp_abbrev, 0)
+            usc_rank = rankings.get(team_abbrev, 0)
+
+            opp_str = f"#{opp_rank} {opp_abbrev}" if opp_rank else opp_abbrev
+            usc_str = f"(#{usc_rank})" if usc_rank else ""
+
+            content_lines.append(f"{date_str} {home_away} {opp_str} {usc_str}".rstrip())
 
     content_lines.append(f"\n{VERSION}")
 
@@ -1088,7 +961,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
                 dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
                 dt_pt = dt.astimezone(PT)
                 date_str = dt_pt.strftime("%b %d")
-            except:
+            except Exception:
                 date_str = date_raw[:10]
         else:
             date_str = "TBD"
@@ -1125,7 +998,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
 
         try:
             result = "W" if float(usc_score) > float(opp_score) else "L"
-        except:
+        except Exception:
             result = "-"
 
         game_link = f'<a href="{games_dir}/{event_id}.html">{date_str} {result} {usc_score}-{opp_score} {home_away} {opp_str}</a>'
@@ -1148,7 +1021,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
                 dt = datetime.fromisoformat(date_raw.replace("Z", "+00:00"))
                 dt_pt = dt.astimezone(PT)
                 date_str = dt_pt.strftime("%b %d %I:%M%p")
-            except:
+            except Exception:
                 date_str = date_raw[:10]
         else:
             date_str = "TBD"
@@ -1557,15 +1430,15 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         # NCAA WBB: 4 timeouts per game (+ 1 per OT)
         ot_periods = max(0, game_period - 4)
         total_timeouts = 4 + ot_periods
-        home_timeouts = str(total_timeouts - home_to_used)
-        away_timeouts = str(total_timeouts - away_to_used)
+        home_timeouts = str(max(0, total_timeouts - home_to_used))
+        away_timeouts = str(max(0, total_timeouts - away_to_used))
 
-    # Page width is 55 characters
-    PAGE_WIDTH = 55
-    # Team centers: USC at 14, opponent at 42 (1-indexed), center at 28
-    LEFT_CENTER = 13   # 0-indexed position 14
-    RIGHT_CENTER = 41  # 0-indexed position 42
-    PAGE_CENTER = 27   # 0-indexed position 28
+    # Page width is 61 characters (matches CSS width: 61ch)
+    PAGE_WIDTH = 61
+    # Team centers: USC at 16, opponent at 46 (1-indexed), center at 31
+    LEFT_CENTER = 15   # 0-indexed position 16
+    RIGHT_CENTER = 45  # 0-indexed position 46
+    PAGE_CENTER = 30   # 0-indexed position 31
 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
@@ -1799,7 +1672,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     segment = 1
                 else:
                     segment = min(12, int(seconds_elapsed / 50) + 1)
-            except:
+            except Exception:
                 segment = 6  # default to middle
 
             # Column: break at 0, segments 1-12 at cols 1-12
@@ -1970,7 +1843,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         if len(parts) == 2:
             try:
                 return (int(parts[0]), int(parts[1]))
-            except:
+            except Exception:
                 pass
         return (0, 0)
 
@@ -1989,7 +1862,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             mins = int(stats[0]) if stats[0] and stats[0] != '--' else 0
             pts = int(stats[1]) if stats[1] and stats[1] != '--' else 0
             return (-mins, -pts, last_name)
-        except:
+        except Exception:
             return (0, 0, last_name)
 
     # Calculate second chance points from play-by-play
@@ -2030,7 +1903,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             # (they could get another offensive rebound)
             # But a missed shot by the OTHER team means they had possession,
             # so second chance is over
-            if score_val and not is_scoring and play_team_id:
+            if not is_scoring and play_team_id and "Miss" in ptype:
                 if second_chance_team == "home" and play_team_id != home_team_id:
                     second_chance_team = None
                 elif second_chance_team == "away" and play_team_id != away_team_id:
