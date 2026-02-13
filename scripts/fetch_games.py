@@ -32,13 +32,14 @@ BASE_API = f"https://site.api.espn.com/apis/site/v2/sports/{SPORT}/{LEAGUE}"
 # How many minutes before game start to begin frequent updates
 PREGAME_WINDOW_MINUTES = 60
 
-# Version string generated at runtime
-_commit = ""
+# Version string based on last commit
 try:
-    _commit = "." + subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL).decode().strip()
+    _commit_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL).decode().strip()
+    _commit_date = subprocess.check_output(["git", "log", "-1", "--format=%ai"], stderr=subprocess.DEVNULL).decode().strip()
+    _commit_dt = datetime.fromisoformat(_commit_date).astimezone(ZoneInfo("America/Los_Angeles"))
+    VERSION = _commit_dt.strftime("v%Y.%m.%d-%H:%M") + "." + _commit_hash
 except Exception:
-    pass
-VERSION = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("v%Y.%m.%d-%H:%M") + _commit
+    VERSION = "v0.0.0"
 
 
 def fetch_json(url: str) -> dict:
