@@ -1435,12 +1435,12 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         home_timeouts = str(max(0, total_timeouts - home_to_used))
         away_timeouts = str(max(0, total_timeouts - away_to_used))
 
-    # Page width is 61 characters (matches CSS width: 61ch)
-    PAGE_WIDTH = 61
-    # Team centers: USC at 16, opponent at 46 (1-indexed), center at 31
-    LEFT_CENTER = 15   # 0-indexed position 16
-    RIGHT_CENTER = 45  # 0-indexed position 46
-    PAGE_CENTER = 30   # 0-indexed position 31
+    # Page width is 55 characters for game page layout
+    PAGE_WIDTH = 55
+    # Team centers: USC at 14, opponent at 42 (1-indexed), center at 28
+    LEFT_CENTER = 13   # 0-indexed position 14
+    RIGHT_CENTER = 41  # 0-indexed position 42
+    PAGE_CENTER = 27   # 0-indexed position 28
 
     content_lines = []
     content_lines.append(f'<span id="timestamps">Data loaded: {now_str}</span>')
