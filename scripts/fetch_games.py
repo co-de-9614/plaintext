@@ -848,8 +848,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            width: 61ch;
+            white-space: pre;
+            min-width: 55ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -1083,8 +1083,8 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
             overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            width: 61ch;
+            white-space: pre;
+            min-width: 55ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -1256,8 +1256,8 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
             overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            width: 61ch;
+            white-space: pre;
+            min-width: 55ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -2271,8 +2271,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
             overflow-x: auto;
         }}
         pre {{
-            white-space: pre-wrap;
-            width: 61ch;
+            white-space: pre;
             margin: 0;
             font-size: 12px;
         }}
