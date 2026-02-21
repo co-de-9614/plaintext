@@ -2439,13 +2439,13 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     team_totals["to"] += int(to) if to else 0
                     team_totals["fls"] += int(fls) if fls else 0
 
-                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
-                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
+                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>8}" if fg_a > 0 else "      --"
+                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>8}" if three_a > 0 else "      --"
                     ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
                     pm_val = pm_lookup.get(athlete_id, 0)
                     total_pm += pm_val
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
+                    grey_part = f"{fg_pct:<10}{three_pct:<10}{ft_pct:<8}{pm_str:>5} "
                     player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
                     fg_str = f"{fg_m}/{fg_a}"
                     three_str = f"{three_m}/{three_a}"
@@ -2474,13 +2474,13 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     team_totals["stl"] += stl_v; team_totals["blk"] += blk_v
                     team_totals["to"] += to_v; team_totals["fls"] += fls_v
 
-                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
-                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
+                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>8}" if fg_a > 0 else "      --"
+                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>8}" if three_a > 0 else "      --"
                     ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
                     pm_val = pm_lookup.get(athlete_id, 0)
                     total_pm += pm_val
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
+                    grey_part = f"{fg_pct:<10}{three_pct:<10}{ft_pct:<8}{pm_str:>5} "
                     player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
                     fg_str = f"{fg_m}/{fg_a}"
                     three_str = f"{three_m}/{three_a}"
@@ -2500,12 +2500,12 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         fg_pct_val = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.2f}%" if team_totals['fg_att'] > 0 else "--"
         three_pct_val = f"{100 * team_totals['three_made'] / team_totals['three_att']:.2f}%" if team_totals['three_att'] > 0 else "--"
         ft_pct_val = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.2f}%" if team_totals['ft_att'] > 0 else "--"
-        fg_pct = f"{fg_pct_val:>7}"
-        three_pct = f"{three_pct_val:>7}"
+        fg_pct = f"{fg_pct_val:>8}"
+        three_pct = f"{three_pct_val:>8}"
         ft_pct = f"{ft_pct_val:>7}"
         pm_str = f"+{total_pm}" if total_pm > 0 else str(total_pm)
 
-        pct_line = f"{'':33}<span style=\"color:#999\">{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} </span>"
+        pct_line = f"{'':33}<span style=\"color:#999\">{fg_pct:<10}{three_pct:<10}{ft_pct:<8}{pm_str:>5} </span>"
         if view_id == "total":
             totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>9}{three_total:>9}{ft_total:>8}{team_totals['pts']:>6} "
         else:
