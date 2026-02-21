@@ -939,7 +939,6 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
     """
     CURRENT_YEAR = 2026
     YEARS = [2026, 2025, 2024]
-    link_to_game_pages = (season_year == CURRENT_YEAR)
 
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -1034,10 +1033,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         except Exception:
             result = "-"
 
-        if link_to_game_pages:
-            score_link = f'<a href="{games_dir}/{event_id}.html">{result} {usc_score}-{opp_score}</a>'
-        else:
-            score_link = f'{result} {usc_score}-{opp_score}'
+        score_link = f'<a href="{games_dir}/{event_id}.html">{result} {usc_score}-{opp_score}</a>'
         game_link = f'{date_str} {score_link} {home_away} {opp_str}'
         content_lines.append(game_link)
 
@@ -1088,10 +1084,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
                 live_date = dt_pt.strftime("%b %d")
             except Exception:
                 live_date = date_str.split()[0] if date_str else ""
-            if link_to_game_pages:
-                content_lines.append(f'<a href="{games_dir}/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
-            else:
-                content_lines.append(f'{live_date} {home_away} {opp_str}')
+            content_lines.append(f'<a href="{games_dir}/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
         else:
             content_lines.append(f"{date_str} {home_away} {opp_str}")
 
@@ -2449,9 +2442,12 @@ def main():
     schedule_path.write_text(schedule_html)
     print(f"Written to {schedule_path}")
 
+    # Store prior schedules for reuse when generating game pages
+    usc_prior_schedules = {}
     for prior_year in [2025, 2024]:
         print(f"Fetching USC {prior_year-1}-{str(prior_year)[2:]} schedule...")
         prior_schedule = get_team_schedule(season=prior_year)
+        usc_prior_schedules[prior_year] = prior_schedule
         prior_html = generate_schedule_html(prior_schedule, rankings,
             season_year=prior_year, schedule_page_base="schedule")
         prior_path = Path(__file__).parent.parent / f"schedule-{prior_year}.html"
@@ -2515,6 +2511,35 @@ def main():
                 print(f"  Error generating game {event_id}: {e}")
     print(f"Written USC game pages to {usc_games_dir}")
 
+    # Generate game pages for prior USC seasons
+    for prior_year in [2025, 2024]:
+        prior_schedule = usc_prior_schedules[prior_year]
+        prior_events = prior_schedule.get("events", [])
+        prior_completed = [e for e in prior_events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+
+        prior_team_records = {}
+        for event in prior_completed:
+            for competitor in event.get("competitions", [{}])[0].get("competitors", []):
+                abbrev = competitor.get("team", {}).get("abbreviation", "")
+                records = competitor.get("records", [])
+                for rec in records:
+                    if rec.get("type") == "total":
+                        prior_team_records[abbrev] = rec.get("summary", "")
+                        break
+
+        prior_schedule_page = f"schedule-{prior_year}.html"
+        print(f"Generating {len(prior_completed)} USC {prior_year-1}-{str(prior_year)[2:]} game pages...")
+        for event in prior_completed:
+            event_id = event.get("id", "")
+            if event_id:
+                try:
+                    game_html = generate_game_page(event_id, {}, prior_team_records,
+                        schedule_page=prior_schedule_page)
+                    game_path = usc_games_dir / f"{event_id}.html"
+                    game_path.write_text(game_html)
+                except Exception as e:
+                    print(f"  Error generating game {event_id}: {e}")
+
     # --- NU pages ---
     print("Generating NU pages...")
 
@@ -2537,9 +2562,11 @@ def main():
     nu_schedule_path.write_text(nu_schedule_html)
     print(f"Written to {nu_schedule_path}")
 
+    nu_prior_schedules = {}
     for prior_year in [2025, 2024]:
         print(f"Fetching NU {prior_year-1}-{str(prior_year)[2:]} schedule...")
         nu_prior_schedule = get_team_schedule(team_id=NU_TEAM_ID, season=prior_year)
+        nu_prior_schedules[prior_year] = nu_prior_schedule
         nu_prior_html = generate_schedule_html(nu_prior_schedule, rankings,
             team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", games_dir="nu-games",
             season_year=prior_year, schedule_page_base="nu-schedule")
@@ -2601,6 +2628,36 @@ def main():
             except Exception as e:
                 print(f"  Error generating NU game {event_id}: {e}")
     print(f"Written NU game pages to {nu_games_dir}")
+
+    # Generate game pages for prior NU seasons
+    for prior_year in [2025, 2024]:
+        nu_prior_schedule = nu_prior_schedules[prior_year]
+        nu_prior_events = nu_prior_schedule.get("events", [])
+        nu_prior_completed = [e for e in nu_prior_events if e.get("competitions", [{}])[0].get("status", {}).get("type", {}).get("state") == "post"]
+
+        nu_prior_team_records = {}
+        for event in nu_prior_completed:
+            for competitor in event.get("competitions", [{}])[0].get("competitors", []):
+                abbrev = competitor.get("team", {}).get("abbreviation", "")
+                records = competitor.get("records", [])
+                for rec in records:
+                    if rec.get("type") == "total":
+                        nu_prior_team_records[abbrev] = rec.get("summary", "")
+                        break
+
+        nu_prior_schedule_page = f"nu-schedule-{prior_year}.html"
+        print(f"Generating {len(nu_prior_completed)} NU {prior_year-1}-{str(prior_year)[2:]} game pages...")
+        for event in nu_prior_completed:
+            event_id = event.get("id", "")
+            if event_id:
+                try:
+                    game_html = generate_game_page(event_id, {}, nu_prior_team_records,
+                        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html",
+                        schedule_page=nu_prior_schedule_page)
+                    game_path = nu_games_dir / f"{event_id}.html"
+                    game_path.write_text(game_html)
+                except Exception as e:
+                    print(f"  Error generating NU game {event_id}: {e}")
 
     # --- B1G standings page ---
     print("Generating B1G standings page...")
