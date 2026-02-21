@@ -761,9 +761,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             toggle_line = " | ".join(toggle_parts)
 
             if mode == "totals":
-                stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
+                stats_header = " MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS"
             else:
-                stats_header = "  GP ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
+                stats_header = "  GP ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS"
 
             all_spans = []
             row_idx = 0
@@ -816,7 +816,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     fg_str = f"{fg_made}/{fg_att}"
                     three_str = f"{three_made}/{three_att}"
                     ft_str = f"{ft_made}/{ft_att}"
-                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts:>6} "
                 elif mode == "pergame":
                     d = gp
                     s_orb = orb / d; s_drb = drb / d; s_ast = ast / d
@@ -836,7 +836,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
                     three_str = f"{s_three_made:.1f}/{s_three_att:.1f}"
                     ft_str = f"{s_ft_made:.1f}/{s_ft_att:.1f}"
-                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>8}{three_str:>8}{ft_str:>8}{s_pts:>5.1f} "
+                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>9}{three_str:>9}{ft_str:>8}{s_pts:>6.1f} "
                 elif mode == "per40":
                     d = mins / 40
                     s_orb = orb / d; s_drb = drb / d; s_ast = ast / d
@@ -856,7 +856,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
                     three_str = f"{s_three_made:.1f}/{s_three_att:.1f}"
                     ft_str = f"{s_ft_made:.1f}/{s_ft_att:.1f}"
-                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>8}{three_str:>8}{ft_str:>8}{s_pts:>5.1f} "
+                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>9}{three_str:>9}{ft_str:>8}{s_pts:>6.1f} "
                 else:  # per100
                     d = poss / 100
                     s_orb = orb / d; s_drb = drb / d; s_ast = ast / d
@@ -876,7 +876,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
                     three_str = f"{s_three_made:.1f}/{s_three_att:.1f}"
                     ft_str = f"{s_ft_made:.1f}/{s_ft_att:.1f}"
-                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>8}{three_str:>8}{ft_str:>8}{s_pts:>5.1f} "
+                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>9}{three_str:>9}{ft_str:>8}{s_pts:>6.1f} "
 
                 row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
                 all_spans.append(f'<span class="{row_class}">{name_line}\n{stats_line}</span>')
@@ -1011,7 +1011,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         }}
         pre {{
             white-space: pre;
-            min-width: 61ch;
+            min-width: 65ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -1061,12 +1061,12 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 65 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 65 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
@@ -1275,7 +1275,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         }}
         pre {{
             white-space: pre;
-            min-width: 61ch;
+            min-width: 65ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -1313,12 +1313,12 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 65 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 65 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
@@ -1448,7 +1448,7 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
         }}
         pre {{
             white-space: pre;
-            min-width: 61ch;
+            min-width: 65ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -1498,12 +1498,12 @@ def generate_standings_html(standings: list, rankings: dict, leaders: dict = Non
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 65 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 65 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;
@@ -1626,7 +1626,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         home_timeouts = str(max(0, total_timeouts - home_to_used))
         away_timeouts = str(max(0, total_timeouts - away_to_used))
 
-    # Page width is 61 characters (matches stats table width)
+    # Page width is 65 characters (matches stats table width)
     PAGE_WIDTH = 61
     # Team centers at ~25%, 50%, 75% of 61
     LEFT_CENTER = 15   # 0-indexed
@@ -2026,7 +2026,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     player_plus_minus = calculate_plus_minus(plays, boxscore, home_team.get("id", "")) if plays else {}
 
     # Stats header line for player stats (matches home page format)
-    stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
+    stats_header = " MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS"
 
     # Helper to parse shooting stats for totals
     def parse_shooting(stat):
@@ -2325,7 +2325,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     fg_str = f"{fg_m}/{fg_a}"
                     three_str = f"{three_m}/{three_a}"
                     ft_str = f"{ft_m}/{ft_a}"
-                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts:>6} "
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
@@ -2398,7 +2398,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                     fg_str = f"{fg_m}/{fg_a}"
                     three_str = f"{three_m}/{three_a}"
                     ft_str = f"{ft_m}/{ft_a}"
-                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts:>6} "
 
             all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
 
@@ -2420,7 +2420,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         ft_pct = f"{ft_pct_val:>7}"
 
         pct_line = f"{'':33}<span style=\"color:#999\">{fg_pct:<8}{three_pct:<8}{ft_pct:<8}</span>"
-        totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>8}{three_total:>8}{ft_total:>8}{team_totals['pts']:>5} "
+        totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>9}{three_total:>9}{ft_total:>8}{team_totals['pts']:>6} "
 
         row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
         all_spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
@@ -2463,7 +2463,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         }}
         pre {{
             white-space: pre;
-            min-width: 61ch;
+            min-width: 65ch;
             margin: 0;
             font-size: 12px;
         }}
@@ -2527,12 +2527,12 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         if (el) {{
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 65 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 65 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\\n' + dataLoadedStr + dataSpaces + dataAgo;

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>NU vs UCLA - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T12:51:13.771683-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:06:04.286909-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -21,7 +21,7 @@
         }
         pre {
             white-space: pre;
-            min-width: 61ch;
+            min-width: 65ch;
             margin: 0;
             font-size: 12px;
         }
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 12:51:13 PM</span>
+<span id="timestamps">Data loaded: 01:06:04 PM</span>
 
 <a href="../nu-schedule-2025.html">&lt; NU Schedule</a>
 
@@ -80,18 +80,18 @@ UCLA   0    0/0   0/0   0/0    0/0/0  0  0  0
            0.0%  0.0%  0.0%
 
 <span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd">                                 <span style="color:#999">     --      --      -- </span>
-       0   0   0   0   0   0   0     0/0     0/0     0/0    0 </span><span class="row-even">
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999">     --      --      -- </span>
+       0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">
 
 </span><span class="row-odd" style="color: #2774ae;"><b>UCLA STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even" style="color: #2774ae;"><b>UCLA BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd" style="color: #2774ae;"><b>UCLA TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even">                                 <span style="color:#999">     --      --      -- </span>
-       0   0   0   0   0   0   0     0/0     0/0     0/0    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even" style="color: #2774ae;"><b>UCLA BENCH</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd" style="color: #2774ae;"><b>UCLA TOTALS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999">     --      --      -- </span>
+       0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span>
 
-v2026.02.21-12:34.3589fac
+v2026.02.21-12:53.995a0b2
 </pre>
 <script>
 (function() {
@@ -118,12 +118,12 @@ v2026.02.21-12:34.3589fac
         if (el) {
             const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
             const pageAgo = '(' + timeAgo(pageLoaded) + ')';
-            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pagePadding = 65 - pageLoadedStr.length - pageAgo.length;
             const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
 
             const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
             const dataAgo = '(' + timeAgo(dataLoaded) + ')';
-            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataPadding = 65 - dataLoadedStr.length - dataAgo.length;
             const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
 
             el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\n' + dataLoadedStr + dataSpaces + dataAgo;
