@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>NU vs PSU - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:06:11.916728-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:32:16.453486-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:06:11 PM</span>
+<span id="timestamps">Data loaded: 01:32:16 PM</span>
 
 <a href="../nu-schedule-2024.html">&lt; NU Schedule</a>
 
@@ -70,27 +70,26 @@
                     NU   11 18 12 14  55
                     PSU  24 25 25 21  95
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots">                                                            </span>
-<span class="usc-dots"> NU        ...                                              </span>
+<span class="usc-dots"> NU         .                                                   </span>
 
-       +============+============+============+============+
-<span style="color: #061440;"> PSU     .     ..... ............ ............ ............ </span>
-<span style="color: #061440;">                .... ............ ............ ............ </span>
-<span style="color: #061440;">                 ... ............ ............ ............ </span>
-<span style="color: #061440;">                   . ............ ............ ............ </span>
-<span style="color: #061440;">                      ........... ............ ............ </span>
-<span style="color: #061440;">                       .......... ............ ............ </span>
-<span style="color: #061440;">                         .......  ............ ............ </span>
-<span style="color: #061440;">                         .         .      .... ............ </span>
-<span style="color: #061440;">                                            .. ............ </span>
-<span style="color: #061440;">                                            .. ............ </span>
-<span style="color: #061440;">                                             . ............ </span>
-<span style="color: #061440;">                                                    . ..... </span>
-<span style="color: #061440;">                                                          . </span>
-<span style="color: #061440;">                                                            </span>
+       +=============+=============+=============+=============+
+<span style="color: #061440;"> PSU     .      ..... ............. ............. ............. </span>
+<span style="color: #061440;">                 .... ............. ............. ............. </span>
+<span style="color: #061440;">                  ... ............. ............. ............. </span>
+<span style="color: #061440;">                    . ............. ............. ............. </span>
+<span style="color: #061440;">                       ............ ............. ............. </span>
+<span style="color: #061440;">                         .......... ............. ............. </span>
+<span style="color: #061440;">                          ........  ............. ............. </span>
+<span style="color: #061440;">                           .  .             ..... ............. </span>
+<span style="color: #061440;">                                               .. ............. </span>
+<span style="color: #061440;">                                               .. ............. </span>
+<span style="color: #061440;">                                                . ............. </span>
+<span style="color: #061440;">                                                         ...... </span>
+<span style="color: #061440;">                                                          .   . </span>
+<span style="color: #061440;">                                                                </span>
 </span>
 
 <b>Lead Changes:</b> 2
@@ -100,8 +99,8 @@
 <b>Venue:</b> Bryce Jordan Center
 <b>Attendance:</b> 1,730
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 NU    55  23/61  3/13   6/7  7/26/33 15  6  5
           37.7% 23.1% 85.7%
 PSU   95  37/76 12/33  9/10  6/24/30 26 17  6
@@ -110,45 +109,255 @@ PSU   95  37/76 12/33  9/10  6/24/30 26 17  6
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 NU     28       9    12   7    0  28    4  10
 PSU    44      22    27   6   10  12   42  12
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    11   5/12   1/2   0/0    0/6/6  4  4  1
+          41.7% 50.0%  0.0%
+PSU   24  10/17   4/6   0/0    0/6/6  7  1  1
+          58.8% 66.7%  0.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    18   7/12   1/2   3/3    0/6/6  6  0  1
+          58.3% 50.0% 100.0%
+PSU   25   7/19   3/9   8/8    3/4/7  5  7  1
+          36.8% 33.3% 100.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    29  12/24   2/4   3/3  0/12/12 10  4  2
+          50.0% 50.0% 100.0%
+PSU   49  17/36  7/15   8/8  3/10/13 12  8  2
+          47.2% 46.7% 100.0%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    10   5/13   0/3   2/2   3/7/10  3  2  1
+          38.5%  0.0% 100.0%
+PSU   25  11/20   2/8   1/2    1/4/5  7  7  1
+          55.0% 25.0% 50.0%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    14   6/24   1/6   1/2   4/7/11  2  0  2
+          25.0% 16.7% 50.0%
+PSU   21   9/20  3/10   0/0  2/10/12  7  2  3
+          45.0% 30.0%  0.0%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    24  11/37   1/9   3/4  7/14/21  5  2  3
+          29.7% 11.1% 75.0%
+PSU   46  20/40  5/18   1/2  3/14/17 14  9  4
+          50.0% 27.8% 50.0%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 50.00%  100.00%       --   -13 </span>
+       0   2   1   1   0   1   0      1/2      1/1     0/0     3 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999">     --       --       --   -13 </span>
+       0   1   3   2   0   3   0      0/0      0/0     0/0     0 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 50.00%       --       --   -13 </span>
+       0   2   0   0   1   1   1      1/2      0/0     0/0     2 </span><span class="row-even">Paige Mott #20                   <span style="color:#999">  0.00%       --       --   -13 </span>
+       0   1   0   1   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 60.00%       --       --   -13 </span>
+       0   0   0   0   0   3   0      3/5      0/0     0/0     6 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maggie Pina #3                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/2      0/1     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 41.67%   50.00%       --   -65 </span>
+       0   6   4   4   1   8   1     5/12      1/2     0/0    11 </span><span class="row-even">
 
-<span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 50.00% 100.00%      --  -40 </span>
-  32   1   8   4   1   0   5   1      4/8      1/1     0/0     9 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999"> 14.29%   0.00%      --  -40 </span>
-  32   0   4   7   2   0   8   1      1/7      0/4     0/0     2 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 50.00%  50.00% 100.00%  -40 </span>
-  26   3   5   0   0   2   4   3     6/12      1/2     3/3    16 </span><span class="row-even">Paige Mott #20                   <span style="color:#999"> 33.33%      --      --  -40 </span>
-  23   1   3   1   1   1   1   3      2/6      0/0     0/0     4 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 55.56%      -- 100.00%  -40 </span>
+</span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Shay Ciezki #4                   <span style="color:#999">  0.00%       --       --   +13 </span>
+       0   2   0   0   0   1   0      0/1      0/0     0/0     0 </span><span class="row-odd">Tay Valladay #2                  <span style="color:#999"> 75.00%    0.00%       --   +13 </span>
+       0   0   0   0   0   3   1      3/4      0/1     0/0     6 </span><span class="row-even">Leilani Kapinus #5               <span style="color:#999"> 33.33%  100.00%       --   +13 </span>
+       0   0   1   1   0   1   0      1/3      1/1     0/0     3 </span><span class="row-odd">Ali Brigham #1                   <span style="color:#999"> 75.00%  100.00%       --   +13 </span>
+       0   3   3   0   0   1   0      3/4      1/1     0/0     7 </span><span class="row-even">Chanaya Pinto #10                <span style="color:#999"> 50.00%       --       --   +13 </span>
+       0   0   0   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Moriah Murray #3                 <span style="color:#999">     --       --       --     0 </span>
+       0   0   2   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Jayla Oden #12                   <span style="color:#999"> 66.67%   66.67%       --     0 </span>
+       0   1   1   0   1   0   0      2/3      2/3     0/0     6 </span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 58.82%   66.67%       --   +65 </span>
+       0   6   7   1   1   6   1    10/17      4/6     0/0    24 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999">     --       --       --    -7 </span>
+       0   1   2   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999">  0.00%       --       --    -7 </span>
+       0   1   1   0   0   2   0      0/1      0/0     0/0     0 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999">100.00%       --  100.00%    -7 </span>
+       0   1   0   0   0   2   1      1/1      0/0     1/1     3 </span><span class="row-even">Paige Mott #20                   <span style="color:#999">100.00%       --       --    -7 </span>
+       0   2   0   0   1   0   1      1/1      0/0     0/0     2 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999">100.00%       --  100.00%    -7 </span>
+       0   1   1   0   0   0   0      1/1      0/0     2/2     4 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999"> 66.67%  100.00%       --     0 </span>
+       0   0   0   0   0   2   0      4/6      1/1     0/0     9 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   1   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even">Mercy Ademusayo #13              <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 58.33%   50.00%  100.00%   -35 </span>
+       0   6   6   0   1   7   4     7/12      1/2     3/3    18 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Shay Ciezki #4                   <span style="color:#999"> 25.00%   33.33%  100.00%    +7 </span>
+       0   1   1   1   0   0   0      1/4      1/3     2/2     5 </span><span class="row-even">Tay Valladay #2                  <span style="color:#999"> 33.33%   50.00%  100.00%    +7 </span>
+       0   0   1   1   0   0   2      1/3      1/2     2/2     5 </span><span class="row-odd">Leilani Kapinus #5               <span style="color:#999">100.00%       --       --    +7 </span>
+       1   1   0   3   0   0   0      2/2      0/0     0/0     4 </span><span class="row-even">Ali Brigham #1                   <span style="color:#999"> 50.00%       --  100.00%    +7 </span>
+       0   0   0   0   1   0   1      1/2      0/0     2/2     4 </span><span class="row-odd">Chanaya Pinto #10                <span style="color:#999"> 50.00%       --       --    +7 </span>
+       1   0   0   0   0   1   0      1/2      0/0     0/0     2 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 50.00%   50.00%       --     0 </span>
+       0   0   2   1   0   0   1      1/2      1/2     0/0     3 </span><span class="row-even">Jayla Oden #12                   <span style="color:#999">  0.00%    0.00%  100.00%     0 </span>
+       0   0   0   0   0   0   0      0/2      0/1     2/2     2 </span><span class="row-odd">Alli Campbell #22                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       1   2   1   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even">Grace Hall #7                    <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   1   0   0   1      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 36.84%   33.33%  100.00%   +35 </span>
+       3   4   5   7   1   1   5     7/19      3/9     8/8    25 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 50.00%  100.00%       --   -20 </span>
+       0   3   3   1   0   2   1      1/2      1/1     0/0     3 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999">  0.00%       --       --   -20 </span>
+       0   2   4   2   0   5   0      0/1      0/0     0/0     0 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 66.67%       --  100.00%   -20 </span>
+       0   3   0   0   1   3   2      2/3      0/0     1/1     5 </span><span class="row-even">Paige Mott #20                   <span style="color:#999"> 50.00%       --       --   -20 </span>
+       0   3   0   1   1   0   1      1/2      0/0     0/0     2 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 66.67%       --  100.00%   -20 </span>
+       0   1   1   0   0   3   0      4/6      0/0     2/2    10 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999"> 66.67%  100.00%       --     0 </span>
+       0   0   0   0   0   2   0      4/6      1/1     0/0     9 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/3      0/2     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   1   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even">Mercy Ademusayo #13              <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   50.00%  100.00%  -100 </span>
+       0  12  10   4   2  15   5    12/24      2/4     3/3    29 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Shay Ciezki #4                   <span style="color:#999"> 20.00%   33.33%  100.00%   +20 </span>
+       0   3   1   1   0   1   0      1/5      1/3     2/2     5 </span><span class="row-even">Tay Valladay #2                  <span style="color:#999"> 57.14%   33.33%  100.00%   +20 </span>
+       0   0   1   1   0   3   3      4/7      1/3     2/2    11 </span><span class="row-odd">Leilani Kapinus #5               <span style="color:#999"> 60.00%  100.00%       --   +20 </span>
+       1   1   1   4   0   1   0      3/5      1/1     0/0     7 </span><span class="row-even">Ali Brigham #1                   <span style="color:#999"> 66.67%  100.00%  100.00%   +20 </span>
+       0   3   3   0   1   1   1      4/6      1/1     2/2    11 </span><span class="row-odd">Chanaya Pinto #10                <span style="color:#999"> 50.00%       --       --   +20 </span>
+       1   0   0   0   0   1   0      2/4      0/0     0/0     4 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 50.00%   50.00%       --     0 </span>
+       0   0   4   1   0   0   1      1/2      1/2     0/0     3 </span><span class="row-even">Jayla Oden #12                   <span style="color:#999"> 40.00%   50.00%  100.00%     0 </span>
+       0   1   1   0   1   0   0      2/5      2/4     2/2     8 </span><span class="row-odd">Alli Campbell #22                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       1   2   1   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even">Grace Hall #7                    <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   1   0   0   1      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 47.22%   46.67%  100.00%  +100 </span>
+       3  10  12   8   2   7   6    17/36     7/15     8/8    49 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 66.67%       --       --   -13 </span>
+       0   3   0   0   0   3   0      2/3      0/0     0/0     4 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999">  0.00%    0.00%       --   -13 </span>
+       0   1   2   0   0   3   1      0/1      0/1     0/0     0 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 50.00%    0.00%  100.00%   -13 </span>
+       1   2   0   0   1   1   1      2/4      0/1     2/2     4 </span><span class="row-even">Paige Mott #20                   <span style="color:#999">     --       --       --   -13 </span>
+       0   0   1   0   0   1   2      0/0      0/0     0/0     0 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999">  0.00%       --       --   -13 </span>
+       0   0   0   0   0   0   0      0/2      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999">  0.00%       --       --     0 </span>
+       1   1   0   0   0   1   1      0/1      0/0     0/0     0 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   1   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999">100.00%       --       --     0 </span>
+       1   0   0   1   0   1   0      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 38.46%    0.00%  100.00%   -65 </span>
+       3   7   3   2   1  10   5     5/13      0/3     2/2    10 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Shay Ciezki #4                   <span style="color:#999"> 40.00%   33.33%       --   +13 </span>
+       0   0   2   0   0   0   0      2/5      1/3     0/0     5 </span><span class="row-odd">Tay Valladay #2                  <span style="color:#999"> 66.67%       --   50.00%   +13 </span>
+       0   0   1   1   0   0   1      2/3      0/0     1/2     5 </span><span class="row-even">Leilani Kapinus #5               <span style="color:#999">100.00%  100.00%       --   +13 </span>
+       1   3   1   2   0   0   1      3/3      1/1     0/0     7 </span><span class="row-odd">Ali Brigham #1                   <span style="color:#999">100.00%       --       --   +13 </span>
+       0   0   2   0   0   0   1      1/1      0/0     0/0     2 </span><span class="row-even">Chanaya Pinto #10                <span style="color:#999">  0.00%    0.00%       --   +13 </span>
+       0   0   1   1   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Moriah Murray #3                 <span style="color:#999"> 50.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-odd">Jayla Oden #12                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   0   0   0   1   0      0/2      0/1     0/0     0 </span><span class="row-even">Alli Campbell #22                <span style="color:#999"> 50.00%    0.00%       --     0 </span>
+       0   0   0   1   0   1   0      1/2      0/1     0/0     2 </span><span class="row-odd">Grace Hall #7                    <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   2   1   0   1      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 55.00%   25.00%   50.00%   +65 </span>
+       1   4   7   7   1   2   4    11/20      2/8     1/2    25 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 33.33%       --       --    -7 </span>
+       1   2   1   0   0   0   0      1/3      0/0     0/0     2 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999"> 20.00%    0.00%       --    -7 </span>
+       0   1   1   0   0   0   0      1/5      0/3     0/0     2 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 40.00%  100.00%       --    -7 </span>
+       2   0   0   0   0   0   0      2/5      1/1     0/0     5 </span><span class="row-even">Paige Mott #20                   <span style="color:#999"> 25.00%       --       --    -7 </span>
+       1   0   0   0   0   0   0      1/4      0/0     0/0     2 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999">100.00%       --       --    -7 </span>
+       0   0   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   1   0      0/3      0/2     0/0     0 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">     --       --       --     0 </span>
+       0   2   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Alana Goodchild #22              <span style="color:#999">  0.00%       --   50.00%     0 </span>
+       0   1   0   0   1   1   0      0/1      0/0     1/2     1 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Crystal Fuqu Wang #31            <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 25.00%   16.67%   50.00%   -35 </span>
+       4   7   2   0   2   3   0     6/24      1/6     1/2    14 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Shay Ciezki #4                   <span style="color:#999">100.00%  100.00%       --    +7 </span>
+       0   2   3   0   0   0   1      2/2      1/1     0/0     5 </span><span class="row-even">Tay Valladay #2                  <span style="color:#999">     --       --       --    +7 </span>
+       0   0   1   1   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Leilani Kapinus #5               <span style="color:#999">  0.00%       --       --    +7 </span>
+       0   3   0   0   0   2   1      0/1      0/0     0/0     0 </span><span class="row-even">Ali Brigham #1                   <span style="color:#999">100.00%       --       --    +7 </span>
+       0   1   0   0   0   0   0      2/2      0/0     0/0     4 </span><span class="row-odd">Chanaya Pinto #10                <span style="color:#999"> 50.00%       --       --    +7 </span>
+       0   0   1   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 16.67%   20.00%       --     0 </span>
+       0   2   1   0   0   1   0      1/6      1/5     0/0     3 </span><span class="row-even">Jayla Oden #12                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/3      0/2     0/0     0 </span><span class="row-odd">Alli Campbell #22                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   1   1   1   0   0      0/1      0/1     0/0     0 </span><span class="row-even">Grace Hall #7                    <span style="color:#999">100.00%       --       --     0 </span>
+       1   1   0   0   1   0   0      2/2      0/0     0/0     4 </span><span class="row-odd">Kylie Lavelle #14                <span style="color:#999">100.00%  100.00%       --     0 </span>
+       1   1   0   0   1   0   0      1/1      1/1     0/0     3 </span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 45.00%   30.00%       --   +35 </span>
+       2  10   7   2   3   3   2     9/20     3/10     0/0    21 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 50.00%       --       --   -20 </span>
+       1   5   1   0   0   3   0      3/6      0/0     0/0     6 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999"> 16.67%    0.00%       --   -20 </span>
+       0   2   3   0   0   3   1      1/6      0/4     0/0     2 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 44.44%   50.00%  100.00%   -20 </span>
+       3   2   0   0   1   1   1      4/9      1/2     2/2     9 </span><span class="row-even">Paige Mott #20                   <span style="color:#999"> 25.00%       --       --   -20 </span>
+       1   0   1   0   0   1   2      1/4      0/0     0/0     2 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 33.33%       --       --   -20 </span>
+       0   0   0   0   0   0   0      1/3      0/0     0/0     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       1   1   0   0   0   2   1      0/4      0/2     0/0     0 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   2   0   1   0   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999">100.00%       --       --     0 </span>
+       1   1   0   1   0   1   0      1/1      0/0     0/0     2 </span><span class="row-even">Alana Goodchild #22              <span style="color:#999">  0.00%       --   50.00%     0 </span>
+       0   1   0   0   1   1   0      0/1      0/0     1/2     1 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Crystal Fuqu Wang #31            <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 29.73%   11.11%   75.00%  -100 </span>
+       7  14   5   2   3  13   5    11/37      1/9     3/4    24 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Shay Ciezki #4                   <span style="color:#999"> 57.14%   50.00%       --   +20 </span>
+       0   2   5   0   0   0   1      4/7      2/4     0/0    10 </span><span class="row-even">Tay Valladay #2                  <span style="color:#999"> 66.67%       --   50.00%   +20 </span>
+       0   0   2   2   0   0   1      2/3      0/0     1/2     5 </span><span class="row-odd">Leilani Kapinus #5               <span style="color:#999"> 75.00%  100.00%       --   +20 </span>
+       1   6   1   2   0   2   2      3/4      1/1     0/0     7 </span><span class="row-even">Ali Brigham #1                   <span style="color:#999">100.00%       --       --   +20 </span>
+       0   1   2   0   0   0   1      3/3      0/0     0/0     6 </span><span class="row-odd">Chanaya Pinto #10                <span style="color:#999"> 33.33%    0.00%       --   +20 </span>
+       0   0   2   1   0   0   0      1/3      0/1     0/0     2 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 25.00%   16.67%       --     0 </span>
+       0   2   1   0   0   1   0      2/8      1/6     0/0     5 </span><span class="row-even">Jayla Oden #12                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   0   0   0   1   0      0/5      0/3     0/0     0 </span><span class="row-odd">Alli Campbell #22                <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+       0   0   1   2   1   1   0      1/3      0/2     0/0     2 </span><span class="row-even">Grace Hall #7                    <span style="color:#999">100.00%       --       --     0 </span>
+       1   1   0   2   2   0   1      3/3      0/0     0/0     6 </span><span class="row-odd">Kylie Lavelle #14                <span style="color:#999">100.00%  100.00%       --     0 </span>
+       1   1   0   0   1   0   0      1/1      1/1     0/0     3 </span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 50.00%   27.78%   50.00%  +100 </span>
+       3  14  14   9   4   5   6    20/40     5/18     1/2    46 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 50.00%  100.00%       --   -40 </span>
+  32   1   8   4   1   0   5   1      4/8      1/1     0/0     9 </span><span class="row-even">Caroline Lau #2                  <span style="color:#999"> 14.29%    0.00%       --   -40 </span>
+  32   0   4   7   2   0   8   1      1/7      0/4     0/0     2 </span><span class="row-odd">Caileigh Walsh #10               <span style="color:#999"> 50.00%   50.00%  100.00%   -40 </span>
+  26   3   5   0   0   2   4   3     6/12      1/2     3/3    16 </span><span class="row-even">Paige Mott #20                   <span style="color:#999"> 33.33%       --       --   -40 </span>
+  23   1   3   1   1   1   1   3      2/6      0/0     0/0     4 </span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 55.56%       --  100.00%   -40 </span>
   20   0   1   1   0   0   3   0      5/9      0/0     2/2    12 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999"> 40.00%  33.33%      --    0 </span>
-  22   1   1   0   0   0   4   1     4/10      1/3     0/0     9 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">  0.00%   0.00%      --    0 </span>
-  20   0   2   0   1   0   1   0      0/4      0/3     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999"> 50.00%      --      --    0 </span>
-  11   1   1   1   1   0   1   1      1/2      0/0     0/0     2 </span><span class="row-even">Alana Goodchild #22              <span style="color:#999">  0.00%      --  50.00%    0 </span>
-   7   0   1   0   0   1   1   0      0/1      0/0     1/2     1 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">  0.00%      --      --    0 </span>
-   4   0   0   1   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Crystal Fuqu Wang #31            <span style="color:#999">  0.00%      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Hailey Weaver #11                <span style="color:#999"> 40.00%   33.33%       --     0 </span>
+  22   1   1   0   0   0   4   1     4/10      1/3     0/0     9 </span><span class="row-even">Maggie Pina #3                   <span style="color:#999">  0.00%    0.00%       --     0 </span>
+  20   0   2   0   1   0   1   0      0/4      0/3     0/0     0 </span><span class="row-odd">Jasmine McWilliams #23           <span style="color:#999"> 50.00%       --       --     0 </span>
+  11   1   1   1   1   0   1   1      1/2      0/0     0/0     2 </span><span class="row-even">Alana Goodchild #22              <span style="color:#999">  0.00%       --   50.00%     0 </span>
+   7   0   1   0   0   1   1   0      0/1      0/0     1/2     1 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">  0.00%       --       --     0 </span>
+   4   0   0   1   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Crystal Fuqu Wang #31            <span style="color:#999">  0.00%       --       --     0 </span>
    3   0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Rachel Mutombo #0
 <span class="dnp">  Did not play</span></span><span class="row-even">Lauren Trumpy #25
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 37.70%  23.08%  85.71% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 37.70%   23.08%   85.71%  -200 </span>
        7  26  15   6   5  28  10    23/61     3/13     6/7    55 </span><span class="row-odd">
 
 </span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Shay Ciezki #4                   <span style="color:#999"> 41.67%  42.86% 100.00%  +40 </span>
-  30   0   5   6   1   0   1   1     5/12      3/7     2/2    15 </span><span class="row-even">Tay Valladay #2                  <span style="color:#999"> 60.00%  33.33%  75.00%  +40 </span>
-  28   0   0   3   3   0   3   4     6/10      1/3     3/4    16 </span><span class="row-odd">Leilani Kapinus #5               <span style="color:#999"> 66.67% 100.00%      --  +40 </span>
-  26   2   7   2   6   0   3   2      6/9      2/2     0/0    14 </span><span class="row-even">Ali Brigham #1                   <span style="color:#999"> 77.78% 100.00% 100.00%  +40 </span>
-  25   0   4   5   0   1   1   2      7/9      1/1     2/2    17 </span><span class="row-odd">Chanaya Pinto #10                <span style="color:#999"> 42.86%   0.00%      --  +40 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Shay Ciezki #4                   <span style="color:#999"> 41.67%   42.86%  100.00%   +40 </span>
+  30   0   5   6   1   0   1   1     5/12      3/7     2/2    15 </span><span class="row-even">Tay Valladay #2                  <span style="color:#999"> 60.00%   33.33%   75.00%   +40 </span>
+  28   0   0   3   3   0   3   4     6/10      1/3     3/4    16 </span><span class="row-odd">Leilani Kapinus #5               <span style="color:#999"> 66.67%  100.00%       --   +40 </span>
+  26   2   7   2   6   0   3   2      6/9      2/2     0/0    14 </span><span class="row-even">Ali Brigham #1                   <span style="color:#999"> 77.78%  100.00%  100.00%   +40 </span>
+  25   0   4   5   0   1   1   2      7/9      1/1     2/2    17 </span><span class="row-odd">Chanaya Pinto #10                <span style="color:#999"> 42.86%    0.00%       --   +40 </span>
   16   1   0   2   1   0   1   0      3/7      0/1     0/0     6 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 30.00%  25.00%      --    0 </span>
-  24   0   2   5   1   0   1   1     3/10      2/8     0/0     8 </span><span class="row-even">Jayla Oden #12                   <span style="color:#999"> 20.00%  28.57% 100.00%    0 </span>
-  17   0   2   1   0   1   1   0     2/10      2/7     2/2     8 </span><span class="row-odd">Alli Campbell #22                <span style="color:#999"> 25.00%   0.00%      --    0 </span>
-  12   1   2   2   2   1   1   0      1/4      0/3     0/0     2 </span><span class="row-even">Grace Hall #7                    <span style="color:#999"> 75.00%      --      --    0 </span>
-  11   1   1   0   3   2   0   2      3/4      0/0     0/0     6 </span><span class="row-odd">Kylie Lavelle #14                <span style="color:#999">100.00% 100.00%      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 30.00%   25.00%       --     0 </span>
+  24   0   2   5   1   0   1   1     3/10      2/8     0/0     8 </span><span class="row-even">Jayla Oden #12                   <span style="color:#999"> 20.00%   28.57%  100.00%     0 </span>
+  17   0   2   1   0   1   1   0     2/10      2/7     2/2     8 </span><span class="row-odd">Alli Campbell #22                <span style="color:#999"> 25.00%    0.00%       --     0 </span>
+  12   1   2   2   2   1   1   0      1/4      0/3     0/0     2 </span><span class="row-even">Grace Hall #7                    <span style="color:#999"> 75.00%       --       --     0 </span>
+  11   1   1   0   3   2   0   2      3/4      0/0     0/0     6 </span><span class="row-odd">Kylie Lavelle #14                <span style="color:#999">100.00%  100.00%       --     0 </span>
   11   1   1   0   0   1   0   0      1/1      1/1     0/0     3 </span><span class="row-even">Makenna Marisa #20
 <span class="dnp">  Did not play</span></span><span class="row-odd">Ashley Owusu #0
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 48.68%  36.36%  90.00% </span>
-       6  24  26  17   6  12  12    37/76    12/33    9/10    95 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 48.68%   36.36%   90.00%  +200 </span>
+       6  24  26  17   6  12  12    37/76    12/33    9/10    95 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -190,6 +399,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

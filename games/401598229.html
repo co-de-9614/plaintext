@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>FGCU vs USC - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:05:34.607550-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:31:37.820038-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:05:34 PM</span>
+<span id="timestamps">Data loaded: 01:31:37 PM</span>
 
 <a href="../schedule-2024.html">&lt; USC Schedule</a>
 
@@ -70,22 +70,22 @@
                     USC  14 19 25  9  67
                     FGCU 11  8 19 13  51
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots">                                                            </span>
-<span class="usc-dots">                                               ..           </span>
-<span class="usc-dots">                                           ... ..........   </span>
-<span class="usc-dots">                               .         ..... ............ </span>
-<span class="usc-dots">                             .... ..    ...... ............ </span>
-<span class="usc-dots">                         ........ ..  ........ ............ </span>
-<span class="usc-dots">                        ......... ... ........ ............ </span>
-<span class="usc-dots"> USC               . ............ ............ ............ </span>
+<span class="usc-dots">                                                                </span>
+<span class="usc-dots">                                                  ..            </span>
+<span class="usc-dots">                                              ... ...........   </span>
+<span class="usc-dots">                                 .          ..... ............. </span>
+<span class="usc-dots">                               .... ..     ...... ............. </span>
+<span class="usc-dots">                           ........ ..   ........ ............. </span>
+<span class="usc-dots">                        ........... ... ......... ............. </span>
+<span class="usc-dots"> USC              . . ............. ............. ............. </span>
 
-       +============+============+============+============+
-<span style="color: #00885a;"> FGCU      ....                                             </span>
-<span style="color: #00885a;">            ..                                              </span>
-<span style="color: #00885a;">                                                            </span>
+       +=============+=============+=============+=============+
+<span style="color: #00885a;"> FGCU      .....                                                </span>
+<span style="color: #00885a;">            ..                                                  </span>
+<span style="color: #00885a;">             .                                                  </span>
 </span>
 
 <b>Lead Changes:</b> 1
@@ -95,8 +95,8 @@
 <b>Venue:</b> Galen Center
 <b>Attendance:</b> 4,712
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 USC   67  27/60  4/19  9/15  6/22/28 18 10  6
           45.0% 21.1% 60.0%
 FGCU  51  17/53  6/22 11/15 10/24/34  9  4  1
@@ -105,49 +105,251 @@ FGCU  51  17/53  6/22 11/15 10/24/34  9  4  1
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 USC    28      13    12   6    7  10   25  18
 FGCU   22       5    15  10   11  16    7  22
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   14   7/14   0/2   0/0    1/5/6  4  1  2
+          50.0%  0.0%  0.0%
+FGCU  11   5/13   1/2   0/0    2/5/7  3  1  0
+          38.5% 50.0%  0.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   19   7/15   2/6   3/4    1/6/7  4  4  1
+          46.7% 33.3% 75.0%
+FGCU   8   3/15  2/10   0/0   5/6/11  2  0  1
+          20.0% 20.0%  0.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   33  14/29   2/8   3/4  2/11/13  8  5  3
+          48.3% 25.0% 75.0%
+FGCU  19   8/28  3/12   0/0  7/11/18  5  1  1
+          28.6% 25.0%  0.0%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   25  10/17   2/6   3/6   3/7/10  8  2  1
+          58.8% 33.3% 50.0%
+FGCU  19   5/13   2/6   7/9    1/4/5  3  2  0
+          38.5% 33.3% 77.8%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC    9   3/14   0/5   3/5    1/4/5  2  3  2
+          21.4%  0.0% 60.0%
+FGCU  13   4/12   1/4   4/6   2/9/11  1  1  0
+          33.3% 25.0% 66.7%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   34  13/31  2/11  6/11  4/11/15 10  5  3
+          41.9% 18.2% 54.5%
+FGCU  32   9/25  3/10 11/15  3/13/16  4  3  0
+          36.0% 30.0% 73.3%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999"> 50.00%       --       --    +1 </span>
+       0   2   1   1   0   0   0      1/2      0/0     0/0     2 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999">     --       --       --    +1 </span>
+       0   0   2   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 50.00%       --       --    +1 </span>
+       1   1   0   0   1   1   1      2/4      0/0     0/0     4 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999"> 33.33%    0.00%       --    +1 </span>
+       0   0   1   0   0   0   1      1/3      0/2     0/0     2 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 60.00%       --       --    +1 </span>
+       0   1   0   0   1   0   0      3/5      0/0     0/0     6 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Malia Samuels #10                <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%    0.00%       --    +5 </span>
+       1   5   4   1   2   2   3     7/14      0/2     0/0    14 </span><span class="row-odd">
 
-<span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999"> 40.00%   0.00%  75.00%  +16 </span>
-  32   3   4   5   2   1   0   4      2/5      0/1     3/4     7 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999"> 25.00%   0.00%      --  +16 </span>
-  32   0   2   6   2   0   1   1      2/8      0/5     0/0     4 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 42.11%  33.33%  25.00%  +16 </span>
-  31   1   6   2   1   2   4   2     8/19      1/3     1/4    18 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999"> 57.14%   0.00%      --  +16 </span>
-  31   0   2   3   2   1   1   2      4/7      0/3     0/0     8 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 63.64%      --  66.67%  +16 </span>
+</span><span class="row-even" style="color: #00885a;"><b>FGCU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999"> 75.00%  100.00%       --    -1 </span>
+       0   1   0   0   0   0   1      3/4      1/1     0/0     7 </span><span class="row-even">Uju Ezeudu #24                   <span style="color:#999"> 33.33%       --       --    -1 </span>
+       1   3   0   0   0   0   0      1/3      0/0     0/0     2 </span><span class="row-odd">Casey Santoro #0                 <span style="color:#999">  0.00%       --       --    -1 </span>
+       0   0   2   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Kierra Adams #21                 <span style="color:#999">  0.00%       --       --    -1 </span>
+       0   0   1   0   0   1   0      0/2      0/0     0/0     0 </span><span class="row-odd" style="color: #00885a;"><b>FGCU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Ajulu Thatha #5                  <span style="color:#999">100.00%       --       --     0 </span>
+       1   1   0   0   0   1   0      1/1      0/0     0/0     2 </span><span class="row-odd">Cerina Rolle #3                  <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   1   0   0   2      0/2      0/1     0/0     0 </span><span class="row-even" style="color: #00885a;"><b>FGCU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 38.46%   50.00%       --    -4 </span>
+       2   5   3   1   0   2   3     5/13      1/2     0/0    11 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999"> 50.00%    0.00%   75.00%   +13 </span>
+       1   1   2   0   1   0   0      1/2      0/1     3/4     5 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999"> 25.00%    0.00%       --   +13 </span>
+       0   2   1   1   0   0   0      1/4      0/2     0/0     2 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 50.00%  100.00%       --   +13 </span>
+       0   2   0   0   0   1   1      2/4      1/1     0/0     5 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999"> 66.67%    0.00%       --   +13 </span>
+       0   0   0   2   0   0   0      2/3      0/1     0/0     4 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999">     --       --       --   +13 </span>
+       0   0   0   0   0   1   2      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%  100.00%       --     0 </span>
+       0   1   1   1   0   0   0      1/2      1/1     0/0     3 </span><span class="row-even">Roxane Makolo #30                <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 46.67%   33.33%   75.00%   +65 </span>
+       1   6   4   4   1   3   3     7/15      2/6     3/4    19 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #00885a;"><b>FGCU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999"> 50.00%   66.67%       --   -13 </span>
+       1   0   0   0   0   1   0      2/4      2/3     0/0     6 </span><span class="row-even">Dolly Cairns #4                  <span style="color:#999">  0.00%    0.00%       --   -13 </span>
+       0   1   0   0   0   0   2      0/3      0/2     0/0     0 </span><span class="row-odd">Uju Ezeudu #24                   <span style="color:#999">  0.00%    0.00%       --   -13 </span>
+       3   0   0   0   0   1   2      0/1      0/1     0/0     0 </span><span class="row-even">Casey Santoro #0                 <span style="color:#999">  0.00%    0.00%       --   -13 </span>
+       0   2   1   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Kierra Adams #21                 <span style="color:#999">  0.00%       --       --   -13 </span>
+       0   1   1   0   0   1   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #00885a;"><b>FGCU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ajulu Thatha #5                  <span style="color:#999"> 50.00%    0.00%       --     0 </span>
+       1   1   0   0   1   0   0      1/2      0/1     0/0     2 </span><span class="row-even">Sofia Persson #2                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Cerina Rolle #3                  <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   1   1      0/2      0/1     0/0     0 </span><span class="row-even">Shekinah Guthrie #14             <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   2      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #00885a;"><b>FGCU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 20.00%   20.00%       --   -65 </span>
+       5   6   2   0   1   6   7     3/15     2/10     0/0     8 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999"> 50.00%    0.00%   75.00%   +14 </span>
+       1   3   3   1   1   0   0      2/4      0/1     3/4     7 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999"> 25.00%    0.00%       --   +14 </span>
+       0   2   3   1   0   1   0      1/4      0/2     0/0     2 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 50.00%  100.00%       --   +14 </span>
+       1   3   0   0   1   2   2      4/8      1/1     0/0     9 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999"> 50.00%    0.00%       --   +14 </span>
+       0   0   1   2   0   0   1      3/6      0/3     0/0     6 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 60.00%       --       --   +14 </span>
+       0   1   0   0   1   1   2      3/5      0/0     0/0     6 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%  100.00%       --     0 </span>
+       0   2   1   1   0   0   0      1/2      1/1     0/0     3 </span><span class="row-even">Malia Samuels #10                <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Roxane Makolo #30                <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 48.28%   25.00%   75.00%   +70 </span>
+       2  11   8   5   3   5   6    14/29      2/8     3/4    33 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #00885a;"><b>FGCU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Maddie Antenucci #11             <span style="color:#999"> 62.50%   75.00%       --   -14 </span>
+       1   1   0   0   0   1   1      5/8      3/4     0/0    13 </span><span class="row-odd">Dolly Cairns #4                  <span style="color:#999">  0.00%    0.00%       --   -14 </span>
+       0   1   0   0   0   0   2      0/3      0/2     0/0     0 </span><span class="row-even">Uju Ezeudu #24                   <span style="color:#999"> 25.00%    0.00%       --   -14 </span>
+       4   3   0   0   0   1   2      1/4      0/1     0/0     2 </span><span class="row-odd">Casey Santoro #0                 <span style="color:#999">  0.00%    0.00%       --   -14 </span>
+       0   2   3   0   0   0   0      0/2      0/1     0/0     0 </span><span class="row-even">Kierra Adams #21                 <span style="color:#999">  0.00%       --       --   -14 </span>
+       0   1   2   0   0   2   0      0/3      0/0     0/0     0 </span><span class="row-odd" style="color: #00885a;"><b>FGCU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Ajulu Thatha #5                  <span style="color:#999"> 66.67%    0.00%       --     0 </span>
+       2   2   0   0   1   1   0      2/3      0/1     0/0     4 </span><span class="row-odd">Sofia Persson #2                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even">Cerina Rolle #3                  <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   1   0   1   3      0/4      0/2     0/0     0 </span><span class="row-odd">Shekinah Guthrie #14             <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   2      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #00885a;"><b>FGCU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 28.57%   25.00%       --   -70 </span>
+       7  11   5   1   1   8  10     8/28     3/12     0/0    19 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999">     --       --       --    +6 </span>
+       2   0   2   1   0   0   4      0/0      0/0     0/0     0 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999"> 50.00%    0.00%       --    +6 </span>
+       0   0   2   1   0   0   1      1/2      0/1     0/0     2 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 50.00%    0.00%    0.00%    +6 </span>
+       0   3   2   0   1   1   0      4/8      0/2     0/2     8 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999">100.00%       --       --    +6 </span>
+       0   1   1   0   0   0   1      1/1      0/0     0/0     2 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 66.67%       --   75.00%    +6 </span>
+       0   2   0   0   0   1   1      2/3      0/0     3/4     7 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%   50.00%       --     0 </span>
+       1   0   1   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-even">Malia Samuels #10                <span style="color:#999">100.00%  100.00%       --     0 </span>
+       0   1   0   0   0   0   0      1/1      1/1     0/0     3 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 58.82%   33.33%   50.00%   +30 </span>
+       3   7   8   2   1   2   7    10/17      2/6     3/6    25 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #00885a;"><b>FGCU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999">  0.00%    0.00%  100.00%    -6 </span>
+       1   1   1   0   0   0   0      0/2      0/1     4/4     4 </span><span class="row-even">Dolly Cairns #4                  <span style="color:#999"> 50.00%   50.00%       --    -6 </span>
+       0   0   0   0   0   0   2      1/2      1/2     0/0     3 </span><span class="row-odd">Uju Ezeudu #24                   <span style="color:#999">100.00%       --  100.00%    -6 </span>
+       0   2   0   0   0   0   1      1/1      0/0     2/2     4 </span><span class="row-even">Casey Santoro #0                 <span style="color:#999"> 25.00%   50.00%   50.00%    -6 </span>
+       0   0   1   2   0   2   1      1/4      1/2     1/2     4 </span><span class="row-odd">Kierra Adams #21                 <span style="color:#999"> 50.00%       --    0.00%    -6 </span>
+       0   0   1   0   0   0   2      1/2      0/0     0/1     2 </span><span class="row-even" style="color: #00885a;"><b>FGCU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Sofia Persson #2                 <span style="color:#999">100.00%       --       --     0 </span>
+       0   1   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Cerina Rolle #3                  <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-odd">Brylee Bartram #22               <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #00885a;"><b>FGCU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 38.46%   33.33%   77.78%   -30 </span>
+       1   4   3   2   0   4   7     5/13      2/6     7/9    19 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999">  0.00%       --       --    -4 </span>
+       0   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       0   0   1   0   0   0   0      0/2      0/2     0/0     0 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999">  0.00%       --   50.00%    -4 </span>
+       0   0   0   1   0   1   0      0/3      0/0     1/2     1 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999">     --       --       --    -4 </span>
+       0   1   1   0   1   1   0      0/0      0/0     0/0     0 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 66.67%       --   50.00%    -4 </span>
+       0   1   0   0   1   1   1      2/3      0/0     1/2     5 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%    0.00%  100.00%     0 </span>
+       1   0   0   1   0   0   0      1/2      0/1     1/1     3 </span><span class="row-even">Malia Samuels #10                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   2      0/2      0/2     0/0     0 </span><span class="row-odd">Roxane Makolo #30                <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   1   0   0   2      0/0      0/0     0/0     0 </span><span class="row-even">India Otto #2                    <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 21.43%    0.00%   60.00%   -20 </span>
+       1   4   2   3   2   3   5     3/14      0/5     3/5     9 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #00885a;"><b>FGCU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999">100.00%       --       --    +4 </span>
+       0   1   0   0   0   1   0      1/1      0/0     0/0     2 </span><span class="row-even">Dolly Cairns #4                  <span style="color:#999">  0.00%    0.00%       --    +4 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Uju Ezeudu #24                   <span style="color:#999">  0.00%       --       --    +4 </span>
+       1   1   0   0   0   0   0      0/2      0/0     0/0     0 </span><span class="row-even">Casey Santoro #0                 <span style="color:#999">  0.00%    0.00%       --    +4 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Kierra Adams #21                 <span style="color:#999"> 50.00%    0.00%       --    +4 </span>
+       0   1   1   0   0   1   1      1/2      0/1     0/0     2 </span><span class="row-even" style="color: #00885a;"><b>FGCU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ajulu Thatha #5                  <span style="color:#999">     --       --       --     0 </span>
+       0   3   0   1   0   1   2      0/0      0/0     0/0     0 </span><span class="row-even">Sofia Persson #2                 <span style="color:#999">     --       --    0.00%     0 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/2     0 </span><span class="row-odd">Cerina Rolle #3                  <span style="color:#999">     --       --  100.00%     0 </span>
+       0   1   0   0   0   0   1      0/0      0/0     2/2     2 </span><span class="row-even">Maca Retamales #20               <span style="color:#999"> 40.00%  100.00%       --     0 </span>
+       0   2   0   0   0   0   0      2/5      1/1     0/0     5 </span><span class="row-odd">Shekinah Guthrie #14             <span style="color:#999">     --       --  100.00%     0 </span>
+       1   0   0   0   0   0   0      0/0      0/0     2/2     2 </span><span class="row-even" style="color: #00885a;"><b>FGCU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 33.33%   25.00%   66.67%   +20 </span>
+       2   9   1   1   0   4   5     4/12      1/4     4/6    13 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999">  0.00%       --       --    +2 </span>
+       2   1   2   1   0   0   4      0/1      0/0     0/0     0 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999"> 25.00%    0.00%       --    +2 </span>
+       0   0   3   1   0   0   1      1/4      0/3     0/0     2 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 36.36%    0.00%   25.00%    +2 </span>
+       0   3   2   1   1   2   0     4/11      0/2     1/4     9 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999">100.00%       --       --    +2 </span>
+       0   2   2   0   1   1   1      1/1      0/0     0/0     2 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 66.67%       --   66.67%    +2 </span>
+       0   3   0   0   1   2   2      4/6      0/0     4/6    12 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%   33.33%  100.00%     0 </span>
+       2   0   1   1   0   0   0      2/4      1/3     1/1     6 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 33.33%   33.33%       --     0 </span>
+       0   1   0   0   0   0   2      1/3      1/3     0/0     3 </span><span class="row-odd">Roxane Makolo #30                <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   1   0   0   2      0/0      0/0     0/0     0 </span><span class="row-even">India Otto #2                    <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 41.94%   18.18%   54.55%   +10 </span>
+       4  11  10   5   3   5  12    13/31     2/11    6/11    34 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #00885a;"><b>FGCU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999"> 33.33%    0.00%  100.00%    -2 </span>
+       1   2   1   0   0   1   0      1/3      0/1     4/4     6 </span><span class="row-even">Dolly Cairns #4                  <span style="color:#999"> 33.33%   33.33%       --    -2 </span>
+       0   0   0   0   0   0   2      1/3      1/3     0/0     3 </span><span class="row-odd">Uju Ezeudu #24                   <span style="color:#999"> 33.33%       --  100.00%    -2 </span>
+       1   3   0   0   0   0   1      1/3      0/0     2/2     4 </span><span class="row-even">Casey Santoro #0                 <span style="color:#999"> 20.00%   33.33%   50.00%    -2 </span>
+       0   0   1   2   0   2   1      1/5      1/3     1/2     4 </span><span class="row-odd">Kierra Adams #21                 <span style="color:#999"> 50.00%    0.00%    0.00%    -2 </span>
+       0   1   2   0   0   1   3      2/4      0/1     0/1     4 </span><span class="row-even" style="color: #00885a;"><b>FGCU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ajulu Thatha #5                  <span style="color:#999">     --       --       --     0 </span>
+       0   3   0   1   0   1   2      0/0      0/0     0/0     0 </span><span class="row-even">Sofia Persson #2                 <span style="color:#999">100.00%       --    0.00%     0 </span>
+       0   1   0   0   0   1   1      1/1      0/0     0/2     2 </span><span class="row-odd">Cerina Rolle #3                  <span style="color:#999">     --       --  100.00%     0 </span>
+       0   1   0   0   0   1   2      0/0      0/0     2/2     2 </span><span class="row-even">Brylee Bartram #22               <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Maca Retamales #20               <span style="color:#999"> 40.00%  100.00%       --     0 </span>
+       0   2   0   0   0   0   0      2/5      1/1     0/0     5 </span><span class="row-even">Shekinah Guthrie #14             <span style="color:#999">     --       --  100.00%     0 </span>
+       1   0   0   0   0   0   0      0/0      0/0     2/2     2 </span><span class="row-odd" style="color: #00885a;"><b>FGCU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 36.00%   30.00%   73.33%   -10 </span>
+       3  13   4   3   0   8  12     9/25     3/10   11/15    32 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kaitlyn Davis #24                <span style="color:#999"> 40.00%    0.00%   75.00%   +16 </span>
+  32   3   4   5   2   1   0   4      2/5      0/1     3/4     7 </span><span class="row-even">McKenzie Forbes #25              <span style="color:#999"> 25.00%    0.00%       --   +16 </span>
+  32   0   2   6   2   0   1   1      2/8      0/5     0/0     4 </span><span class="row-odd">JuJu Watkins #12                 <span style="color:#999"> 42.11%   33.33%   25.00%   +16 </span>
+  31   1   6   2   1   2   4   2     8/19      1/3     1/4    18 </span><span class="row-even">Kayla Padilla #45                <span style="color:#999"> 57.14%    0.00%       --   +16 </span>
+  31   0   2   3   2   1   1   2      4/7      0/3     0/0     8 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 63.64%       --   66.67%   +16 </span>
   21   0   4   0   0   2   3   4     7/11      0/0     4/6    18 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%  50.00% 100.00%    0 </span>
-  22   2   2   2   2   0   0   0      3/6      2/4     1/1     9 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 33.33%  33.33%      --    0 </span>
-  18   0   1   0   0   0   0   3      1/3      1/3     0/0     3 </span><span class="row-odd">Roxane Makolo #30                <span style="color:#999">     --      --      --    0 </span>
-   8   0   1   0   1   0   1   2      0/0      0/0     0/0     0 </span><span class="row-even">Clarice Akunwafo #34             <span style="color:#999">     --      --      --    0 </span>
-   2   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Aaliyah Gayles #3                <span style="color:#999">     --      --      --    0 </span>
-   2   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">India Otto #2                    <span style="color:#999">  0.00%      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Taylor Bigby #1                  <span style="color:#999"> 50.00%   50.00%  100.00%     0 </span>
+  22   2   2   2   2   0   0   0      3/6      2/4     1/1     9 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 33.33%   33.33%       --     0 </span>
+  18   0   1   0   0   0   0   3      1/3      1/3     0/0     3 </span><span class="row-odd">Roxane Makolo #30                <span style="color:#999">     --       --       --     0 </span>
+   8   0   1   0   1   0   1   2      0/0      0/0     0/0     0 </span><span class="row-even">Clarice Akunwafo #34             <span style="color:#999">     --       --       --     0 </span>
+   2   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Aaliyah Gayles #3                <span style="color:#999">     --       --       --     0 </span>
+   2   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">India Otto #2                    <span style="color:#999">  0.00%       --       --     0 </span>
    1   0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Dominique Darius #21
 <span class="dnp">  Did not play</span></span><span class="row-even">Kayla Williams #4
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 45.00%  21.05%  60.00% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 45.00%   21.05%   60.00%   +80 </span>
        6  22  18  10   6  10  18    27/60     4/19    9/15    67 </span><span class="row-odd">
 
 </span><span class="row-even" style="color: #00885a;"><b>FGCU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999"> 54.55%  60.00% 100.00%  -16 </span>
-  31   2   3   1   0   0   2   1     6/11      3/5     4/4    19 </span><span class="row-even">Dolly Cairns #4                  <span style="color:#999"> 16.67%  20.00%      --  -16 </span>
-  30   0   1   0   0   0   0   4      1/6      1/5     0/0     3 </span><span class="row-odd">Uju Ezeudu #24                   <span style="color:#999"> 28.57%   0.00% 100.00%  -16 </span>
-  27   5   6   0   0   0   1   3      2/7      0/1     2/2     6 </span><span class="row-even">Casey Santoro #0                 <span style="color:#999"> 14.29%  25.00%  50.00%  -16 </span>
-  22   0   2   4   2   0   2   1      1/7      1/4     1/2     4 </span><span class="row-odd">Kierra Adams #21                 <span style="color:#999"> 28.57%   0.00%   0.00%  -16 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Maddie Antenucci #11             <span style="color:#999"> 54.55%   60.00%  100.00%   -16 </span>
+  31   2   3   1   0   0   2   1     6/11      3/5     4/4    19 </span><span class="row-even">Dolly Cairns #4                  <span style="color:#999"> 16.67%   20.00%       --   -16 </span>
+  30   0   1   0   0   0   0   4      1/6      1/5     0/0     3 </span><span class="row-odd">Uju Ezeudu #24                   <span style="color:#999"> 28.57%    0.00%  100.00%   -16 </span>
+  27   5   6   0   0   0   1   3      2/7      0/1     2/2     6 </span><span class="row-even">Casey Santoro #0                 <span style="color:#999"> 14.29%   25.00%   50.00%   -16 </span>
+  22   0   2   4   2   0   2   1      1/7      1/4     1/2     4 </span><span class="row-odd">Kierra Adams #21                 <span style="color:#999"> 28.57%    0.00%    0.00%   -16 </span>
   21   0   2   4   0   0   3   3      2/7      0/1     0/1     4 </span><span class="row-even" style="color: #00885a;"><b>FGCU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ajulu Thatha #5                  <span style="color:#999"> 66.67%   0.00%      --    0 </span>
-  18   2   5   0   1   1   2   2      2/3      0/1     0/0     4 </span><span class="row-even">Sofia Persson #2                 <span style="color:#999"> 50.00%   0.00%   0.00%    0 </span>
-  14   0   2   0   0   0   2   1      1/2      0/1     0/2     2 </span><span class="row-odd">Cerina Rolle #3                  <span style="color:#999">  0.00%   0.00% 100.00%    0 </span>
-  13   0   1   0   1   0   2   5      0/4      0/2     2/2     2 </span><span class="row-even">Brylee Bartram #22               <span style="color:#999">  0.00%   0.00%      --    0 </span>
-  13   0   0   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Maca Retamales #20               <span style="color:#999"> 40.00% 100.00%      --    0 </span>
-   6   0   2   0   0   0   0   0      2/5      1/1     0/0     5 </span><span class="row-even">Shekinah Guthrie #14             <span style="color:#999">     --      -- 100.00%    0 </span>
-   4   1   0   0   0   0   1   2      0/0      0/0     2/2     2 </span><span class="row-odd">Jordan Campbell #10              <span style="color:#999">     --      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ajulu Thatha #5                  <span style="color:#999"> 66.67%    0.00%       --     0 </span>
+  18   2   5   0   1   1   2   2      2/3      0/1     0/0     4 </span><span class="row-even">Sofia Persson #2                 <span style="color:#999"> 50.00%    0.00%    0.00%     0 </span>
+  14   0   2   0   0   0   2   1      1/2      0/1     0/2     2 </span><span class="row-odd">Cerina Rolle #3                  <span style="color:#999">  0.00%    0.00%  100.00%     0 </span>
+  13   0   1   0   1   0   2   5      0/4      0/2     2/2     2 </span><span class="row-even">Brylee Bartram #22               <span style="color:#999">  0.00%    0.00%       --     0 </span>
+  13   0   0   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Maca Retamales #20               <span style="color:#999"> 40.00%  100.00%       --     0 </span>
+   6   0   2   0   0   0   0   0      2/5      1/1     0/0     5 </span><span class="row-even">Shekinah Guthrie #14             <span style="color:#999">     --       --  100.00%     0 </span>
+   4   1   0   0   0   0   1   2      0/0      0/0     2/2     2 </span><span class="row-odd">Jordan Campbell #10              <span style="color:#999">     --       --       --     0 </span>
    1   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Ashley Baez #23
 <span class="dnp">  Did not play</span></span><span class="row-odd">Emani Jefferson #1
 <span class="dnp">  Did not play</span></span><span class="row-even">Alyssa Jimenez #12
 <span class="dnp">  Did not play</span></span><span class="row-odd">Emani Theodule #32
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #00885a;"><b>FGCU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 32.08%  27.27%  73.33% </span>
-      10  24   9   4   1  16  22    17/53     6/22   11/15    51 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 32.08%   27.27%   73.33%   -80 </span>
+      10  24   9   4   1  16  22    17/53     6/22   11/15    51 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -189,6 +391,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

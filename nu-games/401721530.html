@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>NU vs UCLA - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:06:04.286909-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:32:07.977438-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:06:04 PM</span>
+<span id="timestamps">Data loaded: 01:32:07 PM</span>
 
 <a href="../nu-schedule-2025.html">&lt; NU Schedule</a>
 
@@ -82,16 +82,16 @@ UCLA   0    0/0   0/0   0/0    0/0/0  0  0  0
 <span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
  MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
  MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999">     --      --      -- </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999">     --       --       --     0 </span>
        0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">
 
 </span><span class="row-odd" style="color: #2774ae;"><b>UCLA STARTERS</b>
  MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even" style="color: #2774ae;"><b>UCLA BENCH</b>
  MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd" style="color: #2774ae;"><b>UCLA TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999">     --      --      -- </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999">     --       --       --     0 </span>
        0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -133,6 +133,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

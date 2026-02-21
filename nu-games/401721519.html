@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>IU vs NU - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:06:04.058964-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:32:07.699322-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:06:04 PM</span>
+<span id="timestamps">Data loaded: 01:32:07 PM</span>
 
 <a href="../nu-schedule-2025.html">&lt; NU Schedule</a>
 
@@ -70,15 +70,15 @@
                     NU   11 15 15 23  64
                     IU   20 11 15 22  68
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots"> NU        .                                                </span>
+<span class="usc-dots"> NU        .                                                    </span>
 
-       +============+============+============+============+
-<span style="color: #970310;"> IU          . ..... ..  .. ..... ...... ..... ... ..... .. </span>
-<span style="color: #970310;">                   . .            ..                        </span>
-<span style="color: #970310;">                   . .                                      </span>
+       +=============+=============+=============+=============+
+<span style="color: #970310;"> IU           . ..... ...  ........ .....  ...... .... ....  .. </span>
+<span style="color: #970310;">                    . .    .        ..      .                   </span>
+<span style="color: #970310;">                    . .                                         </span>
 </span>
 
 <b>Lead Changes:</b> 4
@@ -88,8 +88,8 @@
 <b>Venue:</b> Welsh-Ryan Arena
 <b>Attendance:</b> 1,452
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 NU    64  25/58  5/14  9/15  8/25/33 15  6  5
           43.1% 35.7% 60.0%
 IU    68  22/56  8/22 16/18  6/22/28 18  7  3
@@ -98,49 +98,246 @@ IU    68  22/56  8/22 16/18  6/22/28 18  7  3
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 NU     24       5    26   8   11  12   13  14
 IU     26      12    15   6    9  13   11  16
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    11   5/14   1/3   0/0    0/8/8  3  0  1
+          35.7% 33.3%  0.0%
+IU    20   6/16   3/9   5/6   2/9/11  6  3  0
+          37.5% 33.3% 83.3%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    15   7/19   1/4   0/0   5/6/11  5  2  1
+          36.8% 25.0%  0.0%
+IU    11   5/13   0/4   1/1    1/4/5  4  2  0
+          38.5%  0.0% 100.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    26  12/33   2/7   0/0  5/14/19  8  2  2
+          36.4% 28.6%  0.0%
+IU    31  11/29  3/13   6/7  3/13/16 10  5  0
+          37.9% 23.1% 85.7%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    15   6/13   1/5   2/2    1/6/7  3  2  2
+          46.2% 20.0% 100.0%
+IU    15   6/15   3/6   0/0    1/6/7  5  1  1
+          40.0% 50.0%  0.0%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    23   7/12   2/2  7/13    2/5/7  4  2  1
+          58.3% 100.0% 53.8%
+IU    22   5/12   2/3 10/11    2/3/5  3  1  2
+          41.7% 66.7% 90.9%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    38  13/25   3/7  9/15  3/11/14  7  4  3
+          52.0% 42.9% 60.0%
+IU    37  11/27   5/9 10/11   3/9/12  8  2  3
+          40.7% 55.6% 90.9%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999">     --       --       --    -9 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Taylor Williams #33              <span style="color:#999"> 50.00%       --       --    -9 </span>
+       0   0   0   0   1   0   0      1/2      0/0     0/0     2 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999">  0.00%    0.00%       --    -9 </span>
+       0   1   0   0   0   1   0      0/2      0/1     0/0     0 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 50.00%  100.00%       --    -9 </span>
+       0   2   0   0   0   1   2      1/2      1/1     0/0     3 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%       --       --    -9 </span>
+       0   1   0   0   0   2   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999">100.00%       --       --     0 </span>
+       0   1   3   0   0   0   0      2/2      0/0     0/0     4 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 25.00%       --       --     0 </span>
+       0   1   0   0   0   0   0      1/4      0/0     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   1      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 35.71%   33.33%       --   -45 </span>
+       0   8   3   0   1   5   4     5/14      1/3     0/0    11 </span><span class="row-odd">
 
-<span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 33.33% 100.00%   0.00%   -4 </span>
-  34   0   1   2   1   1   1   2      1/3      1/1     0/2     3 </span><span class="row-even">Taylor Williams #33              <span style="color:#999"> 83.33%      --  83.33%   -4 </span>
-  30   3  10   0   1   1   1   2      5/6      0/0     5/6    15 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999"> 37.50%   0.00%  40.00%   -4 </span>
-  23   2   3   1   0   1   1   0      3/8      0/3     2/5     8 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 44.44% 100.00% 100.00%   -4 </span>
-  22   1   3   1   2   1   1   2      4/9      2/2     2/2    12 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%   0.00%      --   -4 </span>
+</span><span class="row-even" style="color: #970310;"><b>IU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Sydney Parrish #33               <span style="color:#999"> 33.33%   33.33%   50.00%    +9 </span>
+       0   2   0   1   0   1   0      2/6      2/6     1/2     7 </span><span class="row-even">Shay Ciezki #10                  <span style="color:#999"> 50.00%    0.00%       --    +9 </span>
+       0   1   3   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-odd">Yarden Garzon #12                <span style="color:#999"> 50.00%  100.00%  100.00%    +9 </span>
+       0   2   0   1   0   1   1      1/2      1/1     2/2     5 </span><span class="row-even">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%    0.00%       --    +9 </span>
+       1   1   2   0   0   0   1      0/2      0/1     0/0     0 </span><span class="row-odd">Lilly Meister #52                <span style="color:#999"> 66.67%       --       --    +9 </span>
+       0   2   0   0   0   0   0      2/3      0/0     0/0     4 </span><span class="row-even" style="color: #970310;"><b>IU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Karoline Striplin #11            <span style="color:#999">  0.00%       --  100.00%     0 </span>
+       0   0   0   0   0   0   0      0/1      0/0     2/2     2 </span><span class="row-even">Lexus Bargesser #1               <span style="color:#999">     --       --       --     0 </span>
+       1   1   1   1   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #970310;"><b>IU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 37.50%   33.33%   83.33%   +45 </span>
+       2   9   6   3   0   2   2     6/16      3/9     5/6    20 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999">     --       --       --    +4 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Taylor Williams #33              <span style="color:#999">100.00%       --       --    +4 </span>
+       1   3   0   0   0   0   0      3/3      0/0     0/0     6 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999"> 50.00%       --       --    +4 </span>
+       2   1   0   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 50.00%       --       --    +4 </span>
+       1   0   1   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    +4 </span>
+       0   0   1   1   0   1   0      0/3      0/2     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 22.22%   50.00%       --     0 </span>
+       1   1   1   1   0   3   0      2/9      1/2     0/0     5 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   1   0   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 36.84%   25.00%       --   +20 </span>
+       5   6   5   2   1   4   1     7/19      1/4     0/0    15 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #970310;"><b>IU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Sydney Parrish #33               <span style="color:#999"> 33.33%    0.00%       --    -4 </span>
+       0   1   0   1   0   1   0      1/3      0/1     0/0     2 </span><span class="row-odd">Shay Ciezki #10                  <span style="color:#999"> 50.00%    0.00%       --    -4 </span>
+       0   0   0   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-even">Yarden Garzon #12                <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       0   1   2   1   0   2   1      0/2      0/1     0/0     0 </span><span class="row-odd">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       0   0   1   0   0   1   1      0/1      0/1     0/0     0 </span><span class="row-even">Lilly Meister #52                <span style="color:#999">  0.00%       --       --    -4 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #970310;"><b>IU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Karoline Striplin #11            <span style="color:#999">100.00%       --  100.00%     0 </span>
+       1   1   0   0   0   1   1      3/3      0/0     1/1     7 </span><span class="row-odd">Lexus Bargesser #1               <span style="color:#999">  0.00%       --       --     0 </span>
+       0   1   1   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #970310;"><b>IU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 38.46%    0.00%  100.00%   -20 </span>
+       1   4   4   2   0   5   3     5/13      0/4     1/1    11 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999">     --       --       --    -5 </span>
+       0   1   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Taylor Williams #33              <span style="color:#999"> 80.00%       --       --    -5 </span>
+       1   3   0   0   1   0   0      4/5      0/0     0/0     8 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999"> 25.00%    0.00%       --    -5 </span>
+       2   2   0   0   0   1   0      1/4      0/1     0/0     2 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 50.00%  100.00%       --    -5 </span>
+       1   2   1   0   0   1   2      2/4      1/1     0/0     5 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       0   1   1   1   0   3   0      0/4      0/2     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 36.36%   50.00%       --     0 </span>
+       1   2   4   1   0   3   0     4/11      1/2     0/0     9 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 25.00%       --       --     0 </span>
+       0   1   1   0   0   0   0      1/4      0/0     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --     0 </span>
+       0   2   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   2      0/1      0/1     0/0     0 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   1   0   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 36.36%   28.57%       --   -25 </span>
+       5  14   8   2   2   9   5    12/33      2/7     0/0    26 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #970310;"><b>IU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Sydney Parrish #33               <span style="color:#999"> 33.33%   28.57%   50.00%    +5 </span>
+       0   3   0   2   0   2   0      3/9      2/7     1/2     9 </span><span class="row-odd">Shay Ciezki #10                  <span style="color:#999"> 50.00%    0.00%       --    +5 </span>
+       0   1   3   0   0   0   0      2/4      0/2     0/0     4 </span><span class="row-even">Yarden Garzon #12                <span style="color:#999"> 25.00%   50.00%  100.00%    +5 </span>
+       0   3   2   2   0   3   2      1/4      1/2     2/2     5 </span><span class="row-odd">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%    0.00%       --    +5 </span>
+       1   1   3   0   0   1   2      0/3      0/2     0/0     0 </span><span class="row-even">Lilly Meister #52                <span style="color:#999"> 50.00%       --       --    +5 </span>
+       0   2   0   0   0   0   0      2/4      0/0     0/0     4 </span><span class="row-odd" style="color: #970310;"><b>IU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Karoline Striplin #11            <span style="color:#999"> 75.00%       --  100.00%     0 </span>
+       1   1   0   0   0   1   1      3/4      0/0     3/3     9 </span><span class="row-odd">Lexus Bargesser #1               <span style="color:#999">  0.00%       --       --     0 </span>
+       1   2   2   1   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #970310;"><b>IU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 37.93%   23.08%   85.71%   +25 </span>
+       3  13  10   5   0   7   5    11/29     3/13     6/7    31 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   0   1   1   0   1      0/1      0/0     0/0     0 </span><span class="row-even">Taylor Williams #33              <span style="color:#999">100.00%       --  100.00%     0 </span>
+       1   3   0   0   0   0   0      1/1      0/0     2/2     4 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+       0   1   1   0   1   0   0      1/3      0/2     0/0     2 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 66.67%  100.00%       --     0 </span>
+       0   0   0   1   0   0   0      2/3      1/1     0/0     5 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   1   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   1   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   0   0   0   0   1      0/2      0/1     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 46.15%   20.00%  100.00%     0 </span>
+       1   6   3   2   2   1   2     6/13      1/5     2/2    15 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #970310;"><b>IU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Sydney Parrish #33               <span style="color:#999"> 50.00%  100.00%       --     0 </span>
+       0   2   2   1   1   0   1      1/2      1/1     0/0     3 </span><span class="row-odd">Shay Ciezki #10                  <span style="color:#999"> 25.00%   50.00%       --     0 </span>
+       0   1   1   0   0   0   0      1/4      1/2     0/0     3 </span><span class="row-even">Yarden Garzon #12                <span style="color:#999"> 40.00%   33.33%       --     0 </span>
+       0   2   0   0   0   1   0      2/5      1/3     0/0     5 </span><span class="row-odd">Lilly Meister #52                <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #970310;"><b>IU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Karoline Striplin #11            <span style="color:#999"> 66.67%       --       --     0 </span>
+       1   0   1   0   0   1   1      2/3      0/0     0/0     4 </span><span class="row-even">Lexus Bargesser #1               <span style="color:#999">  0.00%       --       --     0 </span>
+       0   1   0   0   0   1   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #970310;"><b>IU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 40.00%   50.00%       --     0 </span>
+       1   6   5   1   1   3   3     6/15      3/6     0/0    15 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 50.00%  100.00%    0.00%    +1 </span>
+       0   0   1   0   0   1   1      1/2      1/1     0/2     3 </span><span class="row-even">Taylor Williams #33              <span style="color:#999">     --       --   75.00%    +1 </span>
+       1   4   0   1   0   1   2      0/0      0/0     3/4     3 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999">100.00%       --   40.00%    +1 </span>
+       0   0   0   0   0   0   0      1/1      0/0     2/5     4 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999">  0.00%       --  100.00%    +1 </span>
+       0   1   0   1   1   0   0      0/2      0/0     2/2     2 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">     --       --       --    +1 </span>
+       0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 60.00%       --       --     0 </span>
+       0   0   1   0   0   0   3      3/5      0/0     0/0     6 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999">100.00%       --       --     0 </span>
+       1   0   1   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">100.00%  100.00%       --     0 </span>
+       0   0   0   0   0   0   0      1/1      1/1     0/0     3 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 58.33%  100.00%   53.85%    +5 </span>
+       2   5   4   2   1   2   7     7/12      2/2    7/13    23 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #970310;"><b>IU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Sydney Parrish #33               <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+       0   2   0   0   1   1   3      0/1      0/1     0/0     0 </span><span class="row-odd">Shay Ciezki #10                  <span style="color:#999"> 75.00%  100.00%  100.00%    -1 </span>
+       0   0   1   0   0   0   1      3/4      2/2     5/5    13 </span><span class="row-even">Yarden Garzon #12                <span style="color:#999">     --       --       --    -1 </span>
+       0   0   0   0   0   2   1      0/0      0/0     0/0     0 </span><span class="row-odd">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%       --   75.00%    -1 </span>
+       0   1   1   0   0   0   0      0/2      0/0     3/4     3 </span><span class="row-even">Lilly Meister #52                <span style="color:#999"> 33.33%       --  100.00%    -1 </span>
+       1   0   0   1   1   0   1      1/3      0/0     2/2     4 </span><span class="row-odd" style="color: #970310;"><b>IU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Karoline Striplin #11            <span style="color:#999">  0.00%       --       --     0 </span>
+       1   0   1   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-odd">Lexus Bargesser #1               <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   0   1      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #970310;"><b>IU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 41.67%   66.67%   90.91%    -5 </span>
+       2   3   3   1   2   3   8     5/12      2/3   10/11    22 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 33.33%  100.00%    0.00%    +1 </span>
+       0   0   1   1   1   1   2      1/3      1/1     0/2     3 </span><span class="row-even">Taylor Williams #33              <span style="color:#999">100.00%       --   83.33%    +1 </span>
+       2   7   0   1   0   1   2      1/1      0/0     5/6     7 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999"> 50.00%    0.00%   40.00%    +1 </span>
+       0   1   1   0   1   0   0      2/4      0/2     2/5     6 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 40.00%  100.00%  100.00%    +1 </span>
+       0   1   0   2   1   0   0      2/5      1/1     2/2     7 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    +1 </span>
+       0   1   2   0   0   1   1      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 66.67%       --       --     0 </span>
+       0   0   2   0   0   0   3      4/6      0/0     0/0     8 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999">100.00%       --       --     0 </span>
+       1   0   1   0   0   0   0      2/2      0/0     0/0     4 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   1   0   0   0   0   1      0/2      0/1     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999">100.00%  100.00%       --     0 </span>
+       0   0   0   0   0   0   0      1/1      1/1     0/0     3 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 52.00%   42.86%   60.00%    +5 </span>
+       3  11   7   4   3   3   9    13/25      3/7    9/15    38 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #970310;"><b>IU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Sydney Parrish #33               <span style="color:#999"> 33.33%   50.00%       --    -1 </span>
+       0   4   2   1   2   1   4      1/3      1/2     0/0     3 </span><span class="row-even">Shay Ciezki #10                  <span style="color:#999"> 50.00%   75.00%  100.00%    -1 </span>
+       0   1   2   0   0   0   1      4/8      3/4     5/5    16 </span><span class="row-odd">Yarden Garzon #12                <span style="color:#999"> 40.00%   33.33%       --    -1 </span>
+       0   2   0   0   0   3   1      2/5      1/3     0/0     5 </span><span class="row-even">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%       --   75.00%    -1 </span>
+       0   1   1   0   0   0   0      0/2      0/0     3/4     3 </span><span class="row-odd">Lilly Meister #52                <span style="color:#999"> 33.33%       --  100.00%    -1 </span>
+       1   0   1   1   1   0   2      1/3      0/0     2/2     4 </span><span class="row-even" style="color: #970310;"><b>IU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Karoline Striplin #11            <span style="color:#999"> 50.00%       --       --     0 </span>
+       2   0   2   0   0   1   2      2/4      0/0     0/0     4 </span><span class="row-even">Lexus Bargesser #1               <span style="color:#999"> 50.00%       --       --     0 </span>
+       0   1   0   0   0   1   1      1/2      0/0     0/0     2 </span><span class="row-odd" style="color: #970310;"><b>IU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 40.74%   55.56%   90.91%    -5 </span>
+       3   9   8   2   3   6  11    11/27      5/9   10/11    37 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Casey Harter #12                 <span style="color:#999"> 33.33%  100.00%    0.00%    -4 </span>
+  34   0   1   2   1   1   1   2      1/3      1/1     0/2     3 </span><span class="row-even">Taylor Williams #33              <span style="color:#999"> 83.33%       --   83.33%    -4 </span>
+  30   3  10   0   1   1   1   2      5/6      0/0     5/6    15 </span><span class="row-odd">Kyla Jones #2                    <span style="color:#999"> 37.50%    0.00%   40.00%    -4 </span>
+  23   2   3   1   0   1   1   0      3/8      0/3     2/5     8 </span><span class="row-even">Caileigh Walsh #10               <span style="color:#999"> 44.44%  100.00%  100.00%    -4 </span>
+  22   1   3   1   2   1   1   2      4/9      2/2     2/2    12 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    -4 </span>
   22   0   2   3   1   0   4   1      0/5      0/3     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 47.06%  50.00%      --    0 </span>
-  36   1   2   6   1   0   3   3     8/17      1/2     0/0    17 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 50.00%      --      --    0 </span>
-  16   1   1   2   0   0   0   0      3/6      0/0     0/0     6 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%   0.00%      --    0 </span>
-   9   0   3   0   0   0   1   2      0/2      0/1     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 50.00%  50.00%      --    0 </span>
-   5   0   0   0   0   0   0   2      1/2      1/2     0/0     3 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">     --      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Mel Daley #21                    <span style="color:#999"> 47.06%   50.00%       --     0 </span>
+  36   1   2   6   1   0   3   3     8/17      1/2     0/0    17 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 50.00%       --       --     0 </span>
+  16   1   1   2   0   0   0   0      3/6      0/0     0/0     6 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%       --     0 </span>
+   9   0   3   0   0   0   1   2      0/2      0/1     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 50.00%   50.00%       --     0 </span>
+   5   0   0   0   0   0   0   2      1/2      1/2     0/0     3 </span><span class="row-odd">Mercy Ademusayo #13              <span style="color:#999">     --       --       --     0 </span>
    3   0   0   0   0   1   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3
 <span class="dnp">  Did not play</span></span><span class="row-odd">Rachel Mutombo #0
 <span class="dnp">  Did not play</span></span><span class="row-even">Kat Righeimer #8
 <span class="dnp">  Did not play</span></span><span class="row-odd">Lauren Trumpy #25
 <span class="dnp">  Did not play</span></span><span class="row-even">Crystal Fuqu Wang #31
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 43.10%  35.71%  60.00% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 43.10%   35.71%   60.00%   -20 </span>
        8  25  15   6   5  12  14    25/58     5/14    9/15    64 </span><span class="row-odd">
 
 </span><span class="row-even" style="color: #970310;"><b>IU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Sydney Parrish #33               <span style="color:#999"> 33.33%  33.33%  50.00%   +4 </span>
-  37   0   7   2   3   2   3   4     4/12      3/9     1/2    12 </span><span class="row-even">Shay Ciezki #10                  <span style="color:#999"> 50.00%  50.00% 100.00%   +4 </span>
-  35   0   2   5   0   0   0   1     6/12      3/6     5/5    20 </span><span class="row-odd">Yarden Garzon #12                <span style="color:#999"> 33.33%  40.00% 100.00%   +4 </span>
-  33   0   5   2   2   0   6   3      3/9      2/5     2/2    10 </span><span class="row-even">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%   0.00%  75.00%   +4 </span>
-  30   1   2   4   0   0   1   2      0/5      0/2     3/4     3 </span><span class="row-odd">Lilly Meister #52                <span style="color:#999"> 42.86%      -- 100.00%   +4 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Sydney Parrish #33               <span style="color:#999"> 33.33%   33.33%   50.00%    +4 </span>
+  37   0   7   2   3   2   3   4     4/12      3/9     1/2    12 </span><span class="row-even">Shay Ciezki #10                  <span style="color:#999"> 50.00%   50.00%  100.00%    +4 </span>
+  35   0   2   5   0   0   0   1     6/12      3/6     5/5    20 </span><span class="row-odd">Yarden Garzon #12                <span style="color:#999"> 33.33%   40.00%  100.00%    +4 </span>
+  33   0   5   2   2   0   6   3      3/9      2/5     2/2    10 </span><span class="row-even">Chloe Moore-McNeil #22           <span style="color:#999">  0.00%    0.00%   75.00%    +4 </span>
+  30   1   2   4   0   0   1   2      0/5      0/2     3/4     3 </span><span class="row-odd">Lilly Meister #52                <span style="color:#999"> 42.86%       --  100.00%    +4 </span>
   19   1   2   1   1   1   0   2      3/7      0/0     2/2     8 </span><span class="row-even" style="color: #970310;"><b>IU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Karoline Striplin #11            <span style="color:#999"> 62.50%      -- 100.00%    0 </span>
-  21   3   1   2   0   0   2   3      5/8      0/0     3/3    13 </span><span class="row-even">Lexus Bargesser #1               <span style="color:#999"> 33.33%      --      --    0 </span>
-  19   1   3   2   1   0   1   1      1/3      0/0     0/0     2 </span><span class="row-odd">Julianna LaMendola #20           <span style="color:#999">     --      --      --    0 </span>
-   3   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Henna Sandvik #21                <span style="color:#999">     --      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Karoline Striplin #11            <span style="color:#999"> 62.50%       --  100.00%     0 </span>
+  21   3   1   2   0   0   2   3      5/8      0/0     3/3    13 </span><span class="row-even">Lexus Bargesser #1               <span style="color:#999"> 33.33%       --       --     0 </span>
+  19   1   3   2   1   0   1   1      1/3      0/0     0/0     2 </span><span class="row-odd">Julianna LaMendola #20           <span style="color:#999">     --       --       --     0 </span>
+   3   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Henna Sandvik #21                <span style="color:#999">     --       --       --     0 </span>
    3   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Lenée Beaumont #5
 <span class="dnp">  Did not play</span></span><span class="row-even">Sharnecce Currie-Jelks #23
 <span class="dnp">  Did not play</span></span><span class="row-odd">Sydney Fenn #24
 <span class="dnp">  Did not play</span></span><span class="row-even">Valentyna Kadlecova #15
 <span class="dnp">  Did not play</span></span><span class="row-odd">Faith Wiseman #31
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #970310;"><b>IU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 39.29%  36.36%  88.89% </span>
-       6  22  18   7   3  13  16    22/56     8/22   16/18    68 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 39.29%   36.36%   88.89%   +20 </span>
+       6  22  18   7   3  13  16    22/56     8/22   16/18    68 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -182,6 +379,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

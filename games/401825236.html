@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>USC vs NEB - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:05:18.496667-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:31:24.955492-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:05:18 PM</span>
+<span id="timestamps">Data loaded: 01:31:24 PM</span>
 
 <a href="../schedule.html">&lt; USC Schedule</a>
 
@@ -70,20 +70,20 @@
                     USC  12 24 29  9  74
                     NEB  20 18 14 14  66
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots">                                                            </span>
-<span class="usc-dots">                                            .               </span>
-<span class="usc-dots">                                         .. ..    .         </span>
-<span class="usc-dots">                                    ... ...... ....         </span>
-<span class="usc-dots">                                   ........... ........ ... </span>
-<span class="usc-dots"> USC                               ........... ............ </span>
+<span class="usc-dots">                                                                </span>
+<span class="usc-dots">                                               .                </span>
+<span class="usc-dots">                                            .  ..    .          </span>
+<span class="usc-dots">                                      .  . ...... .....         </span>
+<span class="usc-dots">                                     ............ ............. </span>
+<span class="usc-dots"> USC                                 ............ ............. </span>
 
-       +============+============+============+============+
-<span style="color: #e31937;"> NEB          ...... ..       ..                            </span>
-<span style="color: #e31937;">               .....  .                                     </span>
-<span style="color: #e31937;">                  .                                         </span>
+       +=============+=============+=============+=============+
+<span style="color: #e31937;"> NEB        .  ...... ..        ..                              </span>
+<span style="color: #e31937;">                ..... ..                                        </span>
+<span style="color: #e31937;">                                                                </span>
 </span>
 
 <b>Lead Changes:</b> 5
@@ -93,8 +93,8 @@
 <b>Venue:</b> Pinnacle Bank Arena
 <b>Attendance:</b> 6,285
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 USC   74  29/58  6/20 10/17 14/22/36 16 10  8
           50.0% 30.0% 58.8%
 NEB   66  21/52  5/17 19/21  8/15/23 13  8  3
@@ -103,47 +103,245 @@ NEB   66  21/52  5/17 19/21  8/15/23 13  8  3
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 USC    44       4     9  14   18  18   27  22
 NEB    28       8    27   8   15  16   18  19
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   12   5/15   1/6   1/3    6/3/9  4  3  1
+          33.3% 16.7% 33.3%
+NEB   20   5/10   2/2   8/8    2/5/7  3  2  1
+          50.0% 100.0% 100.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   24  11/19   0/4   2/6   3/8/11  4  1  5
+          57.9%  0.0% 33.3%
+NEB   18   6/17   1/6   5/5    3/5/8  3  0  1
+          35.3% 16.7% 100.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   36  16/34  1/10   3/9  9/11/20  8  4  6
+          47.1% 10.0% 33.3%
+NEB   38  11/27   3/8 13/13  5/10/15  6  2  2
+          40.7% 37.5% 100.0%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   29  10/16   5/9   4/4    4/3/7  6  4  1
+          62.5% 55.6% 100.0%
+NEB   14    4/9   1/2   5/6    1/2/3  3  2  0
+          44.4% 50.0% 83.3%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC    9    3/8   0/1   3/4    1/8/9  2  2  1
+          37.5%  0.0% 75.0%
+NEB   14   6/16   1/7   1/2    2/3/5  3  4  1
+          37.5% 14.3% 50.0%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   38  13/24  5/10   7/8  5/11/16  8  6  2
+          54.2% 50.0% 87.5%
+NEB   28  10/25   2/9   6/8    3/5/8  6  6  1
+          40.0% 22.2% 75.0%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999">100.00%       --       --    -4 </span>
+       0   1   2   1   1   0   2      1/1      0/0     0/0     2 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999">  0.00%    0.00%       --    -6 </span>
+       0   2   1   0   0   0   1      0/5      0/2     0/0     0 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999">     --       --       --    -4 </span>
+       0   0   0   0   0   2   0      0/0      0/0     0/0     0 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 60.00%   33.33%       --    -8 </span>
+       0   0   0   1   0   0   1      3/5      1/3     0/0     7 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999">     --       --       --    -6 </span>
+       0   0   0   1   0   2   0      0/0      0/0     0/0     0 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       2   0   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Laura Williams #6                <span style="color:#999">  0.00%       --    0.00%    -4 </span>
+       4   0   1   0   0   0   1      0/1      0/0     0/2     0 </span><span class="row-even">Vivian Iwuchukwu #0              <span style="color:#999"> 50.00%       --  100.00%    -2 </span>
+       0   0   0   0   0   0   0      1/2      0/0     1/1     3 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 33.33%   16.67%   33.33%   -40 </span>
+       6   3   4   3   1   5   6     5/15      1/6     1/3    12 </span><span class="row-odd">
 
-<span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%  33.33%      --  +12 </span>
-  35   0   9   6   1   2   6   4     8/12      1/3     0/0    17 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999"> 43.75%  20.00% 100.00%   +7 </span>
-  32   3   5   3   1   5   2   2     7/16      1/5     2/2    17 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999"> 50.00%  60.00% 100.00%  +16 </span>
-  31   0   0   1   3   0   4   2      4/8      3/5     2/2    13 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 46.15%  20.00%  50.00%   +1 </span>
-  28   2   3   0   2   0   0   4     6/13      1/5     1/2    14 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999"> 50.00%      -- 100.00%  +16 </span>
+</span><span class="row-even" style="color: #e31937;"><b>NEB STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999">100.00%       --  100.00%    +6 </span>
+       0   1   2   0   0   2   0      1/1      0/0     2/2     4 </span><span class="row-even">Callin Hake #14                  <span style="color:#999">100.00%       --  100.00%    +2 </span>
+       0   0   0   0   0   0   0      1/1      0/0     2/2     4 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999">  0.00%       --       --    +6 </span>
+       0   1   0   1   0   1   1      0/2      0/0     0/0     0 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999"> 50.00%       --       --    +2 </span>
+       1   1   0   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%       --  100.00%    +3 </span>
+       1   1   1   1   1   1   0      0/2      0/0     2/2     2 </span><span class="row-even" style="color: #e31937;"><b>NEB BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999">100.00%  100.00%       --    +5 </span>
+       0   0   0   0   0   0   1      1/1      1/1     0/0     3 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999">100.00%  100.00%       --    +5 </span>
+       0   0   0   0   0   0   1      1/1      1/1     0/0     3 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999">     --       --  100.00%    +2 </span>
+       0   1   0   0   0   0   1      0/0      0/0     2/2     2 </span><span class="row-even" style="color: #e31937;"><b>NEB TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 50.00%  100.00%  100.00%   +31 </span>
+       2   5   3   2   1   4   4     5/10      2/2     8/8    20 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 60.00%    0.00%       --    +6 </span>
+       0   4   2   0   1   1   0      3/5      0/1     0/0     6 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999"> 50.00%    0.00%  100.00%    +6 </span>
+       1   2   2   1   4   0   1      3/6      0/2     2/2     8 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999">  0.00%       --       --    +8 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 50.00%    0.00%       --    +6 </span>
+       1   1   0   0   0   0   1      2/4      0/1     0/0     4 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999">100.00%       --       --    +6 </span>
+       1   0   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999">100.00%       --       --    -2 </span>
+       0   0   0   0   0   1   1      1/1      0/0     0/0     2 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999">100.00%       --    0.00%     0 </span>
+       0   0   0   0   0   0   1      1/1      0/0     0/2     2 </span><span class="row-odd">Laura Williams #6                <span style="color:#999">     --       --       --    +1 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Vivian Iwuchukwu #0              <span style="color:#999">     --       --    0.00%    -1 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/2     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 57.89%    0.00%   33.33%   +30 </span>
+       3   8   4   1   5   2   5    11/19      0/4     2/6    24 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #e31937;"><b>NEB STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999"> 50.00%       --  100.00%    -2 </span>
+       0   1   1   0   0   0   1      2/4      0/0     1/1     5 </span><span class="row-even">Callin Hake #14                  <span style="color:#999">     --       --  100.00%    -7 </span>
+       0   0   1   0   0   1   1      0/0      0/0     2/2     2 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999"> 50.00%    0.00%       --    -8 </span>
+       1   0   0   0   0   0   0      2/4      0/1     0/0     4 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999">  0.00%    0.00%       --    -8 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%       --       --    -8 </span>
+       1   0   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #e31937;"><b>NEB BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999"> 33.33%   33.33%       --    +1 </span>
+       0   1   1   0   0   1   0      1/3      1/3     0/0     3 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999"> 33.33%    0.00%       --    +2 </span>
+       0   3   0   0   0   0   0      1/3      0/1     0/0     2 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999">  0.00%       --  100.00%    +2 </span>
+       1   0   0   0   0   0   1      0/1      0/0     2/2     2 </span><span class="row-even" style="color: #e31937;"><b>NEB TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 35.29%   16.67%  100.00%   -28 </span>
+       3   5   3   0   1   2   3     6/17      1/6     5/5    18 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%    0.00%       --    +2 </span>
+       0   5   4   1   2   1   2      4/6      0/1     0/0     8 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999"> 27.27%    0.00%  100.00%     0 </span>
+       1   4   3   1   4   0   2     3/11      0/4     2/2     8 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999">  0.00%       --       --    +4 </span>
+       0   0   0   0   0   2   0      0/1      0/0     0/0     0 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 55.56%   25.00%       --    -2 </span>
+       1   1   0   1   0   0   2      5/9      1/4     0/0    11 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999">100.00%       --       --    +4 </span>
+       1   0   0   0   0   0   1      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999">100.00%       --       --    -8 </span>
+       0   0   0   1   0   3   1      1/1      0/0     0/0     2 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999"> 50.00%    0.00%    0.00%    -4 </span>
+       2   0   0   0   0   1   1      1/2      0/1     0/2     2 </span><span class="row-odd">Laura Williams #6                <span style="color:#999">  0.00%       --    0.00%    -3 </span>
+       4   0   1   0   0   0   2      0/1      0/0     0/2     0 </span><span class="row-even">Vivian Iwuchukwu #0              <span style="color:#999"> 50.00%       --   33.33%    -3 </span>
+       0   1   0   0   0   0   0      1/2      0/0     1/3     3 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 47.06%   10.00%   33.33%   -10 </span>
+       9  11   8   4   6   7  11    16/34     1/10     3/9    36 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #e31937;"><b>NEB STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999"> 60.00%       --  100.00%    +4 </span>
+       0   2   3   0   0   2   1      3/5      0/0     3/3     9 </span><span class="row-even">Callin Hake #14                  <span style="color:#999">100.00%       --  100.00%    -5 </span>
+       0   0   1   0   0   1   1      1/1      0/0     4/4     6 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999"> 33.33%    0.00%       --    -2 </span>
+       1   1   0   1   0   1   1      2/6      0/1     0/0     4 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999"> 33.33%    0.00%       --    -6 </span>
+       1   1   0   0   0   0   0      1/3      0/1     0/0     2 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%       --  100.00%    -5 </span>
+       2   1   1   1   2   1   0      0/3      0/0     2/2     2 </span><span class="row-even" style="color: #e31937;"><b>NEB BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999"> 50.00%   50.00%       --    +6 </span>
+       0   1   1   0   0   1   1      2/4      2/4     0/0     6 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999"> 50.00%   50.00%       --    +7 </span>
+       0   3   0   0   0   0   1      2/4      1/2     0/0     5 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999">  0.00%       --  100.00%    +4 </span>
+       1   1   0   0   0   0   2      0/1      0/0     4/4     4 </span><span class="row-even" style="color: #e31937;"><b>NEB TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 40.74%   37.50%  100.00%    +3 </span>
+       5  10   6   2   2   6   7    11/27      3/8   13/13    38 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%   50.00%       --   +15 </span>
+       0   0   1   0   0   1   1      2/3      1/2     0/0     5 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999">100.00%  100.00%       --   +16 </span>
+       2   0   0   0   0   1   0      4/4      1/1     0/0     9 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999"> 66.67%   75.00%  100.00%   +15 </span>
+       0   0   0   2   0   1   0      4/6      3/4     2/2    13 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999">  0.00%    0.00%       --    +1 </span>
+       0   0   0   0   0   0   2      0/1      0/1     0/0     0 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999">  0.00%       --  100.00%   +15 </span>
+       2   2   1   1   1   0   1      0/1      0/0     2/2     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999">  0.00%    0.00%       --   +14 </span>
+       0   1   4   1   0   0   3      0/1      0/1     0/0     0 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999">     --       --       --    -1 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 62.50%   55.56%  100.00%   +75 </span>
+       4   3   6   4   1   4   7    10/16      5/9     4/4    29 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #e31937;"><b>NEB STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999">100.00%  100.00%  100.00%   -15 </span>
+       0   1   2   0   0   1   2      2/2      1/1     2/2     7 </span><span class="row-even">Callin Hake #14                  <span style="color:#999">     --       --       --   -12 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999">100.00%       --       --    -6 </span>
+       0   0   0   0   0   1   0      1/1      0/0     0/0     2 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999">     --       --   50.00%   -10 </span>
+       0   0   0   2   0   0   0      0/0      0/0     1/2     1 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%       --       --   -14 </span>
+       0   0   0   0   0   1   2      0/2      0/0     0/0     0 </span><span class="row-even" style="color: #e31937;"><b>NEB BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999">     --       --       --    -5 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999"> 33.33%    0.00%       --    -4 </span>
+       0   0   1   0   0   0   0      1/3      0/1     0/0     2 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999">  0.00%       --  100.00%    -6 </span>
+       0   0   0   0   0   1   1      0/1      0/0     2/2     2 </span><span class="row-even">Kennadi Williams #15             <span style="color:#999">     --       --       --    -3 </span>
+       1   0   0   0   0   2   1      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #e31937;"><b>NEB TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 44.44%   50.00%   83.33%   -75 </span>
+       1   2   3   2   0   7   6      4/9      1/2     5/6    14 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%       --       --    -5 </span>
+       0   4   1   0   0   4   1      2/3      0/0     0/0     4 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999">  0.00%       --       --    -9 </span>
+       0   1   0   0   1   1   0      0/1      0/0     0/0     0 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999">  0.00%    0.00%       --    -3 </span>
+       0   0   1   1   0   1   2      0/1      0/1     0/0     0 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 33.33%       --   50.00%    +2 </span>
+       1   2   0   1   0   0   0      1/3      0/0     1/2     3 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999">     --       --       --    -3 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999">     --       --  100.00%    -5 </span>
+       0   1   0   0   0   0   0      0/0      0/0     2/2     2 </span><span class="row-even" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 37.50%    0.00%   75.00%   -23 </span>
+       1   8   2   2   1   7   4      3/8      0/1     3/4     9 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #e31937;"><b>NEB STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Britt Prince #23                 <span style="color:#999"> 50.00%    0.00%       --    +7 </span>
+       1   0   2   1   0   2   1      1/2      0/1     0/0     2 </span><span class="row-odd">Callin Hake #14                  <span style="color:#999"> 50.00%    0.00%       --    +5 </span>
+       0   1   1   1   0   0   0      1/2      0/1     0/0     2 </span><span class="row-even">Jessica Petrie #12               <span style="color:#999"> 50.00%    0.00%       --    +2 </span>
+       0   0   0   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-odd" style="color: #e31937;"><b>NEB BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Logan Nissley #2                 <span style="color:#999"> 33.33%   33.33%   50.00%    +5 </span>
+       0   0   0   0   0   0   2      1/3      1/3     1/2     4 </span><span class="row-odd">Amiah Hargrove #33               <span style="color:#999">  0.00%       --       --    +3 </span>
+       1   0   0   1   1   0   2      0/1      0/0     0/0     0 </span><span class="row-even">Eliza Maupin #21                 <span style="color:#999"> 33.33%    0.00%       --    +5 </span>
+       0   2   0   1   0   1   0      2/6      0/1     0/0     4 </span><span class="row-odd">Kennadi Williams #15             <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #e31937;"><b>NEB TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 37.50%   14.29%   50.00%   +25 </span>
+       2   3   3   4   1   3   6     6/16      1/7     1/2    14 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%   50.00%       --   +10 </span>
+       0   4   2   0   0   5   2      4/6      1/2     0/0     9 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999"> 80.00%  100.00%       --    +7 </span>
+       2   1   0   0   1   2   0      4/5      1/1     0/0     9 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999"> 57.14%   60.00%  100.00%   +12 </span>
+       0   0   1   3   0   2   2      4/7      3/5     2/2    13 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 25.00%    0.00%   50.00%    +3 </span>
+       1   2   0   1   0   0   2      1/4      0/1     1/2     3 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999">  0.00%       --  100.00%   +12 </span>
+       2   2   1   1   1   1   2      0/1      0/0     2/2     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999">  0.00%    0.00%  100.00%    +9 </span>
+       0   2   4   1   0   0   3      0/1      0/1     2/2     2 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999">     --       --       --    -1 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 54.17%   50.00%   87.50%   +52 </span>
+       5  11   8   6   2  11  11    13/24     5/10     7/8    38 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #e31937;"><b>NEB STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999"> 75.00%   50.00%  100.00%    -8 </span>
+       1   1   4   1   0   3   3      3/4      1/2     2/2     9 </span><span class="row-even">Callin Hake #14                  <span style="color:#999"> 50.00%    0.00%       --    -7 </span>
+       0   1   1   1   0   1   0      1/2      0/1     0/0     2 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999"> 66.67%    0.00%       --    -4 </span>
+       0   0   0   0   0   1   0      2/3      0/1     0/0     4 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999">     --       --   50.00%   -10 </span>
+       0   0   0   2   0   0   0      0/0      0/0     1/2     1 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%       --       --   -14 </span>
+       0   0   0   0   0   1   2      0/2      0/0     0/0     0 </span><span class="row-even" style="color: #e31937;"><b>NEB BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999"> 33.33%   33.33%   50.00%     0 </span>
+       0   1   0   0   0   0   2      1/3      1/3     1/2     4 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999"> 25.00%    0.00%       --    -1 </span>
+       1   0   1   1   1   0   2      1/4      0/1     0/0     2 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999"> 28.57%    0.00%  100.00%    -1 </span>
+       0   2   0   1   0   2   1      2/7      0/1     2/2     6 </span><span class="row-even">Kennadi Williams #15             <span style="color:#999">     --       --       --    -5 </span>
+       1   0   0   0   0   2   2      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #e31937;"><b>NEB TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 40.00%   22.22%   75.00%   -50 </span>
+       3   5   6   6   1  10  12    10/25      2/9     6/8    28 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%   33.33%       --   +12 </span>
+  35   0   9   6   1   2   6   4     8/12      1/3     0/0    17 </span><span class="row-even">Jazzy Davidson #9                <span style="color:#999"> 43.75%   20.00%  100.00%    +7 </span>
+  32   3   5   3   1   5   2   2     7/16      1/5     2/2    17 </span><span class="row-odd">Londynn Jones #3                 <span style="color:#999"> 50.00%   60.00%  100.00%   +16 </span>
+  31   0   0   1   3   0   4   2      4/8      3/5     2/2    13 </span><span class="row-even">Kara Dunn #25                    <span style="color:#999"> 46.15%   20.00%   50.00%    +1 </span>
+  28   2   3   0   2   0   0   4     6/13      1/5     1/2    14 </span><span class="row-odd">Gerda Raulusaityte #8            <span style="color:#999"> 50.00%       --  100.00%   +16 </span>
   26   3   2   1   1   1   1   3      1/2      0/0     2/2     4 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999"> 50.00%   0.00% 100.00%   +1 </span>
-  25   0   2   4   2   0   3   4      1/2      0/1     2/2     4 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999"> 50.00%   0.00%   0.00%   -5 </span>
-   9   2   0   0   0   0   2   1      1/2      0/1     0/2     2 </span><span class="row-odd">Laura Williams #6                <span style="color:#999">  0.00%      --   0.00%   -5 </span>
-   9   4   0   1   0   0   0   2      0/1      0/0     0/2     0 </span><span class="row-even">Vivian Iwuchukwu #0              <span style="color:#999"> 50.00%      --  33.33%   -3 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Malia Samuels #10                <span style="color:#999"> 50.00%    0.00%  100.00%    +1 </span>
+  25   0   2   4   2   0   3   4      1/2      0/1     2/2     4 </span><span class="row-even">Dayana Mendes #13                <span style="color:#999"> 50.00%    0.00%    0.00%    -5 </span>
+   9   2   0   0   0   0   2   1      1/2      0/1     0/2     2 </span><span class="row-odd">Laura Williams #6                <span style="color:#999">  0.00%       --    0.00%    -5 </span>
+   9   4   0   1   0   0   0   2      0/1      0/0     0/2     0 </span><span class="row-even">Vivian Iwuchukwu #0              <span style="color:#999"> 50.00%       --   33.33%    -3 </span>
    5   0   1   0   0   0   0   0      1/2      0/0     1/3     3 </span><span class="row-odd">Rian Forestier #4
 <span class="dnp">  Did not play</span></span><span class="row-even">Yakiya Milton #7
 <span class="dnp">  Did not play</span></span><span class="row-odd">Brooklyn Shamblin #24
 <span class="dnp">  Did not play</span></span><span class="row-even">JuJu Watkins #12
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%  30.00%  58.82% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   30.00%   58.82%   +40 </span>
       14  22  16  10   8  18  22    29/58     6/20   10/17    74 </span><span class="row-odd">
 
 </span><span class="row-even" style="color: #e31937;"><b>NEB STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999"> 66.67%  50.00% 100.00%   -4 </span>
-  37   1   3   7   1   0   5   4      6/9      1/2     5/5    18 </span><span class="row-even">Callin Hake #14                  <span style="color:#999"> 66.67%   0.00% 100.00%  -12 </span>
-  31   0   1   2   1   0   2   1      2/3      0/1     4/4     8 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999"> 44.44%   0.00%      --   -6 </span>
-  23   1   1   0   1   0   2   1      4/9      0/2     0/0     8 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999"> 33.33%   0.00%  50.00%  -16 </span>
-  13   1   1   0   2   0   0   0      1/3      0/1     1/2     3 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%      -- 100.00%  -19 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Britt Prince #23                 <span style="color:#999"> 66.67%   50.00%  100.00%    -4 </span>
+  37   1   3   7   1   0   5   4      6/9      1/2     5/5    18 </span><span class="row-even">Callin Hake #14                  <span style="color:#999"> 66.67%    0.00%  100.00%   -12 </span>
+  31   0   1   2   1   0   2   1      2/3      0/1     4/4     8 </span><span class="row-odd">Jessica Petrie #12               <span style="color:#999"> 44.44%    0.00%       --    -6 </span>
+  23   1   1   0   1   0   2   1      4/9      0/2     0/0     8 </span><span class="row-even">Hailey Weaver #1                 <span style="color:#999"> 33.33%    0.00%   50.00%   -16 </span>
+  13   1   1   0   2   0   0   0      1/3      0/1     1/2     3 </span><span class="row-odd">Petra Bozan #4                   <span style="color:#999">  0.00%       --  100.00%   -19 </span>
   13   2   1   1   1   2   2   2      0/5      0/0     2/2     2 </span><span class="row-even" style="color: #e31937;"><b>NEB BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999"> 42.86%  42.86%  50.00%   +6 </span>
-  29   0   2   1   0   0   1   3      3/7      3/7     1/2    10 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999"> 37.50%  33.33%      --   +6 </span>
-  23   1   3   1   1   1   0   3      3/8      1/3     0/0     7 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999"> 25.00%   0.00% 100.00%   +3 </span>
-  20   1   3   0   1   0   2   3      2/8      0/1     6/6    10 </span><span class="row-even">Kennadi Williams #15             <span style="color:#999">     --      --      --   +1 </span>
-   8   1   0   1   0   0   2   2      0/0      0/0     0/0     0 </span><span class="row-odd">Claire Johnson #5                <span style="color:#999">     --      --      --   +1 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Logan Nissley #2                 <span style="color:#999"> 42.86%   42.86%   50.00%    +6 </span>
+  29   0   2   1   0   0   1   3      3/7      3/7     1/2    10 </span><span class="row-even">Amiah Hargrove #33               <span style="color:#999"> 37.50%   33.33%       --    +6 </span>
+  23   1   3   1   1   1   0   3      3/8      1/3     0/0     7 </span><span class="row-odd">Eliza Maupin #21                 <span style="color:#999"> 25.00%    0.00%  100.00%    +3 </span>
+  20   1   3   0   1   0   2   3      2/8      0/1     6/6    10 </span><span class="row-even">Kennadi Williams #15             <span style="color:#999">     --       --       --    +1 </span>
+   8   1   0   1   0   0   2   2      0/0      0/0     0/0     0 </span><span class="row-odd">Claire Johnson #5                <span style="color:#999">     --       --       --    +1 </span>
    3   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Emily Fisher #34
 <span class="dnp">  Did not play</span></span><span class="row-odd">Alanna Neale #00
 <span class="dnp">  Did not play</span></span><span class="row-even">Natalie Potts #22
 <span class="dnp">  Did not play</span></span><span class="row-odd">Allison Weidner #3
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #e31937;"><b>NEB TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 40.38%  29.41%  90.48% </span>
-       8  15  13   8   3  16  19    21/52     5/17   19/21    66 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 40.38%   29.41%   90.48%   -40 </span>
+       8  15  13   8   3  16  19    21/52     5/17   19/21    66 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -185,6 +383,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

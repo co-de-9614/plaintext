@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>LUC vs NU - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:05:54.666223-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:31:58.510405-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:05:54 PM</span>
+<span id="timestamps">Data loaded: 01:31:58 PM</span>
 
 <a href="../nu-schedule.html">&lt; NU Schedule</a>
 
@@ -70,16 +70,16 @@
                     NU   16 17 13 22  68
                     LUC  20 18 18 13  69
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots"> NU                                                         </span>
+<span class="usc-dots"> NU                                                             </span>
 
-       +============+============+============+============+
-<span style="color: #9d1244;"> LUC         ..  ...  ........... ............ .....        </span>
-<span style="color: #9d1244;">                       ....   ..    .    . ... ...          </span>
-<span style="color: #9d1244;">                        ..                   .              </span>
-<span style="color: #9d1244;">                                                            </span>
+       +=============+=============+=============+=============+
+<span style="color: #9d1244;"> LUC        .     ...  ............ .... ........ .....         </span>
+<span style="color: #9d1244;">                        .... .....   .     .. ... ...           </span>
+<span style="color: #9d1244;">                        . .                     .               </span>
+<span style="color: #9d1244;">                                                                </span>
 </span>
 
 <b>Lead Changes:</b> 7
@@ -89,8 +89,8 @@
 <b>Venue:</b> Welsh-Ryan Arena
 <b>Attendance:</b> 3,102
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 NU    68  25/54  4/15 14/17 10/22/32 21  8  7
           46.3% 26.7% 82.4%
 LUC   69  28/60  5/16  8/13 11/14/25 16  9  2
@@ -99,19 +99,212 @@ LUC   69  28/60  5/16  8/13 11/14/25 16  9  2
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 NU     40       7     4  10   14  16   13  16
 LUC    46      10     7  11   10  13   18  17
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    16   7/12   0/1   2/2    2/5/7  7  4  3
+          58.3%  0.0% 100.0%
+LUC   20   9/16   1/1   1/2    3/3/6  4  4  0
+          56.2% 100.0% 50.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    17   6/14   2/6   3/4    0/6/6  5  0  1
+          42.9% 33.3% 75.0%
+LUC   18   6/14   3/7   3/5    2/3/5  5  1  2
+          42.9% 42.9% 60.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    33  13/26   2/7   5/6  2/11/13 12  4  4
+          50.0% 28.6% 83.3%
+LUC   38  15/30   4/8   4/7   5/6/11  9  5  2
+          50.0% 50.0% 57.1%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    13   4/13   0/2   5/6   4/7/11  4  1  1
+          30.8%  0.0% 83.3%
+LUC   18   8/18   1/5   1/2    3/5/8  5  2  0
+          44.4% 20.0% 50.0%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    22   8/15   2/6   4/5    4/4/8  5  3  2
+          53.3% 33.3% 80.0%
+LUC   13   5/12   0/3   3/4    3/3/6  1  2  0
+          41.7%  0.0% 75.0%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    35  12/28   2/8  9/11  8/11/19  9  4  3
+          42.9% 25.0% 81.8%
+LUC   31  13/30   1/8   4/6   6/8/14  6  4  0
+          43.3% 12.5% 66.7%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">     --       --       --    -4 </span>
+       0   1   3   1   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 57.14%       --       --    -1 </span>
+       1   1   0   1   1   0   0      4/7      0/0     0/0     8 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       1   0   2   1   2   1   1      0/2      0/1     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999">     --       --       --    -2 </span>
+       0   2   1   0   0   2   0      0/0      0/0     0/0     0 </span><span class="row-odd">Grace Sullivan #22               <span style="color:#999">100.00%       --  100.00%    -5 </span>
+       0   0   0   0   0   0   0      2/2      0/0     2/2     6 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">100.00%       --       --    -2 </span>
+       0   0   0   0   0   0   1      1/1      0/0     0/0     2 </span><span class="row-even">Angelina Hodgens #11             <span style="color:#999">     --       --       --    -2 </span>
+       0   1   1   1   0   2   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 58.33%    0.00%  100.00%   -20 </span>
+       2   5   7   4   3   5   2     7/12      0/1     2/2    16 </span><span class="row-odd">
 
-<span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 60.00%  66.67%  66.67%   -1 </span>
-  40   0   8   9   1   1   4   2      3/5      2/3     4/6    12 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 64.71%      --  88.89%    0 </span>
-  36   5   6   1   1   2   3   2    11/17      0/0     8/9    30 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999"> 26.67%  28.57%      --    0 </span>
-  36   1   2   5   4   3   3   3     4/15      2/7     0/0    10 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 37.50%   0.00%      --   +6 </span>
-  30   1   3   3   0   1   3   2      3/8      0/1     0/0     6 </span><span class="row-odd">Grace Sullivan #22               <span style="color:#999">100.00%      -- 100.00%   -5 </span>
+</span><span class="row-even" style="color: #9d1244;"><b>LUC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Alexa Kinas #2                   <span style="color:#999">  0.00%       --       --    +4 </span>
+       2   0   0   2   0   2   1      0/5      0/0     0/0     0 </span><span class="row-even">Brooklyn Vaughn #21              <span style="color:#999">100.00%       --    0.00%    +4 </span>
+       1   3   1   0   0   1   0      4/4      0/0     0/1     8 </span><span class="row-odd">Alex-Anne Bessette #10           <span style="color:#999">100.00%  100.00%       --    +1 </span>
+       0   0   0   0   0   0   0      3/3      1/1     0/0     7 </span><span class="row-even">Rosalie Mercille #9              <span style="color:#999">100.00%       --  100.00%    +4 </span>
+       0   0   0   0   0   0   0      1/1      0/0     1/1     3 </span><span class="row-odd">Alexus Mobley #22                <span style="color:#999"> 33.33%       --       --    +4 </span>
+       0   0   1   1   0   1   0      1/3      0/0     0/0     2 </span><span class="row-even" style="color: #9d1244;"><b>LUC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Clara Djoko #28                  <span style="color:#999">     --       --       --    +3 </span>
+       0   0   1   1   0   0   2      0/0      0/0     0/0     0 </span><span class="row-even">Audrey Deptula #4                <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #9d1244;"><b>LUC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 56.25%  100.00%   50.00%   +20 </span>
+       3   3   4   4   0   4   4     9/16      1/1     1/2    20 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%   50.00%    -1 </span>
+       0   3   4   0   0   2   1      0/1      0/1     1/2     1 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 50.00%       --  100.00%    -1 </span>
+       0   2   0   0   0   0   0      1/2      0/0     2/2     4 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999"> 60.00%   66.67%       --     0 </span>
+       0   0   1   0   0   0   1      3/5      2/3     0/0     8 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 50.00%       --       --    -2 </span>
+       0   0   0   0   1   0   1      2/4      0/0     0/0     4 </span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Angelina Hodgens #11             <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    +1 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   1      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 42.86%   33.33%   75.00%    -3 </span>
+       0   6   5   0   1   2   5     6/14      2/6     3/4    17 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #9d1244;"><b>LUC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Alexa Kinas #2                   <span style="color:#999"> 25.00%    0.00%       --    -1 </span>
+       1   0   0   0   0   0   0      1/4      0/1     0/0     2 </span><span class="row-even">Brooklyn Vaughn #21              <span style="color:#999">     --       --       --    -2 </span>
+       1   0   2   1   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Alex-Anne Bessette #10           <span style="color:#999"> 60.00%  100.00%   60.00%    +4 </span>
+       0   1   1   0   0   0   1      3/5      1/1     3/5    10 </span><span class="row-even">Rosalie Mercille #9              <span style="color:#999">100.00%  100.00%       --    +2 </span>
+       0   2   1   0   1   1   1      1/1      1/1     0/0     3 </span><span class="row-odd">Alexus Mobley #22                <span style="color:#999">     --       --       --    +1 </span>
+       0   0   0   0   1   0   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #9d1244;"><b>LUC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Clara Djoko #28                  <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Roisin Grandberry #1             <span style="color:#999"> 50.00%   50.00%       --    +2 </span>
+       0   0   0   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-odd">Daniella Matus #20               <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/2      0/2     0/0     0 </span><span class="row-even" style="color: #9d1244;"><b>LUC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 42.86%   42.86%   60.00%    +6 </span>
+       2   3   5   1   2   1   3     6/14      3/7     3/5    18 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%   50.00%    -5 </span>
+       0   4   7   1   0   2   1      0/1      0/1     1/2     1 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 55.56%       --  100.00%    -2 </span>
+       1   3   0   1   1   0   0      5/9      0/0     2/2    12 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999"> 42.86%   50.00%       --    -4 </span>
+       1   0   3   1   2   1   2      3/7      2/4     0/0     8 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 50.00%       --       --    -4 </span>
+       0   2   1   0   1   2   1      2/4      0/0     0/0     4 </span><span class="row-odd">Grace Sullivan #22               <span style="color:#999">100.00%       --  100.00%    -5 </span>
+       0   0   0   0   0   0   0      2/2      0/0     2/2     6 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">100.00%       --       --    -4 </span>
+       0   0   0   0   0   0   1      1/1      0/0     0/0     2 </span><span class="row-even">Angelina Hodgens #11             <span style="color:#999">  0.00%    0.00%       --    -2 </span>
+       0   1   1   1   0   2   0      0/1      0/1     0/0     0 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    +1 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   1      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   28.57%   83.33%   -25 </span>
+       2  11  12   4   4   7   7    13/26      2/7     5/6    33 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #9d1244;"><b>LUC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Alexa Kinas #2                   <span style="color:#999"> 11.11%    0.00%       --    +3 </span>
+       3   0   0   2   0   2   1      1/9      0/1     0/0     2 </span><span class="row-even">Brooklyn Vaughn #21              <span style="color:#999">100.00%       --    0.00%    +2 </span>
+       2   3   3   1   0   1   0      4/4      0/0     0/1     8 </span><span class="row-odd">Alex-Anne Bessette #10           <span style="color:#999"> 75.00%  100.00%   60.00%    +5 </span>
+       0   1   1   0   0   0   1      6/8      2/2     3/5    17 </span><span class="row-even">Rosalie Mercille #9              <span style="color:#999">100.00%  100.00%  100.00%    +6 </span>
+       0   2   1   0   1   1   1      2/2      1/1     1/1     6 </span><span class="row-odd">Alexus Mobley #22                <span style="color:#999"> 33.33%       --       --    +5 </span>
+       0   0   1   1   1   1   0      1/3      0/0     0/0     2 </span><span class="row-even" style="color: #9d1244;"><b>LUC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Clara Djoko #28                  <span style="color:#999">     --       --       --    +3 </span>
+       0   0   2   1   0   0   3      0/0      0/0     0/0     0 </span><span class="row-even">Roisin Grandberry #1             <span style="color:#999"> 50.00%   50.00%       --    +2 </span>
+       0   0   0   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-odd">Audrey Deptula #4                <span style="color:#999">     --       --       --    -1 </span>
+       0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Daniella Matus #20               <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/2      0/2     0/0     0 </span><span class="row-odd" style="color: #9d1244;"><b>LUC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   50.00%   57.14%   +25 </span>
+       5   6   9   5   2   5   7    15/30      4/8     4/7    38 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%       --   50.00%    -5 </span>
+       0   2   1   0   0   1   0      0/1      0/0     1/2     1 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999">100.00%       --  100.00%    -5 </span>
+       1   2   0   0   1   2   1      3/3      0/0     4/4    10 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       0   1   2   0   0   2   0      0/5      0/1     0/0     0 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999">  0.00%       --       --    +1 </span>
+       1   1   1   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">     --       --       --    -2 </span>
+       0   1   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-odd">Angelina Hodgens #11             <span style="color:#999"> 33.33%    0.00%       --    -4 </span>
+       2   0   0   1   0   0   0      1/3      0/1     0/0     2 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">     --       --       --    -1 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Amparo López #33                 <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 30.77%    0.00%   83.33%   -23 </span>
+       4   7   4   1   1   6   4     4/13      0/2     5/6    13 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #9d1244;"><b>LUC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Alexa Kinas #2                   <span style="color:#999"> 66.67%       --       --    +5 </span>
+       0   0   1   1   0   0   0      2/3      0/0     0/0     4 </span><span class="row-odd">Brooklyn Vaughn #21              <span style="color:#999"> 75.00%       --   50.00%    +5 </span>
+       2   2   1   0   0   1   2      3/4      0/0     1/2     7 </span><span class="row-even">Alex-Anne Bessette #10           <span style="color:#999"> 25.00%    0.00%       --    +7 </span>
+       0   1   0   0   0   0   0      1/4      0/1     0/0     2 </span><span class="row-odd">Rosalie Mercille #9              <span style="color:#999"> 40.00%   50.00%       --    +5 </span>
+       0   1   1   1   0   1   0      2/5      1/2     0/0     5 </span><span class="row-even">Alexus Mobley #22                <span style="color:#999">  0.00%    0.00%       --    -3 </span>
+       0   0   0   0   0   1   2      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #9d1244;"><b>LUC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Clara Djoko #28                  <span style="color:#999">     --       --       --    +6 </span>
+       1   1   2   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Roisin Grandberry #1             <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #9d1244;"><b>LUC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 44.44%   20.00%   50.00%   +25 </span>
+       3   5   5   2   0   3   5     8/18      1/5     1/2    18 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">100.00%  100.00%  100.00%    +9 </span>
+       0   2   1   0   1   1   1      3/3      2/2     2/2    10 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 60.00%       --   66.67%    +7 </span>
+       3   1   1   0   0   1   1      3/5      0/0     2/3     8 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999"> 33.33%    0.00%       --    +9 </span>
+       0   1   0   3   1   0   1      1/3      0/2     0/0     2 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 33.33%    0.00%       --    +9 </span>
+       0   0   1   0   0   1   1      1/3      0/1     0/0     2 </span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">     --       --       --    +9 </span>
+       1   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    +2 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --     0 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 53.33%   33.33%   80.00%   +45 </span>
+       4   4   5   3   2   3   5     8/15      2/6     4/5    22 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #9d1244;"><b>LUC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Alexa Kinas #2                   <span style="color:#999"> 25.00%    0.00%       --    -9 </span>
+       0   0   0   1   0   1   2      1/4      0/1     0/0     2 </span><span class="row-even">Brooklyn Vaughn #21              <span style="color:#999"> 50.00%       --  100.00%    -9 </span>
+       1   0   0   0   0   0   1      1/2      0/0     2/2     4 </span><span class="row-odd">Alex-Anne Bessette #10           <span style="color:#999"> 50.00%    0.00%   50.00%   -10 </span>
+       0   0   0   0   0   2   0      1/2      0/1     1/2     3 </span><span class="row-even">Rosalie Mercille #9              <span style="color:#999">  0.00%    0.00%       --    -9 </span>
+       0   1   1   0   0   0   1      0/1      0/1     0/0     0 </span><span class="row-odd">Alexus Mobley #22                <span style="color:#999">  0.00%       --       --    -3 </span>
+       0   1   0   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #9d1244;"><b>LUC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Clara Djoko #28                  <span style="color:#999">100.00%       --       --    -3 </span>
+       2   1   0   1   0   2   0      2/2      0/0     0/0     4 </span><span class="row-even" style="color: #9d1244;"><b>LUC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 41.67%    0.00%   75.00%   -43 </span>
+       3   3   1   2   0   5   5     5/12      0/3     3/4    13 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 75.00%  100.00%   75.00%    +4 </span>
+       0   4   2   0   1   2   1      3/4      2/2     3/4    11 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 75.00%       --   85.71%    +2 </span>
+       4   3   1   0   1   3   2      6/8      0/0     6/7    18 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999"> 12.50%    0.00%       --    +4 </span>
+       0   2   2   3   1   2   1      1/8      0/3     0/0     2 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 25.00%    0.00%       --   +10 </span>
+       1   1   2   0   0   1   1      1/4      0/1     0/0     2 </span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">     --       --       --    +7 </span>
+       1   1   1   0   0   1   2      0/0      0/0     0/0     0 </span><span class="row-odd">Angelina Hodgens #11             <span style="color:#999"> 33.33%    0.00%       --    -4 </span>
+       2   0   0   1   0   0   0      1/3      0/1     0/0     2 </span><span class="row-even">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+       0   0   0   0   0   0   1      0/1      0/1     0/0     0 </span><span class="row-even">Amparo López #33                 <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 42.86%   25.00%   81.82%   +20 </span>
+       8  11   9   4   3   9   9    12/28      2/8    9/11    35 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #9d1244;"><b>LUC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Alexa Kinas #2                   <span style="color:#999"> 42.86%    0.00%       --    -4 </span>
+       0   0   1   2   0   1   2      3/7      0/1     0/0     6 </span><span class="row-even">Brooklyn Vaughn #21              <span style="color:#999"> 66.67%       --   75.00%    -4 </span>
+       3   2   1   0   0   1   3      4/6      0/0     3/4    11 </span><span class="row-odd">Alex-Anne Bessette #10           <span style="color:#999"> 33.33%    0.00%   50.00%    -3 </span>
+       0   1   0   0   0   2   0      2/6      0/2     1/2     5 </span><span class="row-even">Rosalie Mercille #9              <span style="color:#999"> 33.33%   33.33%       --    -4 </span>
+       0   2   2   1   0   1   1      2/6      1/3     0/0     5 </span><span class="row-odd">Alexus Mobley #22                <span style="color:#999">  0.00%    0.00%       --    -6 </span>
+       0   1   0   0   0   1   3      0/2      0/1     0/0     0 </span><span class="row-even" style="color: #9d1244;"><b>LUC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Clara Djoko #28                  <span style="color:#999">100.00%       --       --    +3 </span>
+       3   2   2   1   0   2   1      2/2      0/0     0/0     4 </span><span class="row-even">Roisin Grandberry #1             <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd" style="color: #9d1244;"><b>LUC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 43.33%   12.50%   66.67%   -22 </span>
+       6   8   6   4   0   8  10    13/30      1/8     4/6    31 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 60.00%   66.67%   66.67%    -1 </span>
+  40   0   8   9   1   1   4   2      3/5      2/3     4/6    12 </span><span class="row-even">Tayla Thomas #23                 <span style="color:#999"> 64.71%       --   88.89%     0 </span>
+  36   5   6   1   1   2   3   2    11/17      0/0     8/9    30 </span><span class="row-odd">Tate Lash #4                     <span style="color:#999"> 26.67%   28.57%       --     0 </span>
+  36   1   2   5   4   3   3   3     4/15      2/7     0/0    10 </span><span class="row-even">Xamiya Walton #1                 <span style="color:#999"> 37.50%    0.00%       --    +6 </span>
+  30   1   3   3   0   1   3   2      3/8      0/1     0/0     6 </span><span class="row-odd">Grace Sullivan #22               <span style="color:#999">100.00%       --  100.00%    -5 </span>
    9   0   0   0   0   0   0   0      2/2      0/0     2/2     6 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">100.00%      --      --   +3 </span>
-  24   1   1   1   0   0   1   3      1/1      0/0     0/0     2 </span><span class="row-even">Angelina Hodgens #11             <span style="color:#999"> 25.00%   0.00%      --   -6 </span>
-   9   2   1   1   2   0   2   0      1/4      0/2     0/0     2 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --      --      --   +1 </span>
-   8   0   1   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%   0.00%      --   -1 </span>
-   7   0   0   0   0   0   0   2      0/2      0/2     0/0     0 </span><span class="row-odd">Amparo López #33                 <span style="color:#999">     --      --      --   -2 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">100.00%       --       --    +3 </span>
+  24   1   1   1   0   0   1   3      1/1      0/0     0/0     2 </span><span class="row-even">Angelina Hodgens #11             <span style="color:#999"> 25.00%    0.00%       --    -6 </span>
+   9   2   1   1   2   0   2   0      1/4      0/2     0/0     2 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    +1 </span>
+   8   0   1   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+   7   0   0   0   0   0   0   2      0/2      0/2     0/0     0 </span><span class="row-odd">Amparo López #33                 <span style="color:#999">     --       --       --    -2 </span>
    1   0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Casey Harter #12
 <span class="dnp">  Did not play</span></span><span class="row-odd">Sandra Moreno #10
 <span class="dnp">  Did not play</span></span><span class="row-even">Rachel Mutombo #0
@@ -119,29 +312,29 @@ LUC    46      10     7  11   10  13   18  17
 <span class="dnp">  Did not play</span></span><span class="row-even">Lauren Trumpy #25
 <span class="dnp">  Did not play</span></span><span class="row-odd">Sammy White #14
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 46.30%  26.67%  82.35% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 46.30%   26.67%   82.35%    -5 </span>
       10  22  21   8   7  16  16    25/54     4/15   14/17    68 </span><span class="row-even">
 
 </span><span class="row-odd" style="color: #9d1244;"><b>LUC STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Alexa Kinas #2                   <span style="color:#999"> 25.00%   0.00%      --   -1 </span>
-  39   3   0   1   4   0   3   3     4/16      0/2     0/0     8 </span><span class="row-odd">Brooklyn Vaughn #21              <span style="color:#999"> 80.00%      --  60.00%   -2 </span>
-  37   5   5   4   1   0   2   3     8/10      0/0     3/5    19 </span><span class="row-even">Alex-Anne Bessette #10           <span style="color:#999"> 57.14%  50.00%  57.14%   +2 </span>
-  34   0   2   2   0   0   2   1     8/14      2/4     4/7    22 </span><span class="row-odd">Rosalie Mercille #9              <span style="color:#999"> 50.00%  50.00% 100.00%   +2 </span>
-  34   0   4   3   1   1   2   2      4/8      2/4     1/1    11 </span><span class="row-even">Alexus Mobley #22                <span style="color:#999"> 20.00%   0.00%      --   -1 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Alexa Kinas #2                   <span style="color:#999"> 25.00%    0.00%       --    -1 </span>
+  39   3   0   1   4   0   3   3     4/16      0/2     0/0     8 </span><span class="row-odd">Brooklyn Vaughn #21              <span style="color:#999"> 80.00%       --   60.00%    -2 </span>
+  37   5   5   4   1   0   2   3     8/10      0/0     3/5    19 </span><span class="row-even">Alex-Anne Bessette #10           <span style="color:#999"> 57.14%   50.00%   57.14%    +2 </span>
+  34   0   2   2   0   0   2   1     8/14      2/4     4/7    22 </span><span class="row-odd">Rosalie Mercille #9              <span style="color:#999"> 50.00%   50.00%  100.00%    +2 </span>
+  34   0   4   3   1   1   2   2      4/8      2/4     1/1    11 </span><span class="row-even">Alexus Mobley #22                <span style="color:#999"> 20.00%    0.00%       --    -1 </span>
   20   0   1   1   1   1   2   3      1/5      0/1     0/0     2 </span><span class="row-odd" style="color: #9d1244;"><b>LUC BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Clara Djoko #28                  <span style="color:#999">100.00%      --      --   +6 </span>
-  18   3   2   4   2   0   2   4      2/2      0/0     0/0     4 </span><span class="row-odd">Roisin Grandberry #1             <span style="color:#999"> 33.33%  33.33%      --   -2 </span>
-   7   0   0   0   0   0   0   0      1/3      1/3     0/0     3 </span><span class="row-even">Audrey Deptula #4                <span style="color:#999">     --      --      --   -1 </span>
-   7   0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Daniella Matus #20               <span style="color:#999">  0.00%   0.00%      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Clara Djoko #28                  <span style="color:#999">100.00%       --       --    +6 </span>
+  18   3   2   4   2   0   2   4      2/2      0/0     0/0     4 </span><span class="row-odd">Roisin Grandberry #1             <span style="color:#999"> 33.33%   33.33%       --    -2 </span>
+   7   0   0   0   0   0   0   0      1/3      1/3     0/0     3 </span><span class="row-even">Audrey Deptula #4                <span style="color:#999">     --       --       --    -1 </span>
+   7   0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Daniella Matus #20               <span style="color:#999">  0.00%    0.00%       --     0 </span>
    4   0   0   0   0   0   0   0      0/2      0/2     0/0     0 </span><span class="row-even">Kira Chivers #13
 <span class="dnp">  Did not play</span></span><span class="row-odd">Nevaeh Dickman #14
 <span class="dnp">  Did not play</span></span><span class="row-even">Kendall Hendrix #11
 <span class="dnp">  Did not play</span></span><span class="row-odd">Yasmyn Palmer #0
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #9d1244;"><b>LUC TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 46.67%  31.25%  61.54% </span>
-      11  14  16   9   2  13  17    28/60     5/16    8/13    69 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 46.67%   31.25%   61.54%    +3 </span>
+      11  14  16   9   2  13  17    28/60     5/16    8/13    69 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -183,6 +376,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>NU vs PSU - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:05:58.518400-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:32:02.944487-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:05:58 PM</span>
+<span id="timestamps">Data loaded: 01:32:02 PM</span>
 
 <a href="../nu-schedule.html">&lt; NU Schedule</a>
 
@@ -70,18 +70,18 @@
                     NU   13  9 27 22  71
                     PSU  22 14 22 23  81
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
 
-       +============+============+============+============+
-<span style="color: #061440;"> PSU      .......... ............ ............ ............ </span>
-<span style="color: #061440;">           ... ..... ............ ............ .. ....  ... </span>
-<span style="color: #061440;">                  .. ............ ............ .    .     . </span>
-<span style="color: #061440;">                      ........... ........                  </span>
-<span style="color: #061440;">                        .....     .... ..                   </span>
-<span style="color: #061440;">                         ..         .. .                    </span>
-<span style="color: #061440;">                                                            </span>
+       +=============+=============+=============+=============+
+<span style="color: #061440;"> PSU      ........... ............. ............. ............. </span>
+<span style="color: #061440;">           . .  ..... ............. ............. .. ..... .... </span>
+<span style="color: #061440;">                .  .. ............. ............. .    ..     . </span>
+<span style="color: #061440;">                        ........... ..........                  </span>
+<span style="color: #061440;">                         ....       ..... .                     </span>
+<span style="color: #061440;">                           ..         ..                        </span>
+<span style="color: #061440;">                                                                </span>
 </span>
 
 <b>Lead Changes:</b> 2
@@ -91,8 +91,8 @@
 <b>Venue:</b> Rec Hall
 <b>Attendance:</b> 3,074
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 NU    71  22/59  9/25 18/24  5/19/24 12  6  1
           37.3% 36.0% 75.0%
 PSU   81  28/60  7/22 18/27 13/30/43 13  7  0
@@ -101,18 +101,218 @@ PSU   81  28/60  7/22 18/27 13/30/43 13  7  0
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 NU     22       7    18   5    9  11   21  20
 PSU    40      17     5  13    8  14   12  20
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    13   5/13   2/5   1/2    2/4/6  1  0  1
+          38.5% 40.0% 50.0%
+PSU   22   9/17   3/8   1/2    2/6/8  4  4  0
+          52.9% 37.5% 50.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU     9   2/15   0/6   5/5    1/7/8  1  1  0
+          13.3%  0.0% 100.0%
+PSU   14   4/15   2/7   4/6  4/10/14  3  1  0
+          26.7% 28.6% 66.7%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    22   7/28  2/11   6/7  3/11/14  2  1  1
+          25.0% 18.2% 85.7%
+PSU   36  13/32  5/15   5/8  6/16/22  7  5  0
+          40.6% 33.3% 62.5%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    27   8/14   4/7  7/10    0/3/3  7  4  0
+          57.1% 57.1% 70.0%
+PSU   22  10/20   1/4   1/3   7/6/13  2  2  0
+          50.0% 25.0% 33.3%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    22   7/17   3/7   5/7    2/5/7  3  1  0
+          41.2% 42.9% 71.4%
+PSU   23    5/8   1/3 12/16    0/8/8  4  0  0
+          62.5% 33.3% 75.0%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    49  15/31  7/14 12/17   2/8/10 10  5  0
+          48.4% 50.0% 70.6%
+PSU   45  15/28   2/7 13/19  7/14/21  6  2  0
+          53.6% 28.6% 68.4%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">100.00%       --       --    -7 </span>
+       0   1   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999">  0.00%       --       --   -10 </span>
+       1   1   0   0   0   0   1      0/2      0/0     0/0     0 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 50.00%   66.67%       --    -9 </span>
+       1   1   0   0   0   3   1      2/4      2/3     0/0     6 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 33.33%    0.00%       --    -9 </span>
+       0   0   1   0   0   1   0      1/3      0/1     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%   50.00%    -4 </span>
+       0   0   0   0   1   2   1      0/2      0/1     1/2     1 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999">100.00%       --       --    -4 </span>
+       0   1   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 38.46%   40.00%   50.00%   -45 </span>
+       2   4   1   0   1   7   3     5/13      2/5     1/2    13 </span><span class="row-odd">
 
-<span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 42.86%  40.00%      --   -8 </span>
-  39   0   2   4   2   0   1   2      3/7      2/5     0/0     8 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 30.77%      --  80.00%  -11 </span>
-  37   2   5   2   0   0   0   4     4/13      0/0    8/10    16 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 42.86%  37.50% 100.00%   -5 </span>
-  35   2   3   3   3   0   3   5     6/14      3/8     2/2    17 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 28.57%  16.67%      --  -16 </span>
-  35   0   2   2   1   0   2   1     4/14      1/6     0/0     9 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%   0.00%  50.00%  -12 </span>
+</span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kiyomi McMiller #23              <span style="color:#999"> 57.14%   50.00%       --    +9 </span>
+       0   3   0   3   0   0   0      4/7      1/2     0/0     9 </span><span class="row-even">Moriah Murray #3                 <span style="color:#999"> 50.00%   50.00%       --    +6 </span>
+       0   1   0   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-odd">Tea Cleante #19                  <span style="color:#999"> 50.00%    0.00%       --    +9 </span>
+       0   0   0   1   0   1   0      1/2      0/1     0/0     2 </span><span class="row-even">Amiya Evans #14                  <span style="color:#999">  0.00%       --       --    +5 </span>
+       0   1   1   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-odd">Gracie Merkle #44                <span style="color:#999">100.00%       --   50.00%   +11 </span>
+       1   1   0   0   0   0   0      2/2      0/0     1/2     5 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Vitoria Santana #10              <span style="color:#999"> 50.00%   50.00%       --    +3 </span>
+       0   0   2   0   0   0   1      1/2      1/2     0/0     3 </span><span class="row-even">Nyla McFadden #8                 <span style="color:#999">     --       --       --    +3 </span>
+       0   0   1   0   0   0   2      0/0      0/0     0/0     0 </span><span class="row-odd">Shaelyn Steele #2                <span style="color:#999">  0.00%    0.00%       --    -2 </span>
+       1   0   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 52.94%   37.50%   50.00%   +44 </span>
+       2   6   4   4   0   2   4     9/17      3/8     1/2    22 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       0   1   0   1   0   1   1      0/4      0/3     0/0     0 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 50.00%       --  100.00%    -5 </span>
+       1   2   0   0   0   0   1      1/2      0/0     5/5     7 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       0   0   0   0   0   0   1      0/3      0/2     0/0     0 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 25.00%    0.00%       --    -9 </span>
+       0   1   0   0   0   0   0      1/4      0/1     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --    -7 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Tate Lash #4                     <span style="color:#999">  0.00%       --       --    +4 </span>
+       0   0   1   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">  0.00%       --       --    +2 </span>
+       0   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Amparo López #33                 <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 13.33%    0.00%  100.00%   -25 </span>
+       1   7   1   1   0   1   5     2/15      0/6     5/5     9 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kiyomi McMiller #23              <span style="color:#999"> 16.67%    0.00%  100.00%    +5 </span>
+       0   3   2   1   0   0   1      1/6      0/1     2/2     4 </span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 40.00%   40.00%       --    +7 </span>
+       0   0   0   0   0   1   0      2/5      2/5     0/0     6 </span><span class="row-even">Tea Cleante #19                  <span style="color:#999">     --       --       --    +5 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Amiya Evans #14                  <span style="color:#999">     --       --  100.00%    +7 </span>
+       0   1   0   0   0   0   1      0/0      0/0     2/2     2 </span><span class="row-even">Gracie Merkle #44                <span style="color:#999"> 50.00%       --       --    +7 </span>
+       0   2   0   0   0   2   2      1/2      0/0     0/0     2 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Vitoria Santana #10              <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Shaelyn Steele #2                <span style="color:#999">  0.00%    0.00%       --    -3 </span>
+       0   1   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even">Maggie Mendelson #4              <span style="color:#999">     --       --    0.00%     0 </span>
+       1   0   0   0   0   0   0      0/0      0/0     0/2     0 </span><span class="row-odd">Rachael Okokoh #25               <span style="color:#999">  0.00%       --       --    -2 </span>
+       3   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Viktoria Ranisavljevic #7        <span style="color:#999">     --       --       --    -2 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 26.67%   28.57%   66.67%   +24 </span>
+       4  10   3   1   0   3   5     4/15      2/7     4/6    14 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 20.00%    0.00%       --   -12 </span>
+       0   2   0   1   0   1   1      1/5      0/3     0/0     2 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 25.00%       --  100.00%   -15 </span>
+       2   3   0   0   0   0   2      1/4      0/0     5/5     7 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 28.57%   40.00%       --   -14 </span>
+       1   1   0   0   0   3   2      2/7      2/5     0/0     6 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 28.57%    0.00%       --   -18 </span>
+       0   1   1   0   0   1   0      2/7      0/2     0/0     4 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%   50.00%   -11 </span>
+       0   1   0   0   1   2   2      0/2      0/1     1/2     1 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999">100.00%       --       --    -4 </span>
+       0   1   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">  0.00%       --       --    +2 </span>
+       0   0   1   0   0   1   1      0/1      0/0     0/0     0 </span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">  0.00%       --       --    +2 </span>
+       0   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Amparo López #33                 <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 25.00%   18.18%   85.71%   -70 </span>
+       3  11   2   1   1   8   8     7/28     2/11     6/7    22 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kiyomi McMiller #23              <span style="color:#999"> 38.46%   33.33%  100.00%   +14 </span>
+       0   6   2   4   0   0   1     5/13      1/3     2/2    13 </span><span class="row-even">Moriah Murray #3                 <span style="color:#999"> 42.86%   42.86%       --   +13 </span>
+       0   1   0   0   0   1   0      3/7      3/7     0/0     9 </span><span class="row-odd">Tea Cleante #19                  <span style="color:#999"> 50.00%    0.00%       --   +14 </span>
+       0   1   0   1   0   1   0      1/2      0/1     0/0     2 </span><span class="row-even">Amiya Evans #14                  <span style="color:#999">  0.00%       --  100.00%   +12 </span>
+       0   2   1   0   0   0   2      0/1      0/0     2/2     2 </span><span class="row-odd">Gracie Merkle #44                <span style="color:#999"> 75.00%       --   50.00%   +18 </span>
+       1   3   0   0   0   2   2      3/4      0/0     1/2     7 </span><span class="row-even" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Vitoria Santana #10              <span style="color:#999"> 50.00%   50.00%       --    +3 </span>
+       0   1   2   0   0   0   2      1/2      1/2     0/0     3 </span><span class="row-even">Nyla McFadden #8                 <span style="color:#999">     --       --       --    +3 </span>
+       0   0   1   0   0   0   2      0/0      0/0     0/0     0 </span><span class="row-odd">Shaelyn Steele #2                <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       1   1   0   0   0   1   0      0/2      0/2     0/0     0 </span><span class="row-even">Maggie Mendelson #4              <span style="color:#999">     --       --    0.00%     0 </span>
+       1   0   0   0   0   0   0      0/0      0/0     0/2     0 </span><span class="row-odd">Rachael Okokoh #25               <span style="color:#999">  0.00%       --       --    -2 </span>
+       3   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Viktoria Ranisavljevic #7        <span style="color:#999">     --       --       --    -1 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 40.62%   33.33%   62.50%   +69 </span>
+       6  16   7   5   0   5   9    13/32     5/15     5/8    36 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">100.00%  100.00%       --    +5 </span>
+       0   0   1   0   0   0   0      1/1      1/1     0/0     3 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 25.00%       --   50.00%    +5 </span>
+       0   1   2   0   0   0   0      1/4      0/0     2/4     4 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 50.00%    0.00%       --    +5 </span>
+       0   1   3   3   0   0   1      1/2      0/1     0/0     2 </span><span class="row-even">Casey Harter #12                 <span style="color:#999">100.00%  100.00%       --    +5 </span>
+       0   0   1   1   0   1   1      2/2      1/1     0/0     5 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       0   1   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999"> 75.00%   66.67%   83.33%   +11 </span>
+       0   0   0   0   0   0   0      3/4      2/3     5/6    13 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 57.14%   57.14%   70.00%   +26 </span>
+       0   3   7   4   0   2   2     8/14      4/7    7/10    27 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kiyomi McMiller #23              <span style="color:#999"> 71.43%       --  100.00%    -5 </span>
+       0   1   1   2   0   2   0      5/7      0/0     1/1    11 </span><span class="row-odd">Moriah Murray #3                 <span style="color:#999">  0.00%    0.00%       --    -5 </span>
+       0   0   0   0   0   1   1      0/2      0/2     0/0     0 </span><span class="row-even">Tea Cleante #19                  <span style="color:#999"> 50.00%   50.00%       --    -2 </span>
+       1   0   1   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-odd">Amiya Evans #14                  <span style="color:#999">  0.00%       --       --     0 </span>
+       0   2   0   0   0   0   2      0/1      0/0     0/0     0 </span><span class="row-even">Gracie Merkle #44                <span style="color:#999"> 50.00%       --    0.00%    -1 </span>
+       5   1   0   0   0   0   1      3/6      0/0     0/2     6 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Vitoria Santana #10              <span style="color:#999">     --       --       --    -3 </span>
+       0   1   0   0   0   2   1      0/0      0/0     0/0     0 </span><span class="row-odd">Nyla McFadden #8                 <span style="color:#999"> 50.00%       --       --    -6 </span>
+       1   0   0   0   0   0   1      1/2      0/0     0/0     2 </span><span class="row-even">Shaelyn Steele #2                <span style="color:#999">     --       --       --    -3 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   25.00%   33.33%   -25 </span>
+       7   6   2   2   0   5   6    10/20      1/4     1/3    22 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">100.00%  100.00%       --    -1 </span>
+       0   0   3   1   0   0   1      1/1      1/1     0/0     3 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 40.00%       --  100.00%    -1 </span>
+       0   1   0   0   0   0   2      2/5      0/0     1/1     5 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 60.00%   50.00%  100.00%    +4 </span>
+       1   1   0   0   0   0   2      3/5      1/2     2/2     9 </span><span class="row-even">Casey Harter #12                 <span style="color:#999">  0.00%    0.00%       --    -3 </span>
+       0   1   0   0   0   0   0      0/5      0/3     0/0     0 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --   50.00%    +4 </span>
+       1   2   0   0   0   1   2      0/0      0/0     2/4     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999">100.00%  100.00%       --    -3 </span>
+       0   0   0   0   0   0   0      1/1      1/1     0/0     3 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">     --       --       --    -4 </span>
+       0   0   0   0   0   0   2      0/0      0/0     0/0     0 </span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">     --       --       --    -1 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 41.18%   42.86%   71.43%    -5 </span>
+       2   5   3   1   0   1  10     7/17      3/7     5/7    22 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kiyomi McMiller #23              <span style="color:#999">100.00%       --   75.00%    +1 </span>
+       0   5   1   0   0   3   1      1/1      0/0     6/8     8 </span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 50.00%   50.00%  100.00%    -5 </span>
+       0   0   0   0   0   0   1      1/2      1/2     2/2     5 </span><span class="row-even">Tea Cleante #19                  <span style="color:#999">     --       --  100.00%    +1 </span>
+       0   0   3   0   0   0   1      0/0      0/0     2/2     2 </span><span class="row-odd">Amiya Evans #14                  <span style="color:#999">100.00%       --       --    +5 </span>
+       0   1   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Gracie Merkle #44                <span style="color:#999"> 66.67%       --   50.00%    -2 </span>
+       0   1   0   0   0   0   1      2/3      0/0     2/4     6 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Vitoria Santana #10              <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Nyla McFadden #8                 <span style="color:#999">  0.00%    0.00%       --    +3 </span>
+       0   1   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 62.50%   33.33%   75.00%    +1 </span>
+       0   8   4   0   0   4   5      5/8      1/3   12/16    23 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">100.00%  100.00%       --    +4 </span>
+       0   0   4   1   0   0   1      2/2      2/2     0/0     6 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 33.33%       --   60.00%    +4 </span>
+       0   2   2   0   0   0   2      3/9      0/0     3/5     9 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 57.14%   33.33%  100.00%    +9 </span>
+       1   2   3   3   0   0   3      4/7      1/3     2/2    11 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 28.57%   25.00%       --    +2 </span>
+       0   1   1   1   0   1   1      2/7      1/4     0/0     5 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%   50.00%    -1 </span>
+       1   3   0   0   0   2   2      0/1      0/1     2/4     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999"> 80.00%   75.00%   83.33%    +8 </span>
+       0   0   0   0   0   0   0      4/5      3/4     5/6    16 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">     --       --       --    -4 </span>
+       0   0   0   0   0   0   2      0/0      0/0     0/0     0 </span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">     --       --       --    -1 </span>
+       0   0   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 48.39%   50.00%   70.59%   +21 </span>
+       2   8  10   5   0   3  12    15/31     7/14   12/17    49 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kiyomi McMiller #23              <span style="color:#999"> 75.00%       --   77.78%    -4 </span>
+       0   6   2   2   0   5   1      6/8      0/0     7/9    19 </span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 25.00%   25.00%  100.00%   -10 </span>
+       0   0   0   0   0   1   2      1/4      1/4     2/2     5 </span><span class="row-even">Tea Cleante #19                  <span style="color:#999"> 50.00%   50.00%  100.00%    -1 </span>
+       1   0   4   0   0   0   1      1/2      1/2     2/2     5 </span><span class="row-odd">Amiya Evans #14                  <span style="color:#999"> 50.00%       --       --    +5 </span>
+       0   3   0   0   0   0   2      1/2      0/0     0/0     2 </span><span class="row-even">Gracie Merkle #44                <span style="color:#999"> 55.56%       --   33.33%    -3 </span>
+       5   2   0   0   0   0   2      5/9      0/0     2/6    12 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Vitoria Santana #10              <span style="color:#999">     --       --       --    -5 </span>
+       0   1   0   0   0   2   2      0/0      0/0     0/0     0 </span><span class="row-odd">Nyla McFadden #8                 <span style="color:#999"> 33.33%    0.00%       --    -3 </span>
+       1   1   0   0   0   1   1      1/3      0/1     0/0     2 </span><span class="row-even">Shaelyn Steele #2                <span style="color:#999">     --       --       --    +1 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 53.57%   28.57%   68.42%   -20 </span>
+       7  14   6   2   0   9  11    15/28      2/7   13/19    45 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 42.86%   40.00%       --    -8 </span>
+  39   0   2   4   2   0   1   2      3/7      2/5     0/0     8 </span><span class="row-even">Grace Sullivan #22               <span style="color:#999"> 30.77%       --   80.00%   -11 </span>
+  37   2   5   2   0   0   0   4     4/13      0/0    8/10    16 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 42.86%   37.50%  100.00%    -5 </span>
+  35   2   3   3   3   0   3   5     6/14      3/8     2/2    17 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 28.57%   16.67%       --   -16 </span>
+  35   0   2   2   1   0   2   1     4/14      1/6     0/0     9 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%    0.00%   50.00%   -12 </span>
   17   1   4   0   0   1   4   4      0/3      0/2     3/6     3 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999"> 83.33%  75.00%  83.33%   +4 </span>
-  23   0   1   0   0   0   0   0      5/6      3/4     5/6    18 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">  0.00%      --      --   -2 </span>
-   8   0   0   1   0   0   1   3      0/1      0/0     0/0     0 </span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">  0.00%      --      --   +1 </span>
-   5   0   1   0   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even">Amparo López #33                 <span style="color:#999">     --      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kat Righeimer #8                 <span style="color:#999"> 83.33%   75.00%   83.33%    +4 </span>
+  23   0   1   0   0   0   0   0      5/6      3/4     5/6    18 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">  0.00%       --       --    -2 </span>
+   8   0   0   1   0   0   1   3      0/1      0/0     0/0     0 </span><span class="row-odd">DaiJa Turner #24                 <span style="color:#999">  0.00%       --       --    +1 </span>
+   5   0   1   0   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even">Amparo López #33                 <span style="color:#999">     --       --       --     0 </span>
    1   0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Angelina Hodgens #11
 <span class="dnp">  Did not play</span></span><span class="row-even">Claire Keswick #3
 <span class="dnp">  Did not play</span></span><span class="row-odd">Sandra Moreno #10
@@ -121,28 +321,28 @@ PSU    40      17     5  13    8  14   12  20
 <span class="dnp">  Did not play</span></span><span class="row-even">Crystal Fuqu Wang #9
 <span class="dnp">  Did not play</span></span><span class="row-odd">Sammy White #14
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 37.29%  36.00%  75.00% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 37.29%   36.00%   75.00%   -49 </span>
        5  19  12   6   1  11  20    22/59     9/25   18/24    71 </span><span class="row-even">
 
 </span><span class="row-odd" style="color: #061440;"><b>PSU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kiyomi McMiller #23              <span style="color:#999"> 52.38%  33.33%  81.82%  +10 </span>
-  39   0  12   4   6   0   5   2    11/21      1/3    9/11    32 </span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 36.36%  36.36% 100.00%   +3 </span>
-  34   0   1   0   0   0   2   2     4/11     4/11     2/2    14 </span><span class="row-even">Tea Cleante #19                  <span style="color:#999"> 50.00%  33.33% 100.00%  +13 </span>
-  33   1   1   4   1   0   1   1      2/4      1/3     2/2     7 </span><span class="row-odd">Amiya Evans #14                  <span style="color:#999"> 33.33%      -- 100.00%  +17 </span>
-  27   0   5   1   0   0   0   4      1/3      0/0     2/2     4 </span><span class="row-even">Gracie Merkle #44                <span style="color:#999"> 61.54%      --  37.50%  +15 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kiyomi McMiller #23              <span style="color:#999"> 52.38%   33.33%   81.82%   +10 </span>
+  39   0  12   4   6   0   5   2    11/21      1/3    9/11    32 </span><span class="row-odd">Moriah Murray #3                 <span style="color:#999"> 36.36%   36.36%  100.00%    +3 </span>
+  34   0   1   0   0   0   2   2     4/11     4/11     2/2    14 </span><span class="row-even">Tea Cleante #19                  <span style="color:#999"> 50.00%   33.33%  100.00%   +13 </span>
+  33   1   1   4   1   0   1   1      2/4      1/3     2/2     7 </span><span class="row-odd">Amiya Evans #14                  <span style="color:#999"> 33.33%       --  100.00%   +17 </span>
+  27   0   5   1   0   0   0   4      1/3      0/0     2/2     4 </span><span class="row-even">Gracie Merkle #44                <span style="color:#999"> 61.54%       --   37.50%   +15 </span>
   24   6   5   0   0   0   2   4     8/13      0/0     3/8    19 </span><span class="row-odd" style="color: #061440;"><b>PSU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Vitoria Santana #10              <span style="color:#999"> 50.00%  50.00%      --   -2 </span>
-  15   0   2   2   0   0   2   4      1/2      1/2     0/0     3 </span><span class="row-odd">Nyla McFadden #8                 <span style="color:#999"> 33.33%   0.00%      --    0 </span>
-   9   1   1   1   0   0   1   3      1/3      0/1     0/0     2 </span><span class="row-even">Shaelyn Steele #2                <span style="color:#999">  0.00%   0.00%      --   -4 </span>
-   8   1   2   0   0   0   1   0      0/2      0/2     0/0     0 </span><span class="row-odd">Maggie Mendelson #4              <span style="color:#999">     --      --   0.00%    0 </span>
-   4   1   0   0   0   0   0   0      0/0      0/0     0/2     0 </span><span class="row-even">Rachael Okokoh #25               <span style="color:#999">  0.00%      --      --   -2 </span>
-   4   3   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Viktoria Ranisavljevic #7        <span style="color:#999">     --      --      --   -1 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Vitoria Santana #10              <span style="color:#999"> 50.00%   50.00%       --    -2 </span>
+  15   0   2   2   0   0   2   4      1/2      1/2     0/0     3 </span><span class="row-odd">Nyla McFadden #8                 <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+   9   1   1   1   0   0   1   3      1/3      0/1     0/0     2 </span><span class="row-even">Shaelyn Steele #2                <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+   8   1   2   0   0   0   1   0      0/2      0/2     0/0     0 </span><span class="row-odd">Maggie Mendelson #4              <span style="color:#999">     --       --    0.00%     0 </span>
+   4   1   0   0   0   0   0   0      0/0      0/0     0/2     0 </span><span class="row-even">Rachael Okokoh #25               <span style="color:#999">  0.00%       --       --    -2 </span>
+   4   3   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Viktoria Ranisavljevic #7        <span style="color:#999">     --       --       --    -1 </span>
    3   0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Shayla Smith #24
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #061440;"><b>PSU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 46.67%  31.82%  66.67% </span>
-      13  30  13   7   0  14  20    28/60     7/22   18/27    81 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 46.67%   31.82%   66.67%   +49 </span>
+      13  30  13   7   0  14  20    28/60     7/22   18/27    81 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -184,6 +384,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

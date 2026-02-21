@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>OSU vs NU - NU WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:05:54.095058-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:31:57.929283-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:05:54 PM</span>
+<span id="timestamps">Data loaded: 01:31:57 PM</span>
 
 <a href="../nu-schedule.html">&lt; NU Schedule</a>
 
@@ -70,19 +70,19 @@
                     NU   16  9 22 23  70
                     OSU  10 23 28 18  79
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots">                   . ..                                     </span>
-<span class="usc-dots"> NU             .... .......                                </span>
+<span class="usc-dots">                    . ..                                        </span>
+<span class="usc-dots"> NU              .... ...  ..                                   </span>
 
-       +============+============+============+============+
-<span style="color: #ba0c2f;"> OSU                           .. ............ ............ </span>
-<span style="color: #ba0c2f;">                               .. .. ......... ............ </span>
-<span style="color: #ba0c2f;">                                   . ......... ............ </span>
-<span style="color: #ba0c2f;">                                      ........ ....... ...  </span>
-<span style="color: #ba0c2f;">                                        . ...    ... .  ..  </span>
-<span style="color: #ba0c2f;">                                                            </span>
+       +=============+=============+=============+=============+
+<span style="color: #ba0c2f;"> OSU                             .. ............. ............. </span>
+<span style="color: #ba0c2f;">                                 .. ............. ............. </span>
+<span style="color: #ba0c2f;">                                     .  ......... ............. </span>
+<span style="color: #ba0c2f;">                                          ....... ............  </span>
+<span style="color: #ba0c2f;">                                          . ...      ....  ...  </span>
+<span style="color: #ba0c2f;">                                                                </span>
 </span>
 
 <b>Lead Changes:</b> 3
@@ -92,8 +92,8 @@
 <b>Venue:</b> Welsh-Ryan Arena
 <b>Attendance:</b> 1,515
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 NU    70  29/67  7/18   5/5 10/23/33 24  5  4
           43.3% 38.9% 100.0%
 OSU   79  28/68  4/18 19/22 11/20/31 16 11  6
@@ -102,47 +102,244 @@ OSU   79  28/68  4/18 19/22 11/20/31 16 11  6
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 NU     28      12    10  10   14  18   16  21
 OSU    40      13    13  11   17  13   23  15
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    16   8/21   0/3   0/0   6/8/14  7  2  2
+          38.1%  0.0%  0.0%
+OSU   10   4/15   0/4   2/2    2/5/7  2  2  4
+          26.7%  0.0% 100.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU     9   4/14   1/4   0/0    0/4/4  4  0  1
+          28.6% 25.0%  0.0%
+OSU   23   9/19   2/4   3/4    5/4/9  7  2  1
+          47.4% 50.0% 75.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    25  12/35   1/7   0/0  6/12/18 11  2  3
+          34.3% 14.3%  0.0%
+OSU   33  13/34   2/8   5/6   7/9/16  9  4  5
+          38.2% 25.0% 83.3%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    22   8/16   4/6   2/2    1/5/6  7  0  0
+          50.0% 66.7% 100.0%
+OSU   28   9/18   1/6   9/9    1/7/8  5  4  0
+          50.0% 16.7% 100.0%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    23   9/16   2/5   3/3    3/6/9  5  3  1
+          56.2% 40.0% 100.0%
+OSU   18   6/16   1/4   5/7    3/4/7  2  3  1
+          37.5% 25.0% 71.4%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU    45  17/32  6/11   5/5  4/11/15 12  3  1
+          53.1% 54.5% 100.0%
+OSU   46  15/34  2/10 14/16  4/11/15  7  7  1
+          44.1% 20.0% 87.5%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 70.00%       --       --    +6 </span>
+       0   3   0   1   1   0   1     7/10      0/0     0/0    14 </span><span class="row-even">Casey Harter #12                 <span style="color:#999">  0.00%    0.00%       --    +2 </span>
+       0   1   1   0   0   2   0      0/1      0/1     0/0     0 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    +6 </span>
+       1   3   6   1   0   2   1      0/3      0/1     0/0     0 </span><span class="row-even">Tate Lash #4                     <span style="color:#999"> 50.00%       --       --    +2 </span>
+       0   0   0   0   0   0   1      1/2      0/0     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">  0.00%       --       --    -2 </span>
+       1   0   0   0   0   0   0      0/2      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999">  0.00%    0.00%       --    +8 </span>
+       0   0   0   0   0   0   0      0/2      0/1     0/0     0 </span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">  0.00%       --       --    +8 </span>
+       4   1   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 38.10%    0.00%       --   +30 </span>
+       6   8   7   2   2   4   3     8/21      0/3     0/0    16 </span><span class="row-odd">
 
-<span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 60.71%   0.00% 100.00%  -10 </span>
-  37   2   6   2   3   1   2   4    17/28      0/1     3/3    37 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 33.33%  50.00% 100.00%   -5 </span>
-  33   2   2   1   0   0   5   2      3/9      3/6     2/2    11 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 28.57%  50.00%      --   -8 </span>
-  33   1   6  14   1   1   4   4      2/7      2/4     0/0     6 </span><span class="row-even">Tate Lash #4                     <span style="color:#999"> 40.00%   0.00%      --   -8 </span>
-  28   0   3   5   1   0   2   4      2/5      0/1     0/0     4 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999"> 25.00%      --      --   -4 </span>
+</span><span class="row-even" style="color: #ba0c2f;"><b>OSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Cambridge #3             <span style="color:#999">  0.00%    0.00%  100.00%     0 </span>
+       0   0   0   0   0   1   1      0/1      0/1     2/2     2 </span><span class="row-even">Chance Gray #2                   <span style="color:#999">  0.00%    0.00%       --    -8 </span>
+       0   1   1   0   0   1   0      0/4      0/1     0/0     0 </span><span class="row-odd">T'yana Todd #4                   <span style="color:#999"> 50.00%       --       --     0 </span>
+       0   0   0   1   1   0   0      1/2      0/0     0/0     2 </span><span class="row-even">Jaloni Cambridge #22             <span style="color:#999"> 50.00%    0.00%       --     0 </span>
+       0   2   0   1   0   1   2      3/6      0/1     0/0     6 </span><span class="row-odd">Kylee Kitts #1                   <span style="color:#999">  0.00%       --       --     0 </span>
+       1   0   1   0   0   1   1      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Elsa Lemmilä #12                 <span style="color:#999">     --       --       --    -6 </span>
+       1   0   0   0   1   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Bryn Martin #8                   <span style="color:#999">  0.00%    0.00%       --    -8 </span>
+       0   1   0   0   2   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Dasha Biriuk #7                  <span style="color:#999">     --       --       --    -4 </span>
+       0   1   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 26.67%    0.00%  100.00%   -26 </span>
+       2   5   2   2   4   6   4     4/15      0/4     2/2    10 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 33.33%    0.00%       --   -14 </span>
+       0   0   1   0   0   1   1      2/6      0/1     0/0     4 </span><span class="row-even">Casey Harter #12                 <span style="color:#999">     --       --       --    -6 </span>
+       0   1   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%       --       --    -9 </span>
+       0   0   2   0   0   0   1      0/1      0/0     0/0     0 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">  0.00%    0.00%       --   -13 </span>
+       0   0   0   0   0   0   0      0/2      0/1     0/0     0 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999"> 50.00%       --       --    -3 </span>
+       0   1   1   0   1   1   2      1/2      0/0     0/0     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 50.00%   50.00%       --   -14 </span>
+       0   1   0   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">     --       --       --    -3 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Angelina Hodgens #11             <span style="color:#999">  0.00%       --       --    -8 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 28.57%   25.00%       --   -70 </span>
+       0   4   4   0   1   3   4     4/14      1/4     0/0     9 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #ba0c2f;"><b>OSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kennedy Cambridge #3             <span style="color:#999">  0.00%       --       --   +14 </span>
+       1   1   3   2   1   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Chance Gray #2                   <span style="color:#999"> 33.33%       --       --   +11 </span>
+       0   1   2   0   0   0   0      1/3      0/0     0/0     2 </span><span class="row-even">T'yana Todd #4                   <span style="color:#999"> 33.33%   50.00%  100.00%   +13 </span>
+       0   0   0   0   0   1   1      1/3      1/2     2/2     5 </span><span class="row-odd">Jaloni Cambridge #22             <span style="color:#999"> 42.86%    0.00%       --    +4 </span>
+       1   1   1   0   0   0   0      3/7      0/1     0/0     6 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ava Watson #5                    <span style="color:#999">100.00%  100.00%   50.00%   +12 </span>
+       0   0   0   0   0   0   1      1/1      1/1     1/2     4 </span><span class="row-even">Elsa Lemmilä #12                 <span style="color:#999"> 75.00%       --       --   +14 </span>
+       3   1   1   0   0   0   0      3/4      0/0     0/0     6 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 47.37%   50.00%   75.00%   +68 </span>
+       5   4   7   2   1   1   2     9/19      2/4     3/4    23 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 56.25%    0.00%       --    -8 </span>
+       0   3   1   1   1   1   2     9/16      0/1     0/0    18 </span><span class="row-even">Casey Harter #12                 <span style="color:#999">  0.00%    0.00%       --    -4 </span>
+       0   2   1   0   0   3   0      0/1      0/1     0/0     0 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">  0.00%    0.00%       --    -3 </span>
+       1   3   8   1   0   2   2      0/4      0/1     0/0     0 </span><span class="row-even">Tate Lash #4                     <span style="color:#999"> 25.00%    0.00%       --   -11 </span>
+       0   0   0   0   0   0   1      1/4      0/1     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999"> 25.00%       --       --    -5 </span>
+       1   1   1   0   1   1   2      1/4      0/0     0/0     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 25.00%   33.33%       --    -6 </span>
+       0   1   0   0   0   0   0      1/4      1/3     0/0     3 </span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">  0.00%       --       --    +5 </span>
+       4   2   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Angelina Hodgens #11             <span style="color:#999">  0.00%       --       --    -8 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 34.29%   14.29%       --   -40 </span>
+       6  12  11   2   3   7   7    12/35      1/7     0/0    25 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #ba0c2f;"><b>OSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kennedy Cambridge #3             <span style="color:#999">  0.00%    0.00%  100.00%   +14 </span>
+       1   1   3   2   1   1   1      0/2      0/1     2/2     2 </span><span class="row-odd">Chance Gray #2                   <span style="color:#999"> 14.29%    0.00%       --    +3 </span>
+       0   2   3   0   0   1   0      1/7      0/1     0/0     2 </span><span class="row-even">T'yana Todd #4                   <span style="color:#999"> 40.00%   50.00%  100.00%   +13 </span>
+       0   0   0   1   1   1   1      2/5      1/2     2/2     7 </span><span class="row-odd">Jaloni Cambridge #22             <span style="color:#999"> 46.15%    0.00%       --    +4 </span>
+       1   3   1   1   0   1   2     6/13      0/2     0/0    12 </span><span class="row-even">Kylee Kitts #1                   <span style="color:#999">  0.00%       --       --     0 </span>
+       1   0   1   0   0   1   1      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Ava Watson #5                    <span style="color:#999">100.00%  100.00%   50.00%    +8 </span>
+       0   0   0   0   0   0   1      1/1      1/1     1/2     4 </span><span class="row-odd">Elsa Lemmilä #12                 <span style="color:#999"> 75.00%       --       --    +8 </span>
+       4   1   1   0   1   0   0      3/4      0/0     0/0     6 </span><span class="row-even">Bryn Martin #8                   <span style="color:#999">  0.00%    0.00%       --    -6 </span>
+       0   1   0   0   2   1   0      0/1      0/1     0/0     0 </span><span class="row-odd">Dasha Biriuk #7                  <span style="color:#999">     --       --       --    -4 </span>
+       0   1   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 38.24%   25.00%   83.33%   +40 </span>
+       7   9   9   4   5   7   6    13/34      2/8     5/6    33 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 50.00%       --  100.00%    -6 </span>
+       0   2   1   0   0   0   1      4/8      0/0     2/2    10 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 33.33%  100.00%       --    -6 </span>
+       1   0   0   0   0   2   1      1/3      1/1     0/0     3 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 66.67%   66.67%       --    -6 </span>
+       0   2   3   0   0   0   1      2/3      2/3     0/0     6 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">     --       --       --    -2 </span>
+       0   1   3   0   0   1   2      0/0      0/0     0/0     0 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 50.00%   50.00%       --    -3 </span>
+       0   0   0   0   0   0   1      1/2      1/2     0/0     3 </span><span class="row-even">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   66.67%  100.00%   -25 </span>
+       1   5   7   0   0   5   8     8/16      4/6     2/2    22 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #ba0c2f;"><b>OSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Cambridge #3             <span style="color:#999"> 33.33%    0.00%       --    +6 </span>
+       0   1   2   2   0   0   0      1/3      0/2     0/0     2 </span><span class="row-even">Chance Gray #2                   <span style="color:#999"> 66.67%    0.00%  100.00%    +6 </span>
+       0   2   0   1   0   1   1      2/3      0/1     2/2     6 </span><span class="row-odd">T'yana Todd #4                   <span style="color:#999"> 50.00%   50.00%       --    +5 </span>
+       0   0   1   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-even">Jaloni Cambridge #22             <span style="color:#999">100.00%       --  100.00%    +7 </span>
+       0   0   1   1   0   0   1      2/2      0/0     2/2     6 </span><span class="row-odd">Kylee Kitts #1                   <span style="color:#999"> 75.00%       --  100.00%    +5 </span>
+       0   0   1   0   0   1   1      3/4      0/0     3/3     9 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ava Watson #5                    <span style="color:#999">     --       --  100.00%    +1 </span>
+       0   2   0   0   0   0   0      0/0      0/0     2/2     2 </span><span class="row-even">Elsa Lemmilä #12                 <span style="color:#999">  0.00%       --       --    +1 </span>
+       1   2   0   0   0   0   1      0/3      0/0     0/0     0 </span><span class="row-odd">Bryn Martin #8                   <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 50.00%   16.67%  100.00%   +30 </span>
+       1   7   5   4   0   2   4     9/18      1/6     9/9    28 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999">100.00%       --  100.00%    +4 </span>
+       2   1   0   2   0   1   1      4/4      0/0     1/1     9 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 40.00%   50.00%  100.00%    +5 </span>
+       1   0   0   0   0   0   1      2/5      2/4     2/2     8 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999">     --       --       --    +1 </span>
+       0   1   2   0   1   2   1      0/0      0/0     0/0     0 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">100.00%       --       --    +5 </span>
+       0   2   2   1   0   1   1      1/1      0/0     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --    +1 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 50.00%       --       --    +5 </span>
+       0   1   1   0   0   1   0      2/4      0/0     0/0     4 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+       0   0   0   0   0   1   2      0/2      0/1     0/0     0 </span><span class="row-odd" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 56.25%   40.00%  100.00%   +20 </span>
+       3   6   5   3   1   6   6     9/16      2/5     3/3    23 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #ba0c2f;"><b>OSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Cambridge #3             <span style="color:#999">     --       --       --     0 </span>
+       0   2   1   0   1   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Chance Gray #2                   <span style="color:#999">     --       --   50.00%    +4 </span>
+       0   1   0   0   0   1   1      0/0      0/0     1/2     1 </span><span class="row-odd">T'yana Todd #4                   <span style="color:#999"> 50.00%   50.00%       --    +1 </span>
+       0   0   0   1   0   0   1      1/2      1/2     0/0     3 </span><span class="row-even">Jaloni Cambridge #22             <span style="color:#999"> 50.00%    0.00%       --    -2 </span>
+       0   0   1   0   0   0   2      2/4      0/1     0/0     4 </span><span class="row-odd">Kylee Kitts #1                   <span style="color:#999"> 60.00%       --  100.00%     0 </span>
+       2   1   0   0   0   3   1      3/5      0/0     3/3     9 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Ava Watson #5                    <span style="color:#999">  0.00%       --       --    -6 </span>
+       0   0   0   2   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Elsa Lemmilä #12                 <span style="color:#999">  0.00%       --   50.00%     0 </span>
+       1   0   0   0   0   0   0      0/2      0/0     1/2     1 </span><span class="row-odd">Dasha Biriuk #7                  <span style="color:#999">  0.00%    0.00%       --    -6 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even">Ella Hobbs #14                   <span style="color:#999">  0.00%       --       --    -5 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 37.50%   25.00%   71.43%   -14 </span>
+       3   4   2   3   1   4   5     6/16      1/4     5/7    18 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 66.67%       --  100.00%    -2 </span>
+       2   3   1   2   0   1   2     8/12      0/0     3/3    19 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 37.50%   60.00%  100.00%    -1 </span>
+       2   0   0   0   0   2   2      3/8      3/5     2/2    11 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 66.67%   66.67%       --    -5 </span>
+       0   3   5   0   1   2   2      2/3      2/3     0/0     6 </span><span class="row-even">Tate Lash #4                     <span style="color:#999">100.00%       --       --    +3 </span>
+       0   3   5   1   0   2   3      1/1      0/0     0/0     2 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999">     --       --       --    +1 </span>
+       0   1   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 50.00%   50.00%       --    +2 </span>
+       0   1   1   0   0   1   1      3/6      1/2     0/0     7 </span><span class="row-even">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    -2 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-odd">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+       0   0   0   0   0   1   2      0/2      0/1     0/0     0 </span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 53.12%   54.55%  100.00%    -5 </span>
+       4  11  12   3   1  11  14    17/32     6/11     5/5    45 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #ba0c2f;"><b>OSU STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kennedy Cambridge #3             <span style="color:#999"> 33.33%    0.00%       --    +6 </span>
+       0   3   3   2   1   0   0      1/3      0/2     0/0     2 </span><span class="row-odd">Chance Gray #2                   <span style="color:#999"> 66.67%    0.00%   75.00%   +10 </span>
+       0   3   0   1   0   2   2      2/3      0/1     3/4     7 </span><span class="row-even">T'yana Todd #4                   <span style="color:#999"> 50.00%   50.00%       --    +6 </span>
+       0   0   1   1   0   0   1      2/4      2/4     0/0     6 </span><span class="row-odd">Jaloni Cambridge #22             <span style="color:#999"> 66.67%    0.00%  100.00%    +5 </span>
+       0   0   2   1   0   0   3      4/6      0/1     2/2    10 </span><span class="row-even">Kylee Kitts #1                   <span style="color:#999"> 66.67%       --  100.00%    +5 </span>
+       2   1   1   0   0   4   2      6/9      0/0     6/6    18 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Ava Watson #5                    <span style="color:#999">  0.00%       --  100.00%    -5 </span>
+       0   2   0   2   0   0   0      0/1      0/0     2/2     2 </span><span class="row-odd">Elsa Lemmilä #12                 <span style="color:#999">  0.00%       --   50.00%    +1 </span>
+       2   2   0   0   0   0   1      0/5      0/0     1/2     1 </span><span class="row-even">Bryn Martin #8                   <span style="color:#999">  0.00%    0.00%       --    -7 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-odd">Dasha Biriuk #7                  <span style="color:#999">  0.00%    0.00%       --    -6 </span>
+       0   0   0   0   0   0   0      0/1      0/1     0/0     0 </span><span class="row-even">Ella Hobbs #14                   <span style="color:#999">  0.00%       --       --    -5 </span>
+       0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 44.12%   20.00%   87.50%   +10 </span>
+       4  11   7   7   1   6   9    15/34     2/10   14/16    46 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Grace Sullivan #22               <span style="color:#999"> 60.71%    0.00%  100.00%   -10 </span>
+  37   2   6   2   3   1   2   4    17/28      0/1     3/3    37 </span><span class="row-even">Casey Harter #12                 <span style="color:#999"> 33.33%   50.00%  100.00%    -5 </span>
+  33   2   2   1   0   0   5   2      3/9      3/6     2/2    11 </span><span class="row-odd">Caroline Lau #7                  <span style="color:#999"> 28.57%   50.00%       --    -8 </span>
+  33   1   6  14   1   1   4   4      2/7      2/4     0/0     6 </span><span class="row-even">Tate Lash #4                     <span style="color:#999"> 40.00%    0.00%       --    -8 </span>
+  28   0   3   5   1   0   2   4      2/5      0/1     0/0     4 </span><span class="row-odd">Tayla Thomas #23                 <span style="color:#999"> 25.00%       --       --    -4 </span>
   12   1   2   1   0   1   2   3      1/4      0/0     0/0     2 </span><span class="row-even" style="color: #4E2A84;"><b>NU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 40.00%  40.00%      --   -4 </span>
-  31   0   2   1   0   0   1   1     4/10      2/5     0/0    10 </span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">  0.00%      --      --    0 </span>
-  10   4   2   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --      --      --   -2 </span>
-   7   0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%   0.00%      --   -1 </span>
-   6   0   0   0   0   0   1   2      0/2      0/1     0/0     0 </span><span class="row-odd">Angelina Hodgens #11             <span style="color:#999">  0.00%      --      --   -8 </span>
-   2   0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Amparo López #33                 <span style="color:#999">     --      --      --   +5 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Xamiya Walton #1                 <span style="color:#999"> 40.00%   40.00%       --    -4 </span>
+  31   0   2   1   0   0   1   1     4/10      2/5     0/0    10 </span><span class="row-even">DaiJa Turner #24                 <span style="color:#999">  0.00%       --       --     0 </span>
+  10   4   2   0   0   1   0   0      0/1      0/0     0/0     0 </span><span class="row-odd">Crystal Fuqu Wang #9             <span style="color:#999">     --       --       --    -2 </span>
+   7   0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Claire Keswick #3                <span style="color:#999">  0.00%    0.00%       --    -1 </span>
+   6   0   0   0   0   0   1   2      0/2      0/1     0/0     0 </span><span class="row-odd">Angelina Hodgens #11             <span style="color:#999">  0.00%       --       --    -8 </span>
+   2   0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Amparo López #33                 <span style="color:#999">     --       --       --    +5 </span>
    1   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Sandra Moreno #10
 <span class="dnp">  Did not play</span></span><span class="row-even">Rachel Mutombo #0
 <span class="dnp">  Did not play</span></span><span class="row-odd">Kat Righeimer #8
 <span class="dnp">  Did not play</span></span><span class="row-even">Lauren Trumpy #25
 <span class="dnp">  Did not play</span></span><span class="row-odd">Sammy White #14
 <span class="dnp">  Did not play</span></span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 43.28%  38.89% 100.00% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 43.28%   38.89%  100.00%   -45 </span>
       10  23  24   5   4  18  21    29/67     7/18     5/5    70 </span><span class="row-even">
 
 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kennedy Cambridge #3             <span style="color:#999"> 20.00%   0.00% 100.00%  +20 </span>
-  36   1   4   6   4   2   1   1      1/5      0/3     2/2     4 </span><span class="row-odd">Chance Gray #2                   <span style="color:#999"> 30.00%   0.00%  75.00%  +13 </span>
-  33   0   5   3   1   0   3   2     3/10      0/2     3/4     9 </span><span class="row-even">T'yana Todd #4                   <span style="color:#999"> 44.44%  50.00% 100.00%  +19 </span>
-  27   0   0   1   2   1   1   2      4/9      3/6     2/2    13 </span><span class="row-odd">Jaloni Cambridge #22             <span style="color:#999"> 52.63%   0.00% 100.00%   +9 </span>
-  25   1   3   3   2   0   1   5    10/19      0/3     2/2    22 </span><span class="row-even">Kylee Kitts #1                   <span style="color:#999"> 60.00%      -- 100.00%   +5 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Kennedy Cambridge #3             <span style="color:#999"> 20.00%    0.00%  100.00%   +20 </span>
+  36   1   4   6   4   2   1   1      1/5      0/3     2/2     4 </span><span class="row-odd">Chance Gray #2                   <span style="color:#999"> 30.00%    0.00%   75.00%   +13 </span>
+  33   0   5   3   1   0   3   2     3/10      0/2     3/4     9 </span><span class="row-even">T'yana Todd #4                   <span style="color:#999"> 44.44%   50.00%  100.00%   +19 </span>
+  27   0   0   1   2   1   1   2      4/9      3/6     2/2    13 </span><span class="row-odd">Jaloni Cambridge #22             <span style="color:#999"> 52.63%    0.00%  100.00%    +9 </span>
+  25   1   3   3   2   0   1   5    10/19      0/3     2/2    22 </span><span class="row-even">Kylee Kitts #1                   <span style="color:#999"> 60.00%       --  100.00%    +5 </span>
   19   3   1   2   0   0   5   3     6/10      0/0     6/6    18 </span><span class="row-odd" style="color: #ba0c2f;"><b>OSU BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Ava Watson #5                    <span style="color:#999"> 50.00% 100.00%  75.00%   +3 </span>
-  23   0   2   0   2   0   0   1      1/2      1/1     3/4     6 </span><span class="row-odd">Elsa Lemmilä #12                 <span style="color:#999"> 33.33%      --  50.00%   +9 </span>
-  20   6   3   1   0   1   0   1      3/9      0/0     1/2     7 </span><span class="row-even">Bryn Martin #8                   <span style="color:#999">  0.00%   0.00%      --  -13 </span>
-  12   0   1   0   0   2   1   0      0/2      0/2     0/0     0 </span><span class="row-odd">Dasha Biriuk #7                  <span style="color:#999">  0.00%   0.00%      --  -10 </span>
-   3   0   1   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even">Seini Henry #15                  <span style="color:#999">     --      --      --   -5 </span>
-   1   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Ella Hobbs #14                   <span style="color:#999">  0.00%      --      --   -5 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Ava Watson #5                    <span style="color:#999"> 50.00%  100.00%   75.00%    +3 </span>
+  23   0   2   0   2   0   0   1      1/2      1/1     3/4     6 </span><span class="row-odd">Elsa Lemmilä #12                 <span style="color:#999"> 33.33%       --   50.00%    +9 </span>
+  20   6   3   1   0   1   0   1      3/9      0/0     1/2     7 </span><span class="row-even">Bryn Martin #8                   <span style="color:#999">  0.00%    0.00%       --   -13 </span>
+  12   0   1   0   0   2   1   0      0/2      0/2     0/0     0 </span><span class="row-odd">Dasha Biriuk #7                  <span style="color:#999">  0.00%    0.00%       --   -10 </span>
+   3   0   1   0   0   0   1   0      0/1      0/1     0/0     0 </span><span class="row-even">Seini Henry #15                  <span style="color:#999">     --       --       --    -5 </span>
+   1   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Ella Hobbs #14                   <span style="color:#999">  0.00%       --       --    -5 </span>
    1   0   0   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #ba0c2f;"><b>OSU TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 41.18%  22.22%  86.36% </span>
-      11  20  16  11   6  13  15    28/68     4/18   19/22    79 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 41.18%   22.22%   86.36%   +45 </span>
+      11  20  16  11   6  13  15    28/68     4/18   19/22    79 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -184,6 +381,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

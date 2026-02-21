@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
     <title>USC vs WIS - USC WBB</title>
-    <meta name="data-loaded" content="2026-02-21T13:05:30.075684-08:00">
+    <meta name="data-loaded" content="2026-02-21T13:31:33.845347-08:00">
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,7 @@
 </head>
 <body>
 <pre>
-<span id="timestamps">Data loaded: 01:05:30 PM</span>
+<span id="timestamps">Data loaded: 01:31:33 PM</span>
 
 <a href="../schedule-2025.html">&lt; USC Schedule</a>
 
@@ -70,19 +70,19 @@
                     USC  17 22 23 24  86
                     WIS  12 16 19 17  64
 
-<b>Game Flow:</b>                                   (1 dot = 3 pts)
+<b>Game Flow:</b>                                       (1 dot = 3 pts)
 
 <span class="game-flow">
-<span class="usc-dots">                                                            </span>
-<span class="usc-dots">                                                 ...     .. </span>
-<span class="usc-dots">                                                ......   .. </span>
-<span class="usc-dots">                                           . . ............ </span>
-<span class="usc-dots">                                  ......  .. . ............ </span>
-<span class="usc-dots">                ..     .       .. ............ ............ </span>
-<span class="usc-dots">            . .....   ....     .. ............ ............ </span>
-<span class="usc-dots"> USC      .......... ............ ............ ............ </span>
+<span class="usc-dots">                                                                </span>
+<span class="usc-dots">                                                    .        .. </span>
+<span class="usc-dots">                                                   ......  .... </span>
+<span class="usc-dots">                                                . ............. </span>
+<span class="usc-dots">                                    ......  . . . ............. </span>
+<span class="usc-dots">                  .     ..       .. ............. ............. </span>
+<span class="usc-dots">            . ......   ....     ... ............. ............. </span>
+<span class="usc-dots"> USC      ........... ............. ............. ............. </span>
 
-       +============+============+============+============+
+       +=============+=============+=============+=============+
 </span>
 
 <b>Lead Changes:</b> 0
@@ -92,8 +92,8 @@
 <b>Venue:</b> Kohl Center
 <b>Attendance:</b> 6,285
 
-<b>Team Stats:</b>
-     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+<span id="period-toggle"><b>Team Stats:</b>  <a href="javascript:void(0)" onclick="showPeriod('q1')">Q1</a> | <a href="javascript:void(0)" onclick="showPeriod('q2')">Q2</a> | <a href="javascript:void(0)" onclick="showPeriod('h1')">H1</a> | <a href="javascript:void(0)" onclick="showPeriod('q3')">Q3</a> | <a href="javascript:void(0)" onclick="showPeriod('q4')">Q4</a> | <a href="javascript:void(0)" onclick="showPeriod('h2')">H2</a> | <b>Total</b></span>
+<span id="teamstats-total">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
 USC   86  34/67  5/16 13/18  6/24/30 18 17  7
           50.7% 31.2% 72.2%
 WIS   64  22/54   6/8 14/20  7/29/36 14  3  5
@@ -102,50 +102,257 @@ WIS   64  22/54   6/8 14/20  7/29/36 14  3  5
      PITP  FB PTS  BNCH  OR  2CH  TO POTO  PF
 USC    44      22    33   6    4   7   23  18
 WIS    26       6     8   7   11  23    5  18
+</span>
+<span id="teamstats-q1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   17   7/18   1/4   2/2   2/9/11  3  4  4
+          38.9% 25.0% 100.0%
+WIS   12   4/17   1/1   3/3   2/8/10  2  2  2
+          23.5% 100.0% 100.0%
+</span>
+<span id="teamstats-q2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   22   8/16   1/3   5/9    2/5/7  6  4  0
+          50.0% 33.3% 55.6%
+WIS   16   7/12   2/3   0/0    0/8/8  5  0  1
+          58.3% 66.7%  0.0%
+</span>
+<span id="teamstats-h1" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   39  15/34   2/7  7/11  4/14/18  9  8  4
+          44.1% 28.6% 63.6%
+WIS   28  11/29   3/4   3/3  2/16/18  7  2  3
+          37.9% 75.0% 100.0%
+</span>
+<span id="teamstats-q3" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   23  10/17   1/2   2/3    2/5/7  5  4  2
+          58.8% 50.0% 66.7%
+WIS   19   7/14   2/2   3/5    2/6/8  4  1  2
+          50.0% 100.0% 60.0%
+</span>
+<span id="teamstats-q4" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   24   9/16   2/7   4/4    0/5/5  4  5  1
+          56.2% 28.6% 100.0%
+WIS   17   4/11   1/2  8/12   3/7/10  3  0  0
+          36.4% 50.0% 66.7%
+</span>
+<span id="teamstats-h2" style="display:none">     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+USC   47  19/33   3/9   6/7  2/10/12  9  9  3
+          57.6% 33.3% 85.7%
+WIS   36  11/25   3/4 11/17  5/13/18  7  1  2
+          44.0% 75.0% 64.7%
+</span>
+<span id="playerstats-q1" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999">  0.00%    0.00%       --    +5 </span>
+       0   1   0   0   1   1   0      0/1      0/1     0/0     0 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 33.33%    0.00%       --    +5 </span>
+       0   2   0   0   1   1   0      1/3      0/1     0/0     2 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 33.33%       --       --    +5 </span>
+       1   1   1   1   0   0   0      1/3      0/0     0/0     2 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999"> 75.00%  100.00%       --    +5 </span>
+       0   0   1   1   0   0   0      3/4      1/1     0/0     7 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999">  0.00%       --       --    +5 </span>
+       1   3   1   0   1   2   2      0/3      0/0     0/0     0 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999">  0.00%    0.00%  100.00%     0 </span>
+       0   1   0   1   0   0   1      0/1      0/1     2/2     2 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999"> 50.00%       --       --     0 </span>
+       0   0   0   1   0   0   0      1/2      0/0     0/0     2 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">100.00%       --       --     0 </span>
+       0   1   0   0   1   0   0      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 38.89%   25.00%  100.00%   +25 </span>
+       2   9   3   4   4   4   3     7/18      1/4     2/2    17 </span><span class="row-even">
 
-<span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 44.44%  25.00%   0.00%  +22 </span>
-  29   1   2   1   2   1   1   2      4/9      1/4     0/1     9 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 36.36%  25.00%  83.33%  +22 </span>
-  26   0   2   0   1   1   1   1     4/11      1/4     5/6    14 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 54.55%      --  75.00%  +22 </span>
-  24   1   3   3   2   1   1   3     6/11      0/0     3/4    15 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999"> 71.43%  50.00%      --  +22 </span>
-  21   0   0   4   2   0   0   0      5/7      1/2     0/0    11 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 25.00%      --   0.00%  +22 </span>
+</span><span class="row-odd" style="color: #a00000;"><b>WIS STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Serah Williams #25               <span style="color:#999"> 30.00%       --  100.00%    -5 </span>
+       1   1   0   0   2   1   0     3/10      0/0     1/1     7 </span><span class="row-odd">Ronnie Porter #13                <span style="color:#999">  0.00%       --       --    -5 </span>
+       1   1   1   0   0   1   1      0/2      0/0     0/0     0 </span><span class="row-even">Carter McCray #1                 <span style="color:#999">  0.00%       --       --    -5 </span>
+       0   1   0   0   0   1   0      0/2      0/0     0/0     0 </span><span class="row-odd">Tess Myers #3                    <span style="color:#999">100.00%  100.00%       --    -5 </span>
+       0   2   0   1   0   0   1      1/1      1/1     0/0     3 </span><span class="row-even">Natalie Leuzinger #24            <span style="color:#999">  0.00%       --  100.00%    -5 </span>
+       0   1   0   0   0   0   0      0/1      0/0     2/2     2 </span><span class="row-odd" style="color: #a00000;"><b>WIS BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Lily Krahn #4                    <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   0      0/0      0/0     0/0     0 </span><span class="row-odd">Halle Douglass #10               <span style="color:#999">  0.00%       --       --     0 </span>
+       0   2   1   1   0   1   1      0/1      0/0     0/0     0 </span><span class="row-even" style="color: #a00000;"><b>WIS TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 23.53%  100.00%  100.00%   -25 </span>
+       2   8   2   2   2   5   3     4/17      1/1     3/3    12 </span></span>
+<span id="playerstats-q2" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 66.67%  100.00%    0.00%    +6 </span>
+       0   1   1   1   0   0   1      2/3      1/1     0/1     5 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 33.33%    0.00%   75.00%    +6 </span>
+       0   0   0   0   0   0   1      1/3      0/1     3/4     5 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 60.00%       --   50.00%    +6 </span>
+       0   2   0   1   0   1   0      3/5      0/0     1/2     7 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999">     --       --       --    +6 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 50.00%       --       --    +6 </span>
+       1   0   0   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999">  0.00%       --       --     0 </span>
+       0   1   0   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999">     --       --       --     0 </span>
+       0   1   3   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">     --       --   50.00%     0 </span>
+       0   0   0   2   0   1   0      0/0      0/0     1/2     1 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 50.00%    0.00%       --     0 </span>
+       1   0   1   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.00%   33.33%   55.56%   +30 </span>
+       2   5   6   4   0   2   2     8/16      1/3     5/9    22 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #a00000;"><b>WIS STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Serah Williams #25               <span style="color:#999"> 66.67%       --       --    -6 </span>
+       0   1   1   0   1   2   1      2/3      0/0     0/0     4 </span><span class="row-even">Ronnie Porter #13                <span style="color:#999">  0.00%    0.00%       --    -6 </span>
+       0   2   2   0   0   0   0      0/3      0/1     0/0     0 </span><span class="row-odd">Carter McCray #1                 <span style="color:#999"> 66.67%       --       --    -6 </span>
+       0   4   1   0   0   1   1      2/3      0/0     0/0     4 </span><span class="row-even">Tess Myers #3                    <span style="color:#999">100.00%  100.00%       --    -6 </span>
+       0   0   0   0   0   2   1      1/1      1/1     0/0     3 </span><span class="row-odd">Natalie Leuzinger #24            <span style="color:#999">100.00%  100.00%       --    -6 </span>
+       0   0   0   0   0   0   1      1/1      1/1     0/0     3 </span><span class="row-even" style="color: #a00000;"><b>WIS BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Lily Krahn #4                    <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   2   0      1/1      0/0     0/0     2 </span><span class="row-even">Halle Douglass #10               <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">D'Yanis Jimenez #23              <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #a00000;"><b>WIS TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 58.33%   66.67%       --   -30 </span>
+       0   8   5   0   1   8   6     7/12      2/3     0/0    16 </span></span>
+<span id="playerstats-h1" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 50.00%   50.00%    0.00%   +11 </span>
+       0   2   1   1   1   1   1      2/4      1/2     0/1     5 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 33.33%    0.00%   75.00%   +11 </span>
+       0   2   0   0   1   1   1      2/6      0/2     3/4     7 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 50.00%       --   50.00%   +11 </span>
+       1   3   1   2   0   1   0      4/8      0/0     1/2     9 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999"> 75.00%  100.00%       --   +11 </span>
+       0   0   2   1   0   0   0      3/4      1/1     0/0     7 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 20.00%       --       --   +11 </span>
+       2   3   1   0   1   2   2      1/5      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999">  0.00%    0.00%  100.00%     0 </span>
+       0   2   0   1   0   0   1      0/2      0/1     2/2     2 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999"> 50.00%       --       --     0 </span>
+       0   1   3   1   0   0   0      1/2      0/0     0/0     2 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">100.00%       --   50.00%     0 </span>
+       0   1   0   2   1   1   0      1/1      0/0     1/2     3 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 50.00%    0.00%       --     0 </span>
+       1   0   1   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 44.12%   28.57%   63.64%   +55 </span>
+       4  14   9   8   4   6   5    15/34      2/7    7/11    39 </span><span class="row-odd">
+
+</span><span class="row-even" style="color: #a00000;"><b>WIS STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Serah Williams #25               <span style="color:#999"> 38.46%       --  100.00%   -11 </span>
+       1   2   1   0   3   3   1     5/13      0/0     1/1    11 </span><span class="row-even">Ronnie Porter #13                <span style="color:#999">  0.00%    0.00%       --   -11 </span>
+       1   3   3   0   0   1   1      0/5      0/1     0/0     0 </span><span class="row-odd">Carter McCray #1                 <span style="color:#999"> 40.00%       --       --   -11 </span>
+       0   5   1   0   0   2   1      2/5      0/0     0/0     4 </span><span class="row-even">Tess Myers #3                    <span style="color:#999">100.00%  100.00%       --   -11 </span>
+       0   2   0   1   0   2   2      2/2      2/2     0/0     6 </span><span class="row-odd">Natalie Leuzinger #24            <span style="color:#999"> 50.00%  100.00%  100.00%   -11 </span>
+       0   1   0   0   0   0   1      1/2      1/1     2/2     5 </span><span class="row-even" style="color: #a00000;"><b>WIS BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Lily Krahn #4                    <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   3   0      1/1      0/0     0/0     2 </span><span class="row-even">Halle Douglass #10               <span style="color:#999">  0.00%       --       --     0 </span>
+       0   3   1   1   0   1   2      0/1      0/0     0/0     0 </span><span class="row-odd">D'Yanis Jimenez #23              <span style="color:#999">     --       --       --     0 </span>
+       0   0   1   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #a00000;"><b>WIS TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 37.93%   75.00%  100.00%   -55 </span>
+       2  16   7   2   3  13   9    11/29      3/4     3/3    28 </span></span>
+<span id="playerstats-q3" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 33.33%    0.00%       --    +4 </span>
+       1   0   0   1   0   0   1      1/3      0/1     0/0     2 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 33.33%       --       --    +4 </span>
+       0   0   0   1   0   0   0      1/3      0/0     0/0     2 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 50.00%       --  100.00%    +4 </span>
+       0   0   1   0   1   0   3      1/2      0/0     2/2     4 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999">     --       --       --    +4 </span>
+       0   0   1   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 33.33%       --    0.00%    +4 </span>
+       0   1   0   1   1   0   0      1/3      0/0     0/1     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999">100.00%  100.00%       --     0 </span>
+       0   1   0   0   0   0   0      4/4      1/1     0/0     9 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999">100.00%       --       --     0 </span>
+       1   0   2   1   0   1   0      1/1      0/0     0/0     2 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">100.00%       --       --     0 </span>
+       0   3   1   0   0   0   2      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 58.82%   50.00%   66.67%   +20 </span>
+       2   5   5   4   2   1   6    10/17      1/2     2/3    23 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #a00000;"><b>WIS STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Serah Williams #25               <span style="color:#999"> 40.00%       --   66.67%    -4 </span>
+       0   2   0   0   1   1   2      2/5      0/0     2/3     6 </span><span class="row-odd">Ronnie Porter #13                <span style="color:#999"> 25.00%       --       --    -4 </span>
+       1   0   1   0   0   1   0      1/4      0/0     0/0     2 </span><span class="row-even">Carter McCray #1                 <span style="color:#999"> 50.00%       --   50.00%    -4 </span>
+       0   3   0   0   1   0   0      1/2      0/0     1/2     3 </span><span class="row-odd">Tess Myers #3                    <span style="color:#999">100.00%  100.00%       --    -4 </span>
+       0   1   1   0   0   1   0      2/2      2/2     0/0     6 </span><span class="row-even">Natalie Leuzinger #24            <span style="color:#999">     --       --       --    -4 </span>
+       0   0   1   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd" style="color: #a00000;"><b>WIS BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Lily Krahn #4                    <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-odd">Halle Douglass #10               <span style="color:#999">     --       --       --     0 </span>
+       1   0   1   1   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #a00000;"><b>WIS TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 50.00%  100.00%   60.00%   -20 </span>
+       2   6   4   1   2   4   4     7/14      2/2     3/5    19 </span></span>
+<span id="playerstats-q4" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 50.00%    0.00%       --    +7 </span>
+       0   0   0   0   0   0   0      1/2      0/1     0/0     2 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 50.00%   50.00%  100.00%    +7 </span>
+       0   0   0   0   0   0   0      1/2      1/2     2/2     5 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999">100.00%       --       --    +7 </span>
+       0   0   1   0   0   0   0      1/1      0/0     0/0     2 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999"> 66.67%    0.00%       --    +7 </span>
+       0   0   1   1   0   0   0      2/3      0/1     0/0     4 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999">     --       --       --    +7 </span>
+       0   1   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999"> 50.00%   50.00%       --     0 </span>
+       0   1   0   0   0   0   0      1/2      1/2     0/0     3 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999"> 50.00%    0.00%  100.00%     0 </span>
+       0   0   0   1   0   0   0      2/4      0/1     2/2     6 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">     --       --       --     0 </span>
+       0   2   0   1   1   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Malia Samuels #10                <span style="color:#999">  0.00%       --       --     0 </span>
+       0   1   2   2   0   0   3      0/1      0/0     0/0     0 </span><span class="row-odd">Vivian Iwuchukwu #0              <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   0   3      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 56.25%   28.57%  100.00%   +35 </span>
+       0   5   4   5   1   0   7     9/16      2/7     4/4    24 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #a00000;"><b>WIS STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Serah Williams #25               <span style="color:#999"> 50.00%       --       --    -7 </span>
+       0   2   0   0   0   1   0      1/2      0/0     0/0     2 </span><span class="row-odd">Ronnie Porter #13                <span style="color:#999">     --       --  100.00%    -7 </span>
+       0   1   0   0   0   0   0      0/0      0/0     2/2     2 </span><span class="row-even">Carter McCray #1                 <span style="color:#999">100.00%       --   75.00%    -7 </span>
+       1   2   1   0   0   1   0      1/1      0/0     3/4     5 </span><span class="row-odd">Natalie Leuzinger #24            <span style="color:#999">100.00%  100.00%   50.00%    -7 </span>
+       0   0   0   0   0   1   2      1/1      1/1     1/2     4 </span><span class="row-even" style="color: #a00000;"><b>WIS BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Lily Krahn #4                    <span style="color:#999">  0.00%       --       --     0 </span>
+       0   0   1   0   0   0   0      0/1      0/0     0/0     0 </span><span class="row-even">Halle Douglass #10               <span style="color:#999">     --       --       --     0 </span>
+       0   0   0   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-odd">Jovana Spasovski #11             <span style="color:#999">  0.00%       --   50.00%     0 </span>
+       1   1   0   0   0   0   1      0/1      0/0     2/4     2 </span><span class="row-even">Alie Bisballe #2                 <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+       0   0   0   0   0   1   0      1/3      0/1     0/0     2 </span><span class="row-odd">Reese Jaramillo #14              <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-even">Leena Patibandla #5              <span style="color:#999">  0.00%       --       --     0 </span>
+       1   0   1   0   0   1   0      0/2      0/0     0/0     0 </span><span class="row-odd" style="color: #a00000;"><b>WIS TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 36.36%   50.00%   66.67%   -28 </span>
+       3   7   3   0   0   6   5     4/11      1/2    8/12    17 </span></span>
+<span id="playerstats-h2" style="display:none"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 40.00%    0.00%       --   +11 </span>
+       1   0   0   1   0   0   1      2/5      0/2     0/0     4 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 40.00%   50.00%  100.00%   +11 </span>
+       0   0   0   1   0   0   0      2/5      1/2     2/2     7 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 66.67%       --  100.00%   +11 </span>
+       0   0   2   0   1   0   3      2/3      0/0     2/2     6 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999"> 66.67%    0.00%       --   +11 </span>
+       0   0   2   1   0   0   0      2/3      0/1     0/0     4 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 33.33%       --    0.00%   +11 </span>
+       0   2   0   1   1   0   0      1/3      0/0     0/1     2 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999"> 83.33%   66.67%       --     0 </span>
+       0   2   0   0   0   0   0      5/6      2/3     0/0    12 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999"> 60.00%    0.00%  100.00%     0 </span>
+       1   0   2   2   0   1   0      3/5      0/1     2/2     8 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">100.00%       --       --     0 </span>
+       0   5   1   1   1   0   3      1/1      0/0     0/0     2 </span><span class="row-even">Malia Samuels #10                <span style="color:#999">  0.00%       --       --     0 </span>
+       0   1   2   2   0   0   3      0/1      0/0     0/0     0 </span><span class="row-odd">Vivian Iwuchukwu #0              <span style="color:#999">100.00%       --       --     0 </span>
+       0   0   0   0   0   0   3      1/1      0/0     0/0     2 </span><span class="row-even" style="color: #990000;"><b>USC TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 57.58%   33.33%   85.71%   +55 </span>
+       2  10   9   9   3   1  13    19/33      3/9     6/7    47 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #a00000;"><b>WIS STARTERS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Serah Williams #25               <span style="color:#999"> 42.86%       --   66.67%   -11 </span>
+       0   4   0   0   1   2   2      3/7      0/0     2/3     8 </span><span class="row-odd">Ronnie Porter #13                <span style="color:#999"> 25.00%       --  100.00%   -11 </span>
+       1   1   1   0   0   1   0      1/4      0/0     2/2     4 </span><span class="row-even">Carter McCray #1                 <span style="color:#999"> 66.67%       --   66.67%   -11 </span>
+       1   5   1   0   1   1   0      2/3      0/0     4/6     8 </span><span class="row-odd">Tess Myers #3                    <span style="color:#999">100.00%  100.00%       --   -11 </span>
+       0   1   1   0   0   1   0      2/2      2/2     0/0     6 </span><span class="row-even">Natalie Leuzinger #24            <span style="color:#999">100.00%  100.00%   50.00%   -11 </span>
+       0   0   1   0   0   1   3      1/1      1/1     1/2     4 </span><span class="row-odd" style="color: #a00000;"><b>WIS BENCH</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">Lily Krahn #4                    <span style="color:#999"> 50.00%       --       --     0 </span>
+       0   0   1   0   0   0   0      1/2      0/0     0/0     2 </span><span class="row-odd">Halle Douglass #10               <span style="color:#999">     --       --       --     0 </span>
+       1   0   1   1   0   2   2      0/0      0/0     0/0     0 </span><span class="row-even">Jovana Spasovski #11             <span style="color:#999">  0.00%       --   50.00%     0 </span>
+       1   1   0   0   0   0   1      0/1      0/0     2/4     2 </span><span class="row-odd">Alie Bisballe #2                 <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+       0   0   0   0   0   1   0      1/3      0/1     0/0     2 </span><span class="row-even">Reese Jaramillo #14              <span style="color:#999">     --       --       --     0 </span>
+       0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">Leena Patibandla #5              <span style="color:#999">  0.00%       --       --     0 </span>
+       1   0   1   0   0   1   0      0/2      0/0     0/0     0 </span><span class="row-even" style="color: #a00000;"><b>WIS TOTALS</b>
+     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">                                 <span style="color:#999"> 44.00%   75.00%   64.71%   -55 </span>
+       5  13   7   1   2  10   9    11/25      3/4   11/17    36 </span></span>
+<span id="playerstats-total"><span class="row-even" style="color: #990000;"><b>USC STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Kennedy Smith #11                <span style="color:#999"> 44.44%   25.00%    0.00%   +22 </span>
+  29   1   2   1   2   1   1   2      4/9      1/4     0/1     9 </span><span class="row-even">JuJu Watkins #12                 <span style="color:#999"> 36.36%   25.00%   83.33%   +22 </span>
+  26   0   2   0   1   1   1   1     4/11      1/4     5/6    14 </span><span class="row-odd">Kiki Iriafen #44                 <span style="color:#999"> 54.55%       --   75.00%   +22 </span>
+  24   1   3   3   2   1   1   3     6/11      0/0     3/4    15 </span><span class="row-even">Talia von Oelhoffen #55          <span style="color:#999"> 71.43%   50.00%       --   +22 </span>
+  21   0   0   4   2   0   0   0      5/7      1/2     0/0    11 </span><span class="row-odd">Rayah Marshall #13               <span style="color:#999"> 25.00%       --    0.00%   +22 </span>
   17   2   5   1   1   2   2   2      2/8      0/0     0/1     4 </span><span class="row-even" style="color: #990000;"><b>USC BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999"> 62.50%  50.00% 100.00%    0 </span>
-  22   0   4   0   1   0   0   1      5/8      2/4     2/2    14 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999"> 57.14%   0.00% 100.00%    0 </span>
-  21   1   1   5   3   0   1   0      4/7      0/1     2/2    10 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">100.00%      --  50.00%    0 </span>
-  20   0   6   1   3   2   1   3      2/2      0/0     1/2     5 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 33.33%   0.00%      --    0 </span>
-  14   1   1   3   2   0   0   3      1/3      0/1     0/0     2 </span><span class="row-odd">Vivian Iwuchukwu #0              <span style="color:#999">100.00%      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Avery Howell #23                 <span style="color:#999"> 62.50%   50.00%  100.00%     0 </span>
+  22   0   4   0   1   0   0   1      5/8      2/4     2/2    14 </span><span class="row-even">Kayleigh Heckel #9               <span style="color:#999"> 57.14%    0.00%  100.00%     0 </span>
+  21   1   1   5   3   0   1   0      4/7      0/1     2/2    10 </span><span class="row-odd">Clarice Akunwafo #34             <span style="color:#999">100.00%       --   50.00%     0 </span>
+  20   0   6   1   3   2   1   3      2/2      0/0     1/2     5 </span><span class="row-even">Malia Samuels #10                <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+  14   1   1   3   2   0   0   3      1/3      0/1     0/0     2 </span><span class="row-odd">Vivian Iwuchukwu #0              <span style="color:#999">100.00%       --       --     0 </span>
    6   0   0   0   0   0   0   3      1/1      0/0     0/0     2 </span><span class="row-even">Dominique Darius #21
 <span class="dnp">  Did not play</span></span><span class="row-odd">Rian Forestier #4
 <span class="dnp">  Did not play</span></span><span class="row-even">Aaliyah Gayles #3
 <span class="dnp">  Did not play</span></span><span class="row-odd">Brooklyn Shamblin #24
 <span class="dnp">  Did not play</span></span><span class="row-even">Laura Williams #6
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #990000;"><b>USC TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.75%  31.25%  72.22% </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 50.75%   31.25%   72.22%  +110 </span>
        6  24  18  17   7   7  18    34/67     5/16   13/18    86 </span><span class="row-odd">
 
 </span><span class="row-even" style="color: #a00000;"><b>WIS STARTERS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Serah Williams #25               <span style="color:#999"> 40.00%      --  75.00%  -22 </span>
-  33   1   6   1   0   4   5   3     8/20      0/0     3/4    19 </span><span class="row-even">Ronnie Porter #13                <span style="color:#999"> 11.11%   0.00% 100.00%  -22 </span>
-  33   2   4   4   0   0   2   1      1/9      0/1     2/2     4 </span><span class="row-odd">Carter McCray #1                 <span style="color:#999"> 50.00%      --  66.67%  -22 </span>
-  28   1  10   2   0   1   3   1      4/8      0/0     4/6    12 </span><span class="row-even">Tess Myers #3                    <span style="color:#999">100.00% 100.00%      --  -22 </span>
-  25   0   3   1   1   0   3   2      4/4      4/4     0/0    12 </span><span class="row-odd">Natalie Leuzinger #24            <span style="color:#999"> 66.67% 100.00%  75.00%  -22 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Serah Williams #25               <span style="color:#999"> 40.00%       --   75.00%   -22 </span>
+  33   1   6   1   0   4   5   3     8/20      0/0     3/4    19 </span><span class="row-even">Ronnie Porter #13                <span style="color:#999"> 11.11%    0.00%  100.00%   -22 </span>
+  33   2   4   4   0   0   2   1      1/9      0/1     2/2     4 </span><span class="row-odd">Carter McCray #1                 <span style="color:#999"> 50.00%       --   66.67%   -22 </span>
+  28   1  10   2   0   1   3   1      4/8      0/0     4/6    12 </span><span class="row-even">Tess Myers #3                    <span style="color:#999">100.00%  100.00%       --   -22 </span>
+  25   0   3   1   1   0   3   2      4/4      4/4     0/0    12 </span><span class="row-odd">Natalie Leuzinger #24            <span style="color:#999"> 66.67%  100.00%   75.00%   -22 </span>
   25   0   1   1   0   0   1   4      2/3      2/2     3/4     9 </span><span class="row-even" style="color: #a00000;"><b>WIS BENCH</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Lily Krahn #4                    <span style="color:#999"> 66.67%      --      --    0 </span>
-  18   0   0   1   0   0   3   0      2/3      0/0     0/0     4 </span><span class="row-even">Halle Douglass #10               <span style="color:#999">  0.00%      --      --    0 </span>
-  13   1   3   2   2   0   3   4      0/1      0/0     0/0     0 </span><span class="row-odd">Gracie Grzesk #22                <span style="color:#999">     --      --      --    0 </span>
-   6   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Jovana Spasovski #11             <span style="color:#999">  0.00%      --  50.00%    0 </span>
-   5   1   1   0   0   0   0   1      0/1      0/0     2/4     2 </span><span class="row-odd">Alie Bisballe #2                 <span style="color:#999"> 33.33%   0.00%      --    0 </span>
-   4   0   0   0   0   0   1   0      1/3      0/1     0/0     2 </span><span class="row-even">Reese Jaramillo #14              <span style="color:#999">     --      --      --    0 </span>
-   4   0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">D'Yanis Jimenez #23              <span style="color:#999">     --      --      --    0 </span>
-   3   0   0   1   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Leena Patibandla #5              <span style="color:#999">  0.00%      --      --    0 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-odd">Lily Krahn #4                    <span style="color:#999"> 66.67%       --       --     0 </span>
+  18   0   0   1   0   0   3   0      2/3      0/0     0/0     4 </span><span class="row-even">Halle Douglass #10               <span style="color:#999">  0.00%       --       --     0 </span>
+  13   1   3   2   2   0   3   4      0/1      0/0     0/0     0 </span><span class="row-odd">Gracie Grzesk #22                <span style="color:#999">     --       --       --     0 </span>
+   6   0   0   0   0   0   0   0      0/0      0/0     0/0     0 </span><span class="row-even">Jovana Spasovski #11             <span style="color:#999">  0.00%       --   50.00%     0 </span>
+   5   1   1   0   0   0   0   1      0/1      0/0     2/4     2 </span><span class="row-odd">Alie Bisballe #2                 <span style="color:#999"> 33.33%    0.00%       --     0 </span>
+   4   0   0   0   0   0   1   0      1/3      0/1     0/0     2 </span><span class="row-even">Reese Jaramillo #14              <span style="color:#999">     --       --       --     0 </span>
+   4   0   1   0   0   0   0   1      0/0      0/0     0/0     0 </span><span class="row-odd">D'Yanis Jimenez #23              <span style="color:#999">     --       --       --     0 </span>
+   3   0   0   1   0   0   1   1      0/0      0/0     0/0     0 </span><span class="row-even">Leena Patibandla #5              <span style="color:#999">  0.00%       --       --     0 </span>
    3   1   0   1   0   0   1   0      0/2      0/0     0/0     0 </span><span class="row-odd">Tessa Grady #12
 <span class="dnp">  Did not play</span></span><span class="row-even">Alba Martin Mesa #9
 <span class="dnp">  Did not play</span></span><span class="row-odd" style="color: #a00000;"><b>WIS TOTALS</b>
- MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 40.74%  75.00%  70.00% </span>
-       7  29  14   3   5  23  18    22/54      6/8   14/20    64 </span>
+ MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS</span><span class="row-even">                                 <span style="color:#999"> 40.74%   75.00%   70.00%  -110 </span>
+       7  29  14   3   5  23  18    22/54      6/8   14/20    64 </span></span>
 
-v2026.02.21-12:53.995a0b2
+v2026.02.21-13:06.c3f70d0
 </pre>
 <script>
 (function() {
@@ -187,6 +394,28 @@ v2026.02.21-12:53.995a0b2
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 })();
+function showPeriod(view) {
+    var views = ['q1','q2','h1','q3','q4','h2','total'];
+    views.forEach(function(v) {
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    });
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {
+        var parts = [];
+        var labels = {'q1':'Q1','q2':'Q2','h1':'H1','q3':'Q3','q4':'Q4','h2':'H2','total':'Total'};
+        views.forEach(function(v) {
+            if (v === view) {
+                parts.push('<b>' + labels[v] + '</b>');
+            } else {
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\'' + v + '\')">' + labels[v] + '</a>');
+            }
+        });
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }
+}
 </script>
 </body>
 </html>

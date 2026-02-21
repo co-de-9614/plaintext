@@ -268,6 +268,149 @@ def calculate_possessions(plays, boxscore, team_id):
     return player_poss
 
 
+def compute_period_stats(plays, periods):
+    """Compute per-player stats from play-by-play for given period numbers.
+
+    Args:
+        plays: list of play-by-play events
+        periods: list of period numbers to include (e.g. [1] for Q1, [1,2] for H1)
+
+    Returns:
+        {athlete_id: {name, pts, fg_m, fg_a, three_m, three_a, ft_m, ft_a,
+                      orb, drb, ast, stl, blk, to, fls}}
+    """
+    period_set = set(periods)
+    stats = {}  # athlete_id -> stat dict
+
+    def ensure_player(athlete_id, name=""):
+        if athlete_id not in stats:
+            stats[athlete_id] = {
+                "name": name, "pts": 0, "fg_m": 0, "fg_a": 0,
+                "three_m": 0, "three_a": 0, "ft_m": 0, "ft_a": 0,
+                "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0,
+            }
+
+    for play in plays:
+        period_num = play.get("period", {}).get("number", 0)
+        if period_num not in period_set:
+            continue
+
+        play_type = play.get("type", {}).get("text", "")
+        participants = play.get("participants", [])
+        scoring = play.get("scoringPlay", False)
+
+        if not participants:
+            continue
+
+        athlete_id = participants[0].get("athlete", {}).get("id")
+        athlete_name = participants[0].get("athlete", {}).get("displayName", "")
+        if not athlete_id:
+            continue
+
+        ensure_player(athlete_id, athlete_name)
+        p = stats[athlete_id]
+
+        if play_type in ("JumpShot", "LayUpShot", "DunkShot", "TipShot"):
+            p["fg_a"] += 1
+            pts_attempted = play.get("pointsAttempted", 2)
+            if pts_attempted == 3:
+                p["three_a"] += 1
+            if scoring:
+                p["fg_m"] += 1
+                p["pts"] += pts_attempted
+                if pts_attempted == 3:
+                    p["three_m"] += 1
+                # Assist: participants[1] if present
+                if len(participants) > 1:
+                    ast_id = participants[1].get("athlete", {}).get("id")
+                    ast_name = participants[1].get("athlete", {}).get("displayName", "")
+                    if ast_id:
+                        ensure_player(ast_id, ast_name)
+                        stats[ast_id]["ast"] += 1
+
+        elif play_type == "MadeFreeThrow":
+            p["ft_a"] += 1
+            if scoring:
+                p["ft_m"] += 1
+                p["pts"] += 1
+
+        elif play_type == "Offensive Rebound":
+            p["orb"] += 1
+        elif play_type == "Defensive Rebound":
+            p["drb"] += 1
+        elif play_type == "Steal":
+            p["stl"] += 1
+        elif play_type == "Block Shot":
+            p["blk"] += 1
+        elif play_type == "Lost Ball Turnover":
+            p["to"] += 1
+        elif play_type == "PersonalFoul":
+            p["fls"] += 1
+
+    return stats
+
+
+def compute_period_plus_minus(plays, boxscore, home_team_id, periods):
+    """Calculate plus/minus for each player filtered to specific periods."""
+    period_set = set(periods)
+    plus_minus = {}
+    on_court = {}
+
+    players_data = boxscore.get("players", [])
+    for team_data in players_data:
+        team_id = team_data.get("team", {}).get("id", "")
+        statistics = team_data.get("statistics", [])
+        if statistics:
+            athletes = statistics[0].get("athletes", [])
+            starters = [a.get("athlete", {}).get("id") for a in athletes if a.get("starter")]
+            on_court[team_id] = set(starters)
+            for a in athletes:
+                athlete_id = a.get("athlete", {}).get("id")
+                if athlete_id:
+                    plus_minus[athlete_id] = 0
+
+    prev_home_score = 0
+    prev_away_score = 0
+
+    for play in plays:
+        play_type = play.get("type", {}).get("text", "").lower()
+        play_text = play.get("text", "").lower()
+        home_score = play.get("homeScore", prev_home_score)
+        away_score = play.get("awayScore", prev_away_score)
+        period_num = play.get("period", {}).get("number", 0)
+
+        # Always track substitutions regardless of period (to keep on_court accurate)
+        if "substitution" in play_type:
+            participants = play.get("participants", [])
+            team_id = play.get("team", {}).get("id", "")
+            if participants and team_id in on_court:
+                athlete_id = participants[0].get("athlete", {}).get("id")
+                if athlete_id:
+                    if "subbing out" in play_text or "exits" in play_text:
+                        on_court[team_id].discard(athlete_id)
+                    elif "subbing in" in play_text or "enters" in play_text:
+                        on_court[team_id].add(athlete_id)
+
+        # Only count score changes in the requested periods
+        if period_num in period_set:
+            home_diff = home_score - prev_home_score
+            away_diff = away_score - prev_away_score
+
+            if home_diff != 0 or away_diff != 0:
+                for team_id, players_on in on_court.items():
+                    for athlete_id in players_on:
+                        if athlete_id in plus_minus:
+                            if team_id == home_team_id:
+                                plus_minus[athlete_id] += home_diff - away_diff
+                            else:
+                                plus_minus[athlete_id] += away_diff - home_diff
+
+        prev_home_score = home_score
+        prev_away_score = away_score
+
+    return plus_minus
+
+
 def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
     """Get team roster with current season stats aggregated from game box scores."""
     # Get schedule to find completed games
@@ -810,7 +953,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
                     ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
                     pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
                     name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                     fg_str = f"{fg_made}/{fg_att}"
@@ -830,7 +973,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
                     ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
                     pm_str = f"+{s_pm:.1f}" if s_pm > 0 else f"{s_pm:.1f}"
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
                     name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                     fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
@@ -850,7 +993,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
                     ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
                     pm_str = f"+{s_pm:.1f}" if s_pm > 0 else f"{s_pm:.1f}"
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
                     name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                     fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
@@ -870,7 +1013,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                     three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
                     ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
                     pm_str = f"+{s_pm:.1f}" if s_pm > 0 else f"{s_pm:.1f}"
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
                     name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
 
                     fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
@@ -1824,8 +1967,8 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     opp_abbrev = opp_abbrev_display
 
     if scoring_plays:
-        # Settings: 12 "=" columns per quarter (50 sec each), plus "+" breaks
-        cols_per_quarter = 13  # 1 "+" break + 12 "=" columns (50 sec each in 10-min quarter)
+        # Settings: 13 "=" columns per quarter (~46 sec each), plus "+" breaks
+        cols_per_quarter = 14  # 1 "+" break + 13 "=" columns (~46 sec each in 10-min quarter)
         total_cols = num_periods * cols_per_quarter + 1  # +1 for final "+"
 
         # For live games, calculate cutoff column from current period/clock
@@ -1837,7 +1980,7 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 mins_left = int(clock_parts[0])
                 secs_left = int(clock_parts[1]) if len(clock_parts) > 1 else 0
                 secs_elapsed = 600 - (mins_left * 60 + secs_left)
-                current_seg = min(12, max(1, int(secs_elapsed / 50) + 1)) if secs_elapsed > 0 else 0
+                current_seg = min(13, max(1, int(secs_elapsed / 46) + 1)) if secs_elapsed > 0 else 0
             except Exception:
                 current_seg = 0
             cutoff_col = (game_period - 1) * cols_per_quarter + current_seg
@@ -1860,11 +2003,11 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                 seconds_remaining = minutes_left * 60 + seconds_left
                 seconds_elapsed = 600 - seconds_remaining  # 10-min quarters
 
-                # 12 segments of 50 seconds each
+                # 13 segments of ~46 seconds each
                 if seconds_elapsed <= 0:
                     segment = 1
                 else:
-                    segment = min(12, int(seconds_elapsed / 50) + 1)
+                    segment = min(13, int(seconds_elapsed / 46) + 1)
             except Exception:
                 segment = 6  # default to middle
 
@@ -2114,6 +2257,266 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         plays, home_team.get("id", ""), away_team.get("id", "")
     ) if plays else (0, 0)
 
+    # Determine period views available based on play-by-play data
+    has_pbp = bool(plays)
+    home_id = home_team.get("id", "")
+    away_id = away_team.get("id", "")
+
+    # Build period view definitions: (view_id, label, period_numbers)
+    period_views = []
+    if has_pbp:
+        # Find max period number from plays
+        max_period = max((p.get("period", {}).get("number", 0) for p in plays), default=4)
+        max_period = max(max_period, 4)
+
+        period_views = [
+            ("q1", "Q1", [1]),
+            ("q2", "Q2", [2]),
+            ("h1", "H1", [1, 2]),
+            ("q3", "Q3", [3]),
+            ("q4", "Q4", [4]),
+            ("h2", "H2", [3, 4]),
+        ]
+        # Add OT periods if present
+        for ot in range(1, max_period - 3):
+            period_views.append((f"ot{ot}", f"OT{ot}", [4 + ot]))
+        period_views.append(("total", "Total", list(range(1, max_period + 1))))
+
+        # Precompute period stats and plus/minus for all views
+        period_player_stats = {}  # view_id -> {athlete_id -> stats}
+        period_pm = {}  # view_id -> {athlete_id -> pm}
+        for view_id, _, view_periods in period_views:
+            if view_id == "total":
+                continue  # Total uses boxscore data
+            period_player_stats[view_id] = compute_period_stats(plays, view_periods)
+            period_pm[view_id] = compute_period_plus_minus(plays, boxscore, home_id, view_periods)
+
+    # Helper to render team stats block for a given view
+    def render_team_stats(view_id, usc_ts, opp_ts, has_advanced=False):
+        lines = []
+        lines.append(f"{'':>5}{'PTS':>3}  {'FG':>5} {'3PT':>5} {'FT':>5} {'OR/DR/TR':>8} {'A':>2} {'S':>2} {'B':>2}")
+        for ts in [usc_ts, opp_ts]:
+            ab = ts["abbrev"]
+            fg = f"{ts['fg_m']}/{ts['fg_a']}"
+            thr = f"{ts['three_m']}/{ts['three_a']}"
+            ft = f"{ts['ft_m']}/{ts['ft_a']}"
+            reb = f"{ts['orb']}/{ts['drb']}/{ts['orb']+ts['drb']}"
+            lines.append(f"{ab:<5}{ts['pts']:>3}  {fg:>5} {thr:>5} {ft:>5} {reb:>8} {ts['ast']:>2} {ts['stl']:>2} {ts['blk']:>2}")
+            fg_pct = f"{100*ts['fg_m']/ts['fg_a']:.1f}%" if ts['fg_a'] > 0 else "0.0%"
+            thr_pct = f"{100*ts['three_m']/ts['three_a']:.1f}%" if ts['three_a'] > 0 else "0.0%"
+            ft_pct = f"{100*ts['ft_m']/ts['ft_a']:.1f}%" if ts['ft_a'] > 0 else "0.0%"
+            lines.append(f"{'':>10}{fg_pct:>5} {thr_pct:>5} {ft_pct:>5}")
+        lines.append("")
+        if has_advanced and view_id == "total":
+            lines.append(f"{'':>5}{'PITP':>4}{'FB PTS':>8}{'BNCH':>6}{'OR':>4}{'2CH':>5}{'TO':>4}{'POTO':>5}{'PF':>4}")
+            for ts in [usc_ts, opp_ts]:
+                ab = ts["abbrev"]
+                pitp = ts.get("pitp", "-")
+                fb = ts.get("fb_pts", "-")
+                bnch = str(ts["bench_pts"])
+                orb_v = str(ts["orb"])
+                sch = ts.get("second_ch", "-")
+                to_v = str(ts["to"])
+                poto = ts.get("pts_off_to", "-")
+                pf = str(ts["fls"])
+                lines.append(f"{ab:<5}{pitp:>4}{fb:>8}{bnch:>6}{orb_v:>4}{sch:>5}{to_v:>4}{poto:>5}{pf:>4}")
+            lines.append("")
+        return "\n".join(lines)
+
+    # Helper to aggregate period stats into team totals for a period view
+    def aggregate_team_period_stats(view_id, team_data_list):
+        """Build team stats dicts from period player stats for each team."""
+        result = {}
+        for td in team_data_list:
+            tid = td.get("team", {}).get("id", "")
+            tab = td.get("team", {}).get("abbreviation", "TEAM")
+            ts = {"abbrev": tab, "fg_m": 0, "fg_a": 0, "three_m": 0, "three_a": 0,
+                  "ft_m": 0, "ft_a": 0, "pts": 0, "orb": 0, "drb": 0,
+                  "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0, "bench_pts": 0}
+            pstats = period_player_stats.get(view_id, {})
+            statistics = td.get("statistics", [])
+            if statistics:
+                for a in statistics[0].get("athletes", []):
+                    aid = a.get("athlete", {}).get("id")
+                    if aid and aid in pstats:
+                        ps = pstats[aid]
+                        ts["fg_m"] += ps["fg_m"]; ts["fg_a"] += ps["fg_a"]
+                        ts["three_m"] += ps["three_m"]; ts["three_a"] += ps["three_a"]
+                        ts["ft_m"] += ps["ft_m"]; ts["ft_a"] += ps["ft_a"]
+                        ts["pts"] += ps["pts"]
+                        ts["orb"] += ps["orb"]; ts["drb"] += ps["drb"]
+                        ts["ast"] += ps["ast"]; ts["stl"] += ps["stl"]
+                        ts["blk"] += ps["blk"]; ts["to"] += ps["to"]
+                        ts["fls"] += ps["fls"]
+            result[tid] = ts
+        return result
+
+    # Helper to render player stats rows for a single team in a given view
+    def render_player_rows(view_id, team_data, pm_lookup, row_idx_start):
+        """Render player stat rows. Returns (list_of_span_strings, next_row_idx)."""
+        spans = []
+        row_idx = row_idx_start
+        team = team_data.get("team", {})
+        td_abbrev = team.get("abbreviation", "TEAM")
+        td_id = team.get("id", "")
+
+        if td_id == team_id:
+            tc = "990000" if team_abbrev == "USC" else "4E2A84"
+        else:
+            tc = team.get("color", "888888")
+
+        statistics = team_data.get("statistics", [])
+        if not statistics:
+            return spans, row_idx
+
+        athletes = statistics[0].get("athletes", [])
+        starters = [a for a in athletes if a.get("starter")]
+        bench = [a for a in athletes if not a.get("starter")]
+        starters_sorted = sorted(starters, key=player_sort_key)
+        bench_sorted = sorted(bench, key=player_sort_key)
+
+        period_header = " MIN ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS" if view_id == "total" else "     ORB DRB AST STL BLK  TO FLS       FG      3PT      FT   PTS"
+
+        team_totals = {"fg_made": 0, "fg_att": 0, "three_made": 0, "three_att": 0,
+                       "ft_made": 0, "ft_att": 0, "pts": 0, "orb": 0, "drb": 0,
+                       "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0}
+        total_pm = 0
+
+        pstats = period_player_stats.get(view_id, {}) if view_id != "total" else {}
+
+        for section_name, section_athletes in [("STARTERS", starters_sorted), ("BENCH", bench_sorted)]:
+            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+            spans.append(f'<span class="{row_class}" style="color: #{tc};"><b>{td_abbrev} {section_name}</b>\n{period_header}</span>')
+            row_idx += 1
+
+            for a in section_athletes:
+                athlete = a.get("athlete", {})
+                athlete_id = athlete.get("id", "")
+                name = athlete.get("displayName", "Unknown")
+                jersey = athlete.get("jersey", "")
+                stats = a.get("stats", [])
+
+                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                row_idx += 1
+
+                jersey_str = f"#{jersey}" if jersey else ""
+                name_part = f"{name} {jersey_str}"
+
+                if view_id == "total":
+                    # Use boxscore stats directly
+                    if not stats or len(stats) < 13:
+                        spans.append(f'<span class="{row_class}">{name_part}\n<span class="dnp">  Did not play</span></span>')
+                        continue
+                    mins = stats[0] if stats[0] and stats[0] != '--' else "0"
+                    pts = stats[1] if stats[1] and stats[1] != '--' else "0"
+                    fg = stats[2] if stats[2] and stats[2] != '--' else "0-0"
+                    threept = stats[3] if stats[3] and stats[3] != '--' else "0-0"
+                    ft = stats[4] if stats[4] and stats[4] != '--' else "0-0"
+                    orb = stats[10] if stats[10] and stats[10] != '--' else "0"
+                    drb = stats[11] if stats[11] and stats[11] != '--' else "0"
+                    ast = stats[6] if stats[6] and stats[6] != '--' else "0"
+                    stl = stats[8] if stats[8] and stats[8] != '--' else "0"
+                    blk = stats[9] if stats[9] and stats[9] != '--' else "0"
+                    to = stats[7] if stats[7] and stats[7] != '--' else "0"
+                    fls = stats[12] if stats[12] and stats[12] != '--' else "0"
+
+                    if mins == "0" or mins == "0:00":
+                        spans.append(f'<span class="{row_class}">{name_part}\n<span class="dnp">  Did not play</span></span>')
+                        continue
+
+                    fg_m, fg_a = parse_shooting(fg)
+                    three_m, three_a = parse_shooting(threept)
+                    ft_m, ft_a = parse_shooting(ft)
+                    team_totals["fg_made"] += fg_m; team_totals["fg_att"] += fg_a
+                    team_totals["three_made"] += three_m; team_totals["three_att"] += three_a
+                    team_totals["ft_made"] += ft_m; team_totals["ft_att"] += ft_a
+                    team_totals["pts"] += int(pts) if pts else 0
+                    team_totals["orb"] += int(orb) if orb else 0
+                    team_totals["drb"] += int(drb) if drb else 0
+                    team_totals["ast"] += int(ast) if ast else 0
+                    team_totals["stl"] += int(stl) if stl else 0
+                    team_totals["blk"] += int(blk) if blk else 0
+                    team_totals["to"] += int(to) if to else 0
+                    team_totals["fls"] += int(fls) if fls else 0
+
+                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
+                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
+                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
+                    pm_val = pm_lookup.get(athlete_id, 0)
+                    total_pm += pm_val
+                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
+                    player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+                    fg_str = f"{fg_m}/{fg_a}"
+                    three_str = f"{three_m}/{three_a}"
+                    ft_str = f"{ft_m}/{ft_a}"
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts:>6} "
+                else:
+                    # Period view - use computed stats
+                    ps = pstats.get(athlete_id)
+                    if not ps or all(ps[k] == 0 for k in ("pts", "fg_a", "ft_a", "orb", "drb", "ast", "stl", "blk", "to", "fls")):
+                        # Skip players with zero stats in this period
+                        row_idx -= 1  # undo the row_idx increment
+                        continue
+
+                    fg_m = ps["fg_m"]; fg_a = ps["fg_a"]
+                    three_m = ps["three_m"]; three_a = ps["three_a"]
+                    ft_m = ps["ft_m"]; ft_a = ps["ft_a"]
+                    pts_v = ps["pts"]; orb_v = ps["orb"]; drb_v = ps["drb"]
+                    ast_v = ps["ast"]; stl_v = ps["stl"]; blk_v = ps["blk"]
+                    to_v = ps["to"]; fls_v = ps["fls"]
+
+                    team_totals["fg_made"] += fg_m; team_totals["fg_att"] += fg_a
+                    team_totals["three_made"] += three_m; team_totals["three_att"] += three_a
+                    team_totals["ft_made"] += ft_m; team_totals["ft_att"] += ft_a
+                    team_totals["pts"] += pts_v; team_totals["orb"] += orb_v
+                    team_totals["drb"] += drb_v; team_totals["ast"] += ast_v
+                    team_totals["stl"] += stl_v; team_totals["blk"] += blk_v
+                    team_totals["to"] += to_v; team_totals["fls"] += fls_v
+
+                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
+                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
+                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
+                    pm_val = pm_lookup.get(athlete_id, 0)
+                    total_pm += pm_val
+                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+                    grey_part = f"{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} "
+                    player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+                    fg_str = f"{fg_m}/{fg_a}"
+                    three_str = f"{three_m}/{three_a}"
+                    ft_str = f"{ft_m}/{ft_a}"
+                    stats_line = f"    {orb_v:>4}{drb_v:>4}{ast_v:>4}{stl_v:>4}{blk_v:>4}{to_v:>4}{fls_v:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts_v:>6} "
+
+                spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
+
+        # Totals row
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        spans.append(f'<span class="{row_class}" style="color: #{tc};"><b>{td_abbrev} TOTALS</b>\n{period_header}</span>')
+        row_idx += 1
+
+        fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
+        three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
+        ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
+        fg_pct_val = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.2f}%" if team_totals['fg_att'] > 0 else "--"
+        three_pct_val = f"{100 * team_totals['three_made'] / team_totals['three_att']:.2f}%" if team_totals['three_att'] > 0 else "--"
+        ft_pct_val = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.2f}%" if team_totals['ft_att'] > 0 else "--"
+        fg_pct = f"{fg_pct_val:>7}"
+        three_pct = f"{three_pct_val:>7}"
+        ft_pct = f"{ft_pct_val:>7}"
+        pm_str = f"+{total_pm}" if total_pm > 0 else str(total_pm)
+
+        pct_line = f"{'':33}<span style=\"color:#999\">{fg_pct:<9}{three_pct:<9}{ft_pct:<8}{pm_str:>5} </span>"
+        if view_id == "total":
+            totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>9}{three_total:>9}{ft_total:>8}{team_totals['pts']:>6} "
+        else:
+            totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>9}{three_total:>9}{ft_total:>8}{team_totals['pts']:>6} "
+
+        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+        spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
+        row_idx += 1
+
+        return spans, row_idx
+
     # Team Stats section
     team_players = boxscore.get("players", [])
     if team_players:
@@ -2167,8 +2570,6 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
                         pre_stats[tid]["pts_off_to"] = val
 
         # Add second chance points from play-by-play calculation
-        home_id = home_team.get("id", "")
-        away_id = away_team.get("id", "")
         if home_id in pre_stats:
             pre_stats[home_id]["second_ch"] = str(home_2ch_pts)
         if away_id in pre_stats:
@@ -2180,265 +2581,88 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
         if usc_tid and opp_tid:
             usc_ts = pre_stats[usc_tid]
             opp_ts = pre_stats[opp_tid]
-
-            content_lines.append("<b>Team Stats:</b>")
-            content_lines.append(f"{'':>5}{'PTS':>3}  {'FG':>5} {'3PT':>5} {'FT':>5} {'OR/DR/TR':>8} {'A':>2} {'S':>2} {'B':>2}")
-
-            for ts in [usc_ts, opp_ts]:
-                ab = ts["abbrev"]
-                fg = f"{ts['fg_m']}/{ts['fg_a']}"
-                thr = f"{ts['three_m']}/{ts['three_a']}"
-                ft = f"{ts['ft_m']}/{ts['ft_a']}"
-                reb = f"{ts['orb']}/{ts['drb']}/{ts['orb']+ts['drb']}"
-                content_lines.append(f"{ab:<5}{ts['pts']:>3}  {fg:>5} {thr:>5} {ft:>5} {reb:>8} {ts['ast']:>2} {ts['stl']:>2} {ts['blk']:>2}")
-                fg_pct = f"{100*ts['fg_m']/ts['fg_a']:.1f}%" if ts['fg_a'] > 0 else "0.0%"
-                thr_pct = f"{100*ts['three_m']/ts['three_a']:.1f}%" if ts['three_a'] > 0 else "0.0%"
-                ft_pct = f"{100*ts['ft_m']/ts['ft_a']:.1f}%" if ts['ft_a'] > 0 else "0.0%"
-                content_lines.append(f"{'':>10}{fg_pct:>5} {thr_pct:>5} {ft_pct:>5}")
-
-            content_lines.append("")
-
-            # Advanced stats table (only if ESPN provides the data)
             has_advanced = any(k in usc_ts for k in ("pitp", "fb_pts", "pts_off_to"))
-            if has_advanced:
-                content_lines.append(f"{'':>5}{'PITP':>4}{'FB PTS':>8}{'BNCH':>6}{'OR':>4}{'2CH':>5}{'TO':>4}{'POTO':>5}{'PF':>4}")
-                for ts in [usc_ts, opp_ts]:
-                    ab = ts["abbrev"]
-                    pitp = ts.get("pitp", "-")
-                    fb = ts.get("fb_pts", "-")
-                    bnch = str(ts["bench_pts"])
-                    orb = str(ts["orb"])
-                    sch = ts.get("second_ch", "-")
-                    to_v = str(ts["to"])
-                    poto = ts.get("pts_off_to", "-")
-                    pf = str(ts["fls"])
-                    content_lines.append(f"{ab:<5}{pitp:>4}{fb:>8}{bnch:>6}{orb:>4}{sch:>5}{to_v:>4}{poto:>5}{pf:>4}")
-                content_lines.append("")
+
+            # Period toggle links
+            if has_pbp and len(period_views) > 1:
+                toggle_parts = []
+                for view_id, label, _ in period_views:
+                    if view_id == "total":
+                        toggle_parts.append(f'<b>{label}</b>')
+                    else:
+                        toggle_parts.append(f'<a href="javascript:void(0)" onclick="showPeriod(\'{view_id}\')">{label}</a>')
+                content_lines.append('<span id="period-toggle"><b>Team Stats:</b>  ' + " | ".join(toggle_parts) + '</span>')
+            else:
+                content_lines.append("<b>Team Stats:</b>")
+
+            # Total team stats (visible by default)
+            total_block = render_team_stats("total", usc_ts, opp_ts, has_advanced)
+            if has_pbp and len(period_views) > 1:
+                content_lines.append(f'<span id="teamstats-total">{total_block}</span>')
+            else:
+                content_lines.append(total_block)
+
+            # Period team stats blocks (hidden by default)
+            if has_pbp and len(period_views) > 1:
+                for view_id, _, _ in period_views:
+                    if view_id == "total":
+                        continue
+                    p_team_stats = aggregate_team_period_stats(view_id, team_players)
+                    p_usc_ts = p_team_stats.get(usc_tid, {"abbrev": usc_ts["abbrev"], "fg_m": 0, "fg_a": 0, "three_m": 0, "three_a": 0, "ft_m": 0, "ft_a": 0, "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0, "bench_pts": 0})
+                    p_opp_ts = p_team_stats.get(opp_tid, {"abbrev": opp_ts["abbrev"], "fg_m": 0, "fg_a": 0, "three_m": 0, "three_a": 0, "ft_m": 0, "ft_a": 0, "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0, "bench_pts": 0})
+                    p_block = render_team_stats(view_id, p_usc_ts, p_opp_ts, False)
+                    content_lines.append(f'<span id="teamstats-{view_id}" style="display:none">{p_block}</span>')
 
     # Player stats for each team (USC first)
     players_data = boxscore.get("players", [])
     players_data_sorted = sorted(players_data, key=lambda t: t.get("team", {}).get("id") != team_id)
 
-    # Build all spans with continuous zebra striping across both teams
-    all_spans = []
-    row_idx = 0
+    if has_pbp and len(period_views) > 1:
+        # Generate all period view blocks
+        for view_id, _, _ in period_views:
+            pm_lookup = player_plus_minus if view_id == "total" else period_pm.get(view_id, {})
+            all_spans = []
+            row_idx = 0
+            for team_data in players_data_sorted:
+                td_id = team_data.get("team", {}).get("id", "")
+                spans, row_idx = render_player_rows(view_id, team_data, pm_lookup, row_idx)
+                all_spans.extend(spans)
+                if td_id == team_id:
+                    row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                    all_spans.append(f'<span class="{row_class}">\n\n</span>')
+                    row_idx += 1
 
-    for team_data in players_data_sorted:
-        team = team_data.get("team", {})
-        td_abbrev = team.get("abbreviation", "TEAM")
-        td_id = team.get("id", "")
+            display = '' if view_id == 'total' else 'display:none'
+            style_attr = f' style="{display}"' if display else ''
+            content_lines.append(f'<span id="playerstats-{view_id}"{style_attr}>{"".join(all_spans)}</span>')
+    else:
+        # No period views - render total only (original behavior)
+        all_spans = []
+        row_idx = 0
+        for team_data in players_data_sorted:
+            td_id = team_data.get("team", {}).get("id", "")
+            spans, row_idx = render_player_rows("total", team_data, player_plus_minus, row_idx)
+            all_spans.extend(spans)
+            if td_id == team_id:
+                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                all_spans.append(f'<span class="{row_class}">\n\n</span>')
+                row_idx += 1
+        content_lines.append("".join(all_spans))
 
-        # Get team color - use our team color for our team, team color for opponents
-        if td_id == team_id:
-            team_color = "990000" if team_abbrev == "USC" else "4E2A84"
-        else:
-            team_color = team.get("color", "888888")
-
-        statistics = team_data.get("statistics", [])
-        if not statistics:
-            continue
-
-        athletes = statistics[0].get("athletes", [])
-
-        # Separate starters and bench
-        starters = [a for a in athletes if a.get("starter")]
-        bench = [a for a in athletes if not a.get("starter")]
-
-        # Sort starters and bench by points
-        starters_sorted = sorted(starters, key=player_sort_key)
-        bench_sorted = sorted(bench, key=player_sort_key)
-
-        # Team totals accumulators
-        team_totals = {
-            "fg_made": 0, "fg_att": 0,
-            "three_made": 0, "three_att": 0,
-            "ft_made": 0, "ft_att": 0,
-            "pts": 0, "orb": 0, "drb": 0, "ast": 0, "stl": 0, "blk": 0, "to": 0, "fls": 0
-        }
-
-        # Starters header (team colored)
-        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{td_abbrev} STARTERS</b>\n{stats_header}</span>')
-        row_idx += 1
-
-        # Starters
-        for a in starters_sorted:
-            athlete = a.get("athlete", {})
-            athlete_id = athlete.get("id", "")
-            name = athlete.get("displayName", "Unknown")
-            jersey = athlete.get("jersey", "")
-            stats = a.get("stats", [])
-
-            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            row_idx += 1
-
-            jersey_str = f"#{jersey}" if jersey else ""
-            name_part = f"{name} {jersey_str}"
-
-            if not stats or len(stats) < 13:
-                player_line = name_part
-                stats_line = '<span class="dnp">  Did not play</span>'
-            else:
-                mins = stats[0] if stats[0] and stats[0] != '--' else "0"
-                pts = stats[1] if stats[1] and stats[1] != '--' else "0"
-                fg = stats[2] if stats[2] and stats[2] != '--' else "0-0"
-                threept = stats[3] if stats[3] and stats[3] != '--' else "0-0"
-                ft = stats[4] if stats[4] and stats[4] != '--' else "0-0"
-                orb = stats[10] if stats[10] and stats[10] != '--' else "0"
-                drb = stats[11] if stats[11] and stats[11] != '--' else "0"
-                ast = stats[6] if stats[6] and stats[6] != '--' else "0"
-                stl = stats[8] if stats[8] and stats[8] != '--' else "0"
-                blk = stats[9] if stats[9] and stats[9] != '--' else "0"
-                to = stats[7] if stats[7] and stats[7] != '--' else "0"
-                fls = stats[12] if stats[12] and stats[12] != '--' else "0"
-
-                if mins == "0" or mins == "0:00":
-                    player_line = name_part
-                    stats_line = '<span class="dnp">  Did not play</span>'
-                else:
-                    fg_m, fg_a = parse_shooting(fg)
-                    three_m, three_a = parse_shooting(threept)
-                    ft_m, ft_a = parse_shooting(ft)
-                    team_totals["fg_made"] += fg_m
-                    team_totals["fg_att"] += fg_a
-                    team_totals["three_made"] += three_m
-                    team_totals["three_att"] += three_a
-                    team_totals["ft_made"] += ft_m
-                    team_totals["ft_att"] += ft_a
-                    team_totals["pts"] += int(pts) if pts else 0
-                    team_totals["orb"] += int(orb) if orb else 0
-                    team_totals["drb"] += int(drb) if drb else 0
-                    team_totals["ast"] += int(ast) if ast else 0
-                    team_totals["stl"] += int(stl) if stl else 0
-                    team_totals["blk"] += int(blk) if blk else 0
-                    team_totals["to"] += int(to) if to else 0
-                    team_totals["fls"] += int(fls) if fls else 0
-
-                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
-                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
-                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
-                    pm_val = player_plus_minus.get(athlete_id, 0)
-                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
-                    player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
-
-                    fg_str = f"{fg_m}/{fg_a}"
-                    three_str = f"{three_m}/{three_a}"
-                    ft_str = f"{ft_m}/{ft_a}"
-                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts:>6} "
-
-            all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
-
-        # Bench header (team colored)
-        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{td_abbrev} BENCH</b>\n{stats_header}</span>')
-        row_idx += 1
-
-        # Bench
-        for a in bench_sorted:
-            athlete = a.get("athlete", {})
-            athlete_id = athlete.get("id", "")
-            name = athlete.get("displayName", "Unknown")
-            jersey = athlete.get("jersey", "")
-            stats = a.get("stats", [])
-
-            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            row_idx += 1
-
-            jersey_str = f"#{jersey}" if jersey else ""
-            name_part = f"{name} {jersey_str}"
-
-            if not stats or len(stats) < 13:
-                player_line = name_part
-                stats_line = '<span class="dnp">  Did not play</span>'
-            else:
-                mins = stats[0] if stats[0] and stats[0] != '--' else "0"
-                pts = stats[1] if stats[1] and stats[1] != '--' else "0"
-                fg = stats[2] if stats[2] and stats[2] != '--' else "0-0"
-                threept = stats[3] if stats[3] and stats[3] != '--' else "0-0"
-                ft = stats[4] if stats[4] and stats[4] != '--' else "0-0"
-                orb = stats[10] if stats[10] and stats[10] != '--' else "0"
-                drb = stats[11] if stats[11] and stats[11] != '--' else "0"
-                ast = stats[6] if stats[6] and stats[6] != '--' else "0"
-                stl = stats[8] if stats[8] and stats[8] != '--' else "0"
-                blk = stats[9] if stats[9] and stats[9] != '--' else "0"
-                to = stats[7] if stats[7] and stats[7] != '--' else "0"
-                fls = stats[12] if stats[12] and stats[12] != '--' else "0"
-
-                if mins == "0" or mins == "0:00":
-                    player_line = name_part
-                    stats_line = '<span class="dnp">  Did not play</span>'
-                else:
-                    fg_m, fg_a = parse_shooting(fg)
-                    three_m, three_a = parse_shooting(threept)
-                    ft_m, ft_a = parse_shooting(ft)
-                    team_totals["fg_made"] += fg_m
-                    team_totals["fg_att"] += fg_a
-                    team_totals["three_made"] += three_m
-                    team_totals["three_att"] += three_a
-                    team_totals["ft_made"] += ft_m
-                    team_totals["ft_att"] += ft_a
-                    team_totals["pts"] += int(pts) if pts else 0
-                    team_totals["orb"] += int(orb) if orb else 0
-                    team_totals["drb"] += int(drb) if drb else 0
-                    team_totals["ast"] += int(ast) if ast else 0
-                    team_totals["stl"] += int(stl) if stl else 0
-                    team_totals["blk"] += int(blk) if blk else 0
-                    team_totals["to"] += int(to) if to else 0
-                    team_totals["fls"] += int(fls) if fls else 0
-
-                    fg_pct = f"{f'{100 * fg_m / fg_a:.2f}%':>7}" if fg_a > 0 else "     --"
-                    three_pct = f"{f'{100 * three_m / three_a:.2f}%':>7}" if three_a > 0 else "     --"
-                    ft_pct = f"{f'{100 * ft_m / ft_a:.2f}%':>7}" if ft_a > 0 else "     --"
-                    pm_val = player_plus_minus.get(athlete_id, 0)
-                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
-                    player_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
-
-                    fg_str = f"{fg_m}/{fg_a}"
-                    three_str = f"{three_m}/{three_a}"
-                    ft_str = f"{ft_m}/{ft_a}"
-                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>9}{three_str:>9}{ft_str:>8}{pts:>6} "
-
-            all_spans.append(f'<span class="{row_class}">{player_line}\n{stats_line}</span>')
-
-        # Totals header (team colored)
-        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{td_abbrev} TOTALS</b>\n{stats_header}</span>')
-        row_idx += 1
-
-        # Totals data
-        fg_total = f"{team_totals['fg_made']}/{team_totals['fg_att']}"
-        three_total = f"{team_totals['three_made']}/{team_totals['three_att']}"
-        ft_total = f"{team_totals['ft_made']}/{team_totals['ft_att']}"
-
-        fg_pct_val = f"{100 * team_totals['fg_made'] / team_totals['fg_att']:.2f}%" if team_totals['fg_att'] > 0 else "--"
-        three_pct_val = f"{100 * team_totals['three_made'] / team_totals['three_att']:.2f}%" if team_totals['three_att'] > 0 else "--"
-        ft_pct_val = f"{100 * team_totals['ft_made'] / team_totals['ft_att']:.2f}%" if team_totals['ft_att'] > 0 else "--"
-        fg_pct = f"{fg_pct_val:>7}"
-        three_pct = f"{three_pct_val:>7}"
-        ft_pct = f"{ft_pct_val:>7}"
-
-        pct_line = f"{'':33}<span style=\"color:#999\">{fg_pct:<8}{three_pct:<8}{ft_pct:<8}</span>"
-        totals_line = f"    {team_totals['orb']:>4}{team_totals['drb']:>4}{team_totals['ast']:>4}{team_totals['stl']:>4}{team_totals['blk']:>4}{team_totals['to']:>4}{team_totals['fls']:>4}{fg_total:>9}{three_total:>9}{ft_total:>8}{team_totals['pts']:>6} "
-
-        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}">{pct_line}\n{totals_line}</span>')
-        row_idx += 1
-
-        # Add two blank lines (same zebra stripe) between our team and opponent sections
-        if td_id == team_id:
-            row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}">\n\n</span>')
-            row_idx += 1
-
-    content_lines.append("".join(all_spans))
     content_lines.append("")
 
     # No bottom links - navigation is at top
     content_lines.append(VERSION)
 
     content = "\n".join(content_lines)
+
+    # Build JS data for period toggle
+    if has_pbp and period_views:
+        period_views_js = ",".join(f"'{v[0]}'" for v in period_views)
+        period_labels_js = ",".join(f"'{v[0]}':'{v[1]}'" for v in period_views)
+    else:
+        period_views_js = "'total'"
+        period_labels_js = "'total':'Total'"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -2542,6 +2766,28 @@ def generate_game_page(event_id: str, rankings: dict = None, team_records: dict 
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 }})();
+function showPeriod(view) {{
+    var views = [{period_views_js}];
+    views.forEach(function(v) {{
+        var ps = document.getElementById('playerstats-' + v);
+        var ts = document.getElementById('teamstats-' + v);
+        if (ps) ps.style.display = v === view ? '' : 'none';
+        if (ts) ts.style.display = v === view ? '' : 'none';
+    }});
+    var toggle = document.getElementById('period-toggle');
+    if (toggle) {{
+        var parts = [];
+        var labels = {{{period_labels_js}}};
+        views.forEach(function(v) {{
+            if (v === view) {{
+                parts.push('<b>' + labels[v] + '</b>');
+            }} else {{
+                parts.push('<a href="javascript:void(0)" onclick="showPeriod(\\'' + v + '\\')">' + labels[v] + '</a>');
+            }}
+        }});
+        toggle.innerHTML = '<b>Team Stats:</b>  ' + parts.join(' | ');
+    }}
+}}
 </script>
 </body>
 </html>
