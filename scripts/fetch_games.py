@@ -588,7 +588,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     content_lines.append("")
     schedule_base = schedule_page.replace(".html", "")
     content_lines.append(f'<a href="{schedule_page}">Full Schedule/Results</a>')
-    content_lines.append(f'Prior: <a href="{schedule_base}-2025.html">2024-25</a> | <a href="{schedule_base}-2024.html">2023-24</a>')
+    content_lines.append("")
+    content_lines.append(f'<b>2025-26</b> | <a href="{schedule_base}-2025.html">2024-25</a> | <a href="{schedule_base}-2024.html">2023-24</a>')
     content_lines.append("")
     content_lines.append("=" * 47)
 
