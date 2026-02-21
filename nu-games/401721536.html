@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=700">
+    <title>NU vs USC - NU WBB</title>
+    <meta name="data-loaded" content="2026-02-21T12:51:14.046802-08:00">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: monospace;
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 16px;
+            max-width: 100%;
+            margin: 0 auto;
+            line-height: 1.3;
+            overflow-x: auto;
+        }
+        pre {
+            white-space: pre;
+            min-width: 61ch;
+            margin: 0;
+            font-size: 12px;
+        }
+        a {
+            color: #0066cc;
+        }
+        .row-even {
+            background: #f0f0f0;
+            display: block;
+            margin: 0 -16px;
+            padding: 0 16px;
+        }
+        .row-odd {
+            background: transparent;
+            display: block;
+            margin: 0 -16px;
+            padding: 0 16px;
+        }
+        .game-flow {
+            line-height: 0.5;
+            display: block;
+        }
+        .usc-dots {
+            color: #4E2A84;
+        }
+        .dnp {
+            color: #999999;
+        }
+        .live-clock {
+            color: #cc0000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<pre>
+<span id="timestamps">Data loaded: 12:51:14 PM</span>
+
+<a href="../nu-schedule-2025.html">&lt; NU Schedule</a>
+
+         <b>Northwestern</b>      <b>Forfeit</b>          <b>USC</b>
+           <b>Wildcats</b>         0 - 2         <b>Trojans</b>
+              7-9                          16-1
+                          1  2  3  4   T
+                    --------------------
+                    NU                 0
+                    USC                2
+
+<b>Venue:</b> Galen Center
+
+<b>Team Stats:</b>
+     PTS     FG   3PT    FT OR/DR/TR  A  S  B
+NU     0    0/0   0/0   0/0    0/0/0  0  0  0
+           0.0%  0.0%  0.0%
+USC    0    0/0   0/0   0/0    0/0/0  0  0  0
+           0.0%  0.0%  0.0%
+
+<span class="row-even" style="color: #4E2A84;"><b>NU STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd" style="color: #4E2A84;"><b>NU BENCH</b>
+ MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even" style="color: #4E2A84;"><b>NU TOTALS</b>
+ MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd">                                 <span style="color:#999">     --      --      -- </span>
+       0   0   0   0   0   0   0     0/0     0/0     0/0    0 </span><span class="row-even">
+
+</span><span class="row-odd" style="color: #9d2235;"><b>USC STARTERS</b>
+ MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even" style="color: #9d2235;"><b>USC BENCH</b>
+ MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-odd" style="color: #9d2235;"><b>USC TOTALS</b>
+ MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS</span><span class="row-even">                                 <span style="color:#999">     --      --      -- </span>
+       0   0   0   0   0   0   0     0/0     0/0     0/0    0 </span>
+
+v2026.02.21-12:34.3589fac
+</pre>
+<script>
+(function() {
+    const dataLoaded = new Date(document.querySelector('meta[name="data-loaded"]').content);
+    const pageLoaded = new Date();
+
+    function formatTime(date) {
+        return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+    }
+
+    function timeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return minutes + ' min ago';
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return hours + ' hr ago';
+        const days = Math.floor(hours / 24);
+        return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+    }
+
+    function updateTimestamps() {
+        const el = document.getElementById('timestamps');
+        if (el) {
+            const pageLoadedStr = 'Page loaded: ' + formatTime(pageLoaded);
+            const pageAgo = '(' + timeAgo(pageLoaded) + ')';
+            const pagePadding = 61 - pageLoadedStr.length - pageAgo.length;
+            const pageSpaces = pagePadding > 0 ? ' '.repeat(pagePadding) : ' ';
+
+            const dataLoadedStr = 'Data loaded: ' + formatTime(dataLoaded);
+            const dataAgo = '(' + timeAgo(dataLoaded) + ')';
+            const dataPadding = 61 - dataLoadedStr.length - dataAgo.length;
+            const dataSpaces = dataPadding > 0 ? ' '.repeat(dataPadding) : ' ';
+
+            el.innerHTML = pageLoadedStr + pageSpaces + pageAgo + '\n' + dataLoadedStr + dataSpaces + dataAgo;
+        }
+    }
+
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Update every minute
+})();
+</script>
+</body>
+</html>

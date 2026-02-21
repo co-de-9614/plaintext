@@ -211,6 +211,63 @@ def calculate_plus_minus(plays, boxscore, home_team_id):
     return plus_minus
 
 
+def calculate_possessions(plays, boxscore, team_id):
+    """Calculate possessions for each player on the given team by tracking on-court players.
+
+    A new possession is counted each time the offensive team changes, based on
+    play-by-play events (shots, turnovers, free throws, offensive rebounds, fouls).
+    """
+    on_court = {}
+    player_poss = {}
+
+    players_data = boxscore.get("players", [])
+    for team_data in players_data:
+        tid = team_data.get("team", {}).get("id", "")
+        statistics = team_data.get("statistics", [])
+        if statistics:
+            athletes = statistics[0].get("athletes", [])
+            starters = [a.get("athlete", {}).get("id") for a in athletes if a.get("starter")]
+            on_court[tid] = set(starters)
+            for a in athletes:
+                aid = a.get("athlete", {}).get("id")
+                if aid:
+                    player_poss[aid] = 0
+
+    prev_poss_team = None
+
+    for play in plays:
+        play_type = play.get("type", {}).get("text", "")
+        play_team = play.get("team", {}).get("id", "")
+        play_text = play.get("text", "").lower()
+
+        if play_type == "Substitution":
+            participants = play.get("participants", [])
+            if participants and play_team in on_court:
+                athlete_id = participants[0].get("athlete", {}).get("id")
+                if athlete_id:
+                    if "subbing out" in play_text or "exits" in play_text:
+                        on_court[play_team].discard(athlete_id)
+                    elif "subbing in" in play_text or "enters" in play_text:
+                        on_court[play_team].add(athlete_id)
+            continue
+
+        if not play_team:
+            continue
+
+        # These play types indicate the team has offensive possession
+        if play_type in ("JumpShot", "LayUpShot", "DunkShot", "TipShot", "MadeFreeThrow",
+                         "Lost Ball Turnover", "Offensive Rebound", "PersonalFoul"):
+            if play_team != prev_poss_team:
+                # New possession — credit all on-court players for this team
+                if play_team in on_court:
+                    for aid in on_court[play_team]:
+                        if aid in player_poss:
+                            player_poss[aid] += 1
+                prev_poss_team = play_team
+
+    return player_poss
+
+
 def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
     """Get team roster with current season stats aggregated from game box scores."""
     # Get schedule to find completed games
@@ -247,8 +304,9 @@ def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
             boxscore = game_data.get("boxscore", {})
             players = boxscore.get("players", [])
 
-            # Calculate plus/minus for this game
+            # Calculate plus/minus and possessions for this game
             game_pm = {}
+            game_poss = {}
             plays = game_data.get("plays", [])
             if plays:
                 header = game_data.get("header", {})
@@ -257,6 +315,7 @@ def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
                 home_comp = next((c for c in header_competitors if c.get("homeAway") == "home"), {})
                 home_id = home_comp.get("team", {}).get("id", "")
                 game_pm = calculate_plus_minus(plays, boxscore, home_id)
+                game_poss = calculate_possessions(plays, boxscore, team_id)
 
             for team in players:
                 if team.get("team", {}).get("id") != team_id:
@@ -306,7 +365,7 @@ def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
                             "min": 0, "pts": 0, "ast": 0, "stl": 0, "blk": 0,
                             "fg_made": 0, "fg_att": 0, "three_made": 0, "three_att": 0,
                             "ft_made": 0, "ft_att": 0, "orb": 0, "drb": 0,
-                            "to": 0, "fls": 0, "pm": 0, "gp": 0
+                            "to": 0, "fls": 0, "pm": 0, "gp": 0, "poss": 0
                         }
 
                     t = player_totals[athlete_id]
@@ -326,6 +385,7 @@ def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
                     t["ft_made"] += ft_m
                     t["ft_att"] += ft_a
                     t["pm"] += game_pm.get(athlete_id, 0)
+                    t["poss"] += game_poss.get(athlete_id, 0)
                     t["gp"] += 1
 
         except Exception:
@@ -345,7 +405,7 @@ def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
                 "ft_made": t["ft_made"], "ft_att": t["ft_att"],
                 "orb": t["orb"], "drb": t["drb"],
                 "ast": t["ast"], "stl": t["stl"], "blk": t["blk"],
-                "to": t["to"], "fls": t["fls"], "pts": t["pts"], "pm": t["pm"],
+                "to": t["to"], "fls": t["fls"], "pts": t["pts"], "pm": t["pm"], "poss": t["poss"],
             })
 
     # Sort by minutes desc, points desc, last name asc (same as game page)
@@ -687,56 +747,148 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     if roster:
         content_lines.append("")
         content_lines.append("=" * 47)
-        stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
-        all_spans = []
-        row_idx = 0
-
-        # Section header (team colored)
         team_color = "990000" if team_abbrev == "USC" else "4E2A84"
-        row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-        all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} SEASON STATS</b>\n{stats_header}</span>')
-        row_idx += 1
 
-        for p in roster:
-            name = p.get("name", "")
-            jersey = p.get("jersey", "")
-            jersey_str = f"#{jersey}" if jersey else ""
-            name_part = f"{name} {jersey_str}"
+        def build_stats_block(mode):
+            """Build a stats block for the given mode: 'totals', 'pergame', or 'per40'."""
+            modes = [("totals", "Totals"), ("pergame", "Per Game"), ("per40", "Per 40 Min"), ("per100", "Per 100 Poss")]
+            toggle_parts = []
+            for m_id, m_label in modes:
+                if m_id == mode:
+                    toggle_parts.append(f"<b>{m_label}</b>")
+                else:
+                    toggle_parts.append(f'<a href="javascript:void(0)" onclick="showStats(\'{m_id}\')">{m_label}</a>')
+            toggle_line = " | ".join(toggle_parts)
 
-            mins = p.get("min", 0)
-            fg_made = p.get("fg_made", 0)
-            fg_att = p.get("fg_att", 0)
-            three_made = p.get("three_made", 0)
-            three_att = p.get("three_att", 0)
-            ft_made = p.get("ft_made", 0)
-            ft_att = p.get("ft_att", 0)
-            orb = p.get("orb", 0)
-            drb = p.get("drb", 0)
-            ast = p.get("ast", 0)
-            stl = p.get("stl", 0)
-            blk = p.get("blk", 0)
-            to = p.get("to", 0)
-            fls = p.get("fls", 0)
-            pts = p.get("pts", 0)
+            if mode == "totals":
+                stats_header = " MIN ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
+            else:
+                stats_header = "  GP ORB DRB AST STL BLK  TO FLS      FG     3PT      FT  PTS"
 
-            fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
-            three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
-            ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
-            pm_val = p.get("pm", 0)
-            pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
-            grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
-            name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
-
-            fg_str = f"{fg_made}/{fg_att}"
-            three_str = f"{three_made}/{three_att}"
-            ft_str = f"{ft_made}/{ft_att}"
-            stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
-
+            all_spans = []
+            row_idx = 0
             row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
-            all_spans.append(f'<span class="{row_class}">{name_line}\n{stats_line}</span>')
+            all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} SEASON STATS</b>  {toggle_line}\n{stats_header}</span>')
             row_idx += 1
 
-        content_lines.append("".join(all_spans))
+            for p in roster:
+                name = p.get("name", "")
+                jersey = p.get("jersey", "")
+                jersey_str = f"#{jersey}" if jersey else ""
+                name_part = f"{name} {jersey_str}"
+
+                gp = p.get("gp", 0)
+                mins = p.get("min", 0)
+                fg_made = p.get("fg_made", 0)
+                fg_att = p.get("fg_att", 0)
+                three_made = p.get("three_made", 0)
+                three_att = p.get("three_att", 0)
+                ft_made = p.get("ft_made", 0)
+                ft_att = p.get("ft_att", 0)
+                orb = p.get("orb", 0)
+                drb = p.get("drb", 0)
+                ast = p.get("ast", 0)
+                stl = p.get("stl", 0)
+                blk = p.get("blk", 0)
+                to = p.get("to", 0)
+                fls = p.get("fls", 0)
+                pts = p.get("pts", 0)
+                pm_val = p.get("pm", 0)
+
+                poss = p.get("poss", 0)
+
+                if mode == "pergame" and gp == 0:
+                    continue
+                if mode == "per40" and (gp == 0 or mins == 0):
+                    continue
+                if mode == "per100" and (gp == 0 or poss == 0):
+                    continue
+
+                if mode == "totals":
+                    # Percentages in grey
+                    fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
+                    three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
+                    ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
+                    pm_str = f"+{pm_val}" if pm_val > 0 else str(pm_val)
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+
+                    fg_str = f"{fg_made}/{fg_att}"
+                    three_str = f"{three_made}/{three_att}"
+                    ft_str = f"{ft_made}/{ft_att}"
+                    stats_line = f"{mins:>4}{orb:>4}{drb:>4}{ast:>4}{stl:>4}{blk:>4}{to:>4}{fls:>4}{fg_str:>8}{three_str:>8}{ft_str:>8}{pts:>5} "
+                elif mode == "pergame":
+                    d = gp
+                    s_orb = orb / d; s_drb = drb / d; s_ast = ast / d
+                    s_stl = stl / d; s_blk = blk / d; s_to = to / d; s_fls = fls / d
+                    s_pts = pts / d; s_pm = pm_val / d
+                    s_fg_made = fg_made / d; s_fg_att = fg_att / d
+                    s_three_made = three_made / d; s_three_att = three_att / d
+                    s_ft_made = ft_made / d; s_ft_att = ft_att / d
+
+                    fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
+                    three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
+                    ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
+                    pm_str = f"+{s_pm:.1f}" if s_pm > 0 else f"{s_pm:.1f}"
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+
+                    fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
+                    three_str = f"{s_three_made:.1f}/{s_three_att:.1f}"
+                    ft_str = f"{s_ft_made:.1f}/{s_ft_att:.1f}"
+                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>8}{three_str:>8}{ft_str:>8}{s_pts:>5.1f} "
+                elif mode == "per40":
+                    d = mins / 40
+                    s_orb = orb / d; s_drb = drb / d; s_ast = ast / d
+                    s_stl = stl / d; s_blk = blk / d; s_to = to / d; s_fls = fls / d
+                    s_pts = pts / d; s_pm = pm_val / d
+                    s_fg_made = fg_made / d; s_fg_att = fg_att / d
+                    s_three_made = three_made / d; s_three_att = three_att / d
+                    s_ft_made = ft_made / d; s_ft_att = ft_att / d
+
+                    fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
+                    three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
+                    ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
+                    pm_str = f"+{s_pm:.1f}" if s_pm > 0 else f"{s_pm:.1f}"
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+
+                    fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
+                    three_str = f"{s_three_made:.1f}/{s_three_att:.1f}"
+                    ft_str = f"{s_ft_made:.1f}/{s_ft_att:.1f}"
+                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>8}{three_str:>8}{ft_str:>8}{s_pts:>5.1f} "
+                else:  # per100
+                    d = poss / 100
+                    s_orb = orb / d; s_drb = drb / d; s_ast = ast / d
+                    s_stl = stl / d; s_blk = blk / d; s_to = to / d; s_fls = fls / d
+                    s_pts = pts / d; s_pm = pm_val / d
+                    s_fg_made = fg_made / d; s_fg_att = fg_att / d
+                    s_three_made = three_made / d; s_three_att = three_att / d
+                    s_ft_made = ft_made / d; s_ft_att = ft_att / d
+
+                    fg_pct = f"{f'{100 * fg_made / fg_att:.2f}%':>7}" if fg_att > 0 else "     --"
+                    three_pct = f"{f'{100 * three_made / three_att:.2f}%':>7}" if three_att > 0 else "     --"
+                    ft_pct = f"{f'{100 * ft_made / ft_att:.2f}%':>7}" if ft_att > 0 else "     --"
+                    pm_str = f"+{s_pm:.1f}" if s_pm > 0 else f"{s_pm:.1f}"
+                    grey_part = f"{fg_pct:<8}{three_pct:<8}{ft_pct:<8}{pm_str:>4} "
+                    name_line = f'{name_part:<33}<span style="color:#999">{grey_part}</span>'
+
+                    fg_str = f"{s_fg_made:.1f}/{s_fg_att:.1f}"
+                    three_str = f"{s_three_made:.1f}/{s_three_att:.1f}"
+                    ft_str = f"{s_ft_made:.1f}/{s_ft_att:.1f}"
+                    stats_line = f"{gp:>4}{s_orb:>4.1f}{s_drb:>4.1f}{s_ast:>4.1f}{s_stl:>4.1f}{s_blk:>4.1f}{s_to:>4.1f}{s_fls:>4.1f}{fg_str:>8}{three_str:>8}{ft_str:>8}{s_pts:>5.1f} "
+
+                row_class = "row-even" if row_idx % 2 == 0 else "row-odd"
+                all_spans.append(f'<span class="{row_class}">{name_line}\n{stats_line}</span>')
+                row_idx += 1
+
+            return "".join(all_spans)
+
+        totals_block = f'<span id="stats-totals">{build_stats_block("totals")}</span>'
+        pergame_block = f'<span id="stats-pergame" style="display:none">{build_stats_block("pergame")}</span>'
+        per40_block = f'<span id="stats-per40" style="display:none">{build_stats_block("per40")}</span>'
+        per100_block = f'<span id="stats-per100" style="display:none">{build_stats_block("per100")}</span>'
+        content_lines.append(totals_block + pergame_block + per40_block + per100_block)
 
     events = schedule_data.get("events", [])
 
@@ -924,6 +1076,11 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     updateTimestamps();
     setInterval(updateTimestamps, 60000); // Update every minute
 }})();
+function showStats(view) {{
+    ['totals','pergame','per40','per100'].forEach(function(v) {{
+        document.getElementById('stats-' + v).style.display = v === view ? '' : 'none';
+    }});
+}}
 </script>
 </body>
 </html>
