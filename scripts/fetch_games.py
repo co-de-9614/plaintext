@@ -372,9 +372,16 @@ def get_rankings() -> dict:
         return {}
 
 
-def get_team_schedule(team_id=USC_TEAM_ID) -> dict:
-    """Get team's schedule and recent results."""
+def get_team_schedule(team_id=USC_TEAM_ID, season=None) -> dict:
+    """Get team's schedule and recent results.
+
+    Args:
+        team_id: ESPN team ID
+        season: Optional season year (ESPN uses ending year, e.g. 2026 for 2025-26 season)
+    """
     url = f"{BASE_API}/teams/{team_id}/schedule"
+    if season:
+        url += f"?season={season}"
     return fetch_json(url)
 
 
@@ -922,8 +929,18 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
 
 def generate_schedule_html(schedule_data: dict, rankings: dict,
-                           team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", games_dir="games") -> str:
-    """Generate the full schedule/results page."""
+                           team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", games_dir="games",
+                           season_year=2026, schedule_page_base="schedule") -> str:
+    """Generate the full schedule/results page.
+
+    Args:
+        season_year: The season year (ESPN ending year, e.g. 2026 for 2025-26)
+        schedule_page_base: Base name for schedule pages (e.g. "schedule" or "nu-schedule")
+    """
+    CURRENT_YEAR = 2026
+    YEARS = [2026, 2025, 2024]
+    link_to_game_pages = (season_year == CURRENT_YEAR)
+
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
     now_iso = now.isoformat()
@@ -937,6 +954,21 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  <a href="b1g.html">B1G</a>')
     content_lines.append("")
     content_lines.append(f'<a href="{home_page}">Back to Home</a>')
+    content_lines.append("")
+
+    # Year navigation
+    year_parts = []
+    for y in YEARS:
+        if y == CURRENT_YEAR:
+            page_name = f"{schedule_page_base}.html"
+        else:
+            page_name = f"{schedule_page_base}-{y}.html"
+        display = f"{y-1}-{str(y)[2:]}"
+        if y == season_year:
+            year_parts.append(f"<b>{display}</b>")
+        else:
+            year_parts.append(f'<a href="{page_name}">{display}</a>')
+    content_lines.append(" | ".join(year_parts))
     content_lines.append("")
     content_lines.append("Full Schedule/Results")
     content_lines.append("=" * 47)
@@ -1002,7 +1034,10 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
         except Exception:
             result = "-"
 
-        score_link = f'<a href="{games_dir}/{event_id}.html">{result} {usc_score}-{opp_score}</a>'
+        if link_to_game_pages:
+            score_link = f'<a href="{games_dir}/{event_id}.html">{result} {usc_score}-{opp_score}</a>'
+        else:
+            score_link = f'{result} {usc_score}-{opp_score}'
         game_link = f'{date_str} {score_link} {home_away} {opp_str}'
         content_lines.append(game_link)
 
@@ -1053,7 +1088,10 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
                 live_date = dt_pt.strftime("%b %d")
             except Exception:
                 live_date = date_str.split()[0] if date_str else ""
-            content_lines.append(f'<a href="{games_dir}/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
+            if link_to_game_pages:
+                content_lines.append(f'<a href="{games_dir}/{event_id}.html">{live_date} <span style="color: #cc0000; font-weight: bold;">LIVE</span> {home_away} {opp_str}</a>')
+            else:
+                content_lines.append(f'{live_date} {home_away} {opp_str}')
         else:
             content_lines.append(f"{date_str} {home_away} {opp_str}")
 
@@ -1066,7 +1104,7 @@ def generate_schedule_html(schedule_data: dict, rankings: dict,
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=700">
-    <title>{team_abbrev} WBB Schedule</title>
+    <title>{team_abbrev} WBB Schedule {season_year-1}-{str(season_year)[2:]}</title>
     <meta name="data-loaded" content="{now_iso}">
     <style>
         * {{
@@ -2405,11 +2443,20 @@ def main():
     output_path.write_text(html)
     print(f"Written to {output_path}")
 
-    # Generate full schedule page
-    schedule_html = generate_schedule_html(schedule, rankings)
+    # Generate schedule pages for current and prior seasons
+    schedule_html = generate_schedule_html(schedule, rankings, season_year=2026, schedule_page_base="schedule")
     schedule_path = Path(__file__).parent.parent / "schedule.html"
     schedule_path.write_text(schedule_html)
     print(f"Written to {schedule_path}")
+
+    for prior_year in [2025, 2024]:
+        print(f"Fetching USC {prior_year-1}-{str(prior_year)[2:]} schedule...")
+        prior_schedule = get_team_schedule(season=prior_year)
+        prior_html = generate_schedule_html(prior_schedule, rankings,
+            season_year=prior_year, schedule_page_base="schedule")
+        prior_path = Path(__file__).parent.parent / f"schedule-{prior_year}.html"
+        prior_path.write_text(prior_html)
+        print(f"Written to {prior_path}")
 
     # Generate individual game pages for completed games
     usc_games_dir = Path(__file__).parent.parent / "games"
@@ -2484,10 +2531,21 @@ def main():
     print(f"Written to {nu_path}")
 
     nu_schedule_html = generate_schedule_html(nu_schedule, rankings,
-        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", games_dir="nu-games")
+        team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", games_dir="nu-games",
+        season_year=2026, schedule_page_base="nu-schedule")
     nu_schedule_path = Path(__file__).parent.parent / "nu-schedule.html"
     nu_schedule_path.write_text(nu_schedule_html)
     print(f"Written to {nu_schedule_path}")
+
+    for prior_year in [2025, 2024]:
+        print(f"Fetching NU {prior_year-1}-{str(prior_year)[2:]} schedule...")
+        nu_prior_schedule = get_team_schedule(team_id=NU_TEAM_ID, season=prior_year)
+        nu_prior_html = generate_schedule_html(nu_prior_schedule, rankings,
+            team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", games_dir="nu-games",
+            season_year=prior_year, schedule_page_base="nu-schedule")
+        nu_prior_path = Path(__file__).parent.parent / f"nu-schedule-{prior_year}.html"
+        nu_prior_path.write_text(nu_prior_html)
+        print(f"Written to {nu_prior_path}")
 
     nu_games_dir = Path(__file__).parent.parent / "nu-games"
     nu_games_dir.mkdir(exist_ok=True)
