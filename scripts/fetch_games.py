@@ -411,10 +411,36 @@ def compute_period_plus_minus(plays, boxscore, home_team_id, periods):
     return plus_minus
 
 
-def get_roster_with_stats(team_id=USC_TEAM_ID) -> list:
-    """Get team roster with current season stats aggregated from game box scores."""
+ROSTER_CACHE_DIR = Path(__file__).parent.parent / "data"
+
+
+def get_roster_with_stats_cached(team_id=USC_TEAM_ID, season=None) -> list:
+    """Get roster with stats, using disk cache for prior (completed) seasons.
+
+    Current season (2026) is never cached since stats change every game.
+    """
+    CURRENT_SEASON = 2026
+    if season is not None and season != CURRENT_SEASON:
+        cache_path = ROSTER_CACHE_DIR / f"roster_cache_{team_id}_{season}.json"
+        if cache_path.exists():
+            try:
+                return json.loads(cache_path.read_text())
+            except (json.JSONDecodeError, OSError):
+                pass
+        # Fetch and cache
+        roster = get_roster_with_stats(team_id=team_id, season=season)
+        ROSTER_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(json.dumps(roster, indent=2))
+        return roster
+    return get_roster_with_stats(team_id=team_id, season=season)
+
+
+def get_roster_with_stats(team_id=USC_TEAM_ID, season=None) -> list:
+    """Get team roster with season stats aggregated from game box scores."""
     # Get schedule to find completed games
     schedule_url = f"{BASE_API}/teams/{team_id}/schedule"
+    if season is not None:
+        schedule_url += f"?season={season}"
     schedule_data = fetch_json(schedule_url)
 
     events = schedule_data.get("events", [])
@@ -775,7 +801,8 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
                        team_id=USC_TEAM_ID, team_abbrev="USC", home_page="index.html", schedule_page="schedule.html",
                        games_dir="games",
                        other_game_data: dict | None = None, other_schedule: dict | None = None,
-                       other_team_id=None, other_team_abbrev="", other_games_dir="") -> str:
+                       other_team_id=None, other_team_abbrev="", other_games_dir="",
+                       prior_rosters: dict | None = None) -> str:
     """Generate the main game page HTML."""
     now = datetime.now(PT)
     now_str = now.strftime("%I:%M:%S %p")
@@ -789,10 +816,9 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
     else:
         content_lines.append('<a href="index.html">USC</a>  <b>NU</b>  <a href="b1g.html">B1G</a>')
     content_lines.append("")
-    schedule_base = schedule_page.replace(".html", "")
     content_lines.append(f'<a href="{schedule_page}">Full Schedule/Results</a>')
     content_lines.append("")
-    content_lines.append(f'<b>2025-26</b> | <a href="{schedule_base}-2025.html">2024-25</a> | <a href="{schedule_base}-2024.html">2023-24</a>')
+    content_lines.append(f'<span id="year-nav"><b>2025-26</b> | <a href="javascript:void(0)" onclick="showSeason(\'2025\')">2024-25</a> | <a href="javascript:void(0)" onclick="showSeason(\'2024\')">2023-24</a></span>')
     content_lines.append("")
     content_lines.append("=" * 47)
 
@@ -892,15 +918,19 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
         content_lines.append("=" * 47)
         team_color = "990000" if team_abbrev == "USC" else "4E2A84"
 
-        def build_stats_block(mode):
-            """Build a stats block for the given mode: 'totals', 'pergame', or 'per40'."""
+        def build_stats_block(mode, block_roster, season_suffix=""):
+            """Build a stats block for the given mode: 'totals', 'pergame', 'per40', 'per100'.
+
+            season_suffix: e.g. '-2025' for prior seasons, '' for current.
+            """
+            js_fn = f"showStats{season_suffix.replace('-', '_')}" if season_suffix else "showStats"
             modes = [("totals", "Totals"), ("pergame", "Per Game"), ("per40", "Per 40 Min"), ("per100", "Per 100 Poss")]
             toggle_parts = []
             for m_id, m_label in modes:
                 if m_id == mode:
                     toggle_parts.append(f"<b>{m_label}</b>")
                 else:
-                    toggle_parts.append(f'<a href="javascript:void(0)" onclick="showStats(\'{m_id}\')">{m_label}</a>')
+                    toggle_parts.append(f'<a href="javascript:void(0)" onclick="{js_fn}(\'{m_id}\')">{m_label}</a>')
             toggle_line = " | ".join(toggle_parts)
 
             if mode == "totals":
@@ -914,7 +944,7 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
             all_spans.append(f'<span class="{row_class}" style="color: #{team_color};"><b>{team_abbrev} SEASON STATS</b>  {toggle_line}\n{stats_header}</span>')
             row_idx += 1
 
-            for p in roster:
+            for p in block_roster:
                 name = p.get("name", "")
                 jersey = p.get("jersey", "")
                 jersey_str = f"#{jersey}" if jersey else ""
@@ -1027,11 +1057,28 @@ def generate_game_html(game_data: dict | None, schedule_data: dict, rankings: di
 
             return "".join(all_spans)
 
-        totals_block = f'<span id="stats-totals">{build_stats_block("totals")}</span>'
-        pergame_block = f'<span id="stats-pergame" style="display:none">{build_stats_block("pergame")}</span>'
-        per40_block = f'<span id="stats-per40" style="display:none">{build_stats_block("per40")}</span>'
-        per100_block = f'<span id="stats-per100" style="display:none">{build_stats_block("per100")}</span>'
-        content_lines.append(totals_block + pergame_block + per40_block + per100_block)
+        # Current season stats (season 2026)
+        totals_block = f'<span id="stats-totals">{build_stats_block("totals", roster)}</span>'
+        pergame_block = f'<span id="stats-pergame" style="display:none">{build_stats_block("pergame", roster)}</span>'
+        per40_block = f'<span id="stats-per40" style="display:none">{build_stats_block("per40", roster)}</span>'
+        per100_block = f'<span id="stats-per100" style="display:none">{build_stats_block("per100", roster)}</span>'
+        current_season_block = f'<span id="season-2026">{totals_block}{pergame_block}{per40_block}{per100_block}</span>'
+
+        # Prior season stats blocks (hidden by default)
+        prior_season_blocks = ""
+        if prior_rosters:
+            for year in [2025, 2024]:
+                pr = prior_rosters.get(year, [])
+                if not pr:
+                    continue
+                suffix = f"-{year}"
+                t_block = f'<span id="stats-totals{suffix}">{build_stats_block("totals", pr, suffix)}</span>'
+                pg_block = f'<span id="stats-pergame{suffix}" style="display:none">{build_stats_block("pergame", pr, suffix)}</span>'
+                p40_block = f'<span id="stats-per40{suffix}" style="display:none">{build_stats_block("per40", pr, suffix)}</span>'
+                p100_block = f'<span id="stats-per100{suffix}" style="display:none">{build_stats_block("per100", pr, suffix)}</span>'
+                prior_season_blocks += f'<span id="season-{year}" style="display:none">{t_block}{pg_block}{p40_block}{p100_block}</span>'
+
+        content_lines.append(current_season_block + prior_season_blocks)
 
     events = schedule_data.get("events", [])
 
@@ -1223,6 +1270,35 @@ function showStats(view) {{
     ['totals','pergame','per40','per100'].forEach(function(v) {{
         document.getElementById('stats-' + v).style.display = v === view ? '' : 'none';
     }});
+}}
+function showStats_2025(view) {{
+    ['totals','pergame','per40','per100'].forEach(function(v) {{
+        document.getElementById('stats-' + v + '-2025').style.display = v === view ? '' : 'none';
+    }});
+}}
+function showStats_2024(view) {{
+    ['totals','pergame','per40','per100'].forEach(function(v) {{
+        document.getElementById('stats-' + v + '-2024').style.display = v === view ? '' : 'none';
+    }});
+}}
+function showSeason(year) {{
+    ['2026','2025','2024'].forEach(function(y) {{
+        var el = document.getElementById('season-' + y);
+        if (el) el.style.display = y === year ? '' : 'none';
+    }});
+    var nav = document.getElementById('year-nav');
+    if (nav) {{
+        var labels = {{'2026': '2025-26', '2025': '2024-25', '2024': '2023-24'}};
+        var parts = [];
+        ['2026','2025','2024'].forEach(function(y) {{
+            if (y === year) {{
+                parts.push('<b>' + labels[y] + '</b>');
+            }} else {{
+                parts.push('<a href="javascript:void(0)" onclick="showSeason(\\\'' + y + '\\\')">' + labels[y] + '</a>');
+            }}
+        }});
+        nav.innerHTML = parts.join(' | ');
+    }}
 }}
 </script>
 </body>
@@ -2832,10 +2908,17 @@ def main():
     print("Fetching USC player stats...")
     roster = get_roster_with_stats()
 
+    # Fetch prior season rosters (cached for completed seasons)
+    usc_prior_rosters = {}
+    for year in [2025, 2024]:
+        print(f"Fetching USC {year-1}-{str(year)[2:]} roster stats (cached)...")
+        usc_prior_rosters[year] = get_roster_with_stats_cached(USC_TEAM_ID, year)
+
     # Generate HTML
     html = generate_game_html(usc_game, schedule, rankings, roster,
         other_game_data=nu_game, other_schedule=nu_schedule,
-        other_team_id=NU_TEAM_ID, other_team_abbrev="NU", other_games_dir="nu-games")
+        other_team_id=NU_TEAM_ID, other_team_abbrev="NU", other_games_dir="nu-games",
+        prior_rosters=usc_prior_rosters)
 
     # Write output
     output_path = Path(__file__).parent.parent / "index.html"
@@ -2952,11 +3035,18 @@ def main():
     print("Fetching NU player stats...")
     nu_roster = get_roster_with_stats(team_id=NU_TEAM_ID)
 
+    # Fetch prior season rosters for NU (cached)
+    nu_prior_rosters = {}
+    for year in [2025, 2024]:
+        print(f"Fetching NU {year-1}-{str(year)[2:]} roster stats (cached)...")
+        nu_prior_rosters[year] = get_roster_with_stats_cached(NU_TEAM_ID, year)
+
     nu_html = generate_game_html(nu_game, nu_schedule, rankings, nu_roster,
         team_id=NU_TEAM_ID, team_abbrev="NU", home_page="nu.html", schedule_page="nu-schedule.html",
         games_dir="nu-games",
         other_game_data=usc_game, other_schedule=schedule,
-        other_team_id=USC_TEAM_ID, other_team_abbrev="USC", other_games_dir="games")
+        other_team_id=USC_TEAM_ID, other_team_abbrev="USC", other_games_dir="games",
+        prior_rosters=nu_prior_rosters)
     nu_path = Path(__file__).parent.parent / "nu.html"
     nu_path.write_text(nu_html)
     print(f"Written to {nu_path}")
